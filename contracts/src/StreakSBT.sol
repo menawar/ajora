@@ -15,8 +15,10 @@ contract StreakSBT is IStreakSBT {
     }
 
     mapping(address user => StreakData) internal _streaks;
+    mapping(address user => mapping(uint256 badgeId => bool)) internal _badges;
 
     error AlreadyCheckedIn();
+    error Soulbound();
 
     /// @dev Multiplier scale: 10 = 1.0x.
     uint256 internal constant SCALE = 10;
@@ -42,6 +44,17 @@ contract StreakSBT is IStreakSBT {
         s.lastCheckInDay = uint64(today);
 
         emit CheckedIn(msg.sender, s.streakDays, multiplierOf(msg.sender));
+        _maybeMintBadge(msg.sender, s.streakDays);
+    }
+
+    /// @dev Milestone badges at the tier boundaries. badgeId == the streak-day milestone.
+    function _maybeMintBadge(address user, uint256 streakDays) internal {
+        if (streakDays == 7 || streakDays == 30 || streakDays == 90) {
+            if (!_badges[user][streakDays]) {
+                _badges[user][streakDays] = true;
+                emit BadgeMinted(user, streakDays);
+            }
+        }
     }
 
     /// @inheritdoc IStreakSBT
@@ -67,7 +80,26 @@ contract StreakSBT is IStreakSBT {
     }
 
     /// @inheritdoc IStreakSBT
-    function hasBadge(address, uint256) public view returns (bool) {
-        return false; // badge minting lands in a later commit
+    function hasBadge(address user, uint256 badgeId) public view returns (bool) {
+        return _badges[user][badgeId];
+    }
+
+    // ------------------------------------------------------------- soulbound
+    // Streaks and badges are identity, not property: every transfer path reverts.
+
+    function transfer(address, uint256) external pure returns (bool) {
+        revert Soulbound();
+    }
+
+    function transferFrom(address, address, uint256) external pure returns (bool) {
+        revert Soulbound();
+    }
+
+    function approve(address, uint256) external pure returns (bool) {
+        revert Soulbound();
+    }
+
+    function setApprovalForAll(address, bool) external pure {
+        revert Soulbound();
     }
 }
