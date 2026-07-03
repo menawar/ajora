@@ -55,8 +55,15 @@ contract StreakSBT is IStreakSBT {
     }
 
     /// @inheritdoc IStreakSBT
-    function multiplierOf(address) public view returns (uint256) {
-        return SCALE; // flat 1.0x placeholder — tier table lands in the next commit
+    /// @dev Tiers (AJORA_SPEC.md §8.5): 1–6d = 1.0x, 7–29d = 1.5x, 30–89d = 2.0x, 90d+ = 3.0x.
+    ///      Based on the live streak, so a broken streak instantly falls back to 1.0x —
+    ///      the only thing a missed day forfeits is this bonus, never principal.
+    function multiplierOf(address user) public view returns (uint256) {
+        uint256 s = streakOf(user);
+        if (s >= 90) return 30;
+        if (s >= 30) return 20;
+        if (s >= 7) return 15;
+        return SCALE;
     }
 
     /// @inheritdoc IStreakSBT
