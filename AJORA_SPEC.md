@@ -211,7 +211,7 @@ prize_per_winner = jara_pot(day) * winner_share / num_winners
 ┌────────────────────────────────────────────────────────────────┐
 │                         MiniPay (Celo wallet)                    │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │              Ajora Mini App (React + TS)                  │   │
+│  │              Ajora Mini App (Next.js/TS)                  │   │
 │  │  - Save / Pick / Spray / Claim UI                        │   │
 │  │  - Win-card generator + WhatsApp/Farcaster share         │   │
 │  │  - viem/wagmi + MiniPay injected provider                │   │
@@ -245,7 +245,7 @@ prize_per_winner = jara_pot(day) * winner_share / num_winners
 | Contracts | Solidity 0.8.24, Foundry | Fast iteration, fuzzing, mainnet-grade |
 | Chain | Celo mainnet (Alfajores for staging) | Near-zero gas, stablecoin gas, MiniPay-native |
 | Stablecoins | cUSD, cKES, cCOP (Mento) | Local-currency relevance |
-| Frontend | React + TypeScript + Vite | Small bundle for low-end Android |
+| Frontend | Next.js (App Router) + TypeScript + Tailwind | TS-first, static export keeps the client bundle lean for low-end Android |
 | Web3 lib | viem + wagmi | Lightweight, MiniPay injected provider support |
 | Indexer | Ponder (or The Graph) + Postgres | Fast reads, leaderboards, metrics |
 | Keeper | Node.js cron worker | Draw resolution, yield harvest |

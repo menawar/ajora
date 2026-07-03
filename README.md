@@ -24,7 +24,7 @@ ajora/
 │   ├── src/             # PotVault, DrawManager, SprayFaucet, ...
 │   ├── test/            # Foundry tests
 │   └── script/          # Deployment scripts
-├── app/                 # MiniPay Mini App frontend (React + TypeScript + Vite)
+├── app/                 # MiniPay Mini App frontend (Next.js + TypeScript + Tailwind)
 └── .github/workflows/   # CI (forge build + test, app typecheck)
 ```
 
