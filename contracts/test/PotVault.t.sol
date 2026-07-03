@@ -5,6 +5,8 @@ import { Test } from "forge-std/Test.sol";
 import { PotVault } from "../src/PotVault.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
+import { MockStreakSBT } from "./mocks/MockStreakSBT.sol";
+import { IStreakSBT } from "../src/interfaces/IStreakSBT.sol";
 
 contract PotVaultTest is Test {
     PotVault internal vault;
@@ -94,6 +96,32 @@ contract PotVaultTest is Test {
         // Alice's principal is untouched and still fully redeemable.
         vm.prank(alice);
         assertEq(vault.claimPrincipal(period), 1e18);
+    }
+
+    function test_TicketsScaleWithStreakMultiplier() public {
+        MockStreakSBT streak = new MockStreakSBT();
+        streak.setMultiplier(alice, 15); // 1.5x
+        vault.setStreakSBT(IStreakSBT(address(streak)));
+
+        uint256 period = vault.currentPeriod();
+        uint256 tickets = _contribute(alice, 1e18); // base 10 * 1.5 = 15
+
+        assertEq(tickets, 15, "1.5x streak multiplier applied");
+        assertEq(vault.ticketsOf(alice, period), 15);
+    }
+
+    function test_MultiplierClampedToOneWhenBelowScale() public {
+        MockStreakSBT streak = new MockStreakSBT();
+        streak.setMultiplier(alice, 3); // < 10 → must clamp to 1.0x, never reduce tickets
+        vault.setStreakSBT(IStreakSBT(address(streak)));
+
+        uint256 tickets = _contribute(alice, 1e18);
+        assertEq(tickets, 10, "multiplier below 1.0x is clamped up to 1.0x");
+    }
+
+    function test_NoStreakSBT_DefaultsToOneX() public {
+        uint256 tickets = _contribute(alice, 1e18);
+        assertEq(tickets, 10, "flat 1.0x when no StreakSBT wired");
     }
 
     function testFuzz_PrincipalRoundTrip(uint256 amount) public {

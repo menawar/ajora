@@ -3,14 +3,16 @@ pragma solidity ^0.8.24;
 
 import { IERC20 } from "./interfaces/IERC20.sol";
 import { IPotVault } from "./interfaces/IPotVault.sol";
+import { IStreakSBT } from "./interfaces/IStreakSBT.sol";
 
 /// @title PotVault
 /// @notice Week-1 core of Ajora: custodies daily savings in a Mento stablecoin, mints draw
 ///         tickets, and lets users withdraw 100% of their principal (no-loss).
 /// @dev Prizes (the "jara") live in a separate `jaraPot` balance per period and are settled by the
 ///      DrawManager. Principal is tracked independently and can never be used to pay prizes.
-///      This is an intentionally minimal skeleton; DrawManager / streak multiplier / yield routing
-///      are wired in later milestones (see AJORA_SPEC.md §8).
+///      Tickets are weighted by the caller's streak multiplier (IStreakSBT); sponsor/welcome
+///      tickets are credited by the SprayFaucet. Yield routing arrives in a later milestone
+///      (see AJORA_SPEC.md §8).
 contract PotVault is IPotVault {
     /// @notice The Mento stablecoin this vault accepts (e.g. cUSD / cKES / cCOP).
     IERC20 public immutable token;
@@ -21,7 +23,13 @@ contract PotVault is IPotVault {
     /// @notice Address allowed to settle winnings (the DrawManager). Set once by admin.
     address public drawManager;
 
+    /// @notice Source of each user's streak-based ticket multiplier (optional; admin-settable).
+    IStreakSBT public streakSBT;
+
     address public admin;
+
+    /// @dev Ticket multiplier is scaled by 10: 10 = 1.0x, 15 = 1.5x, 30 = 3.0x.
+    uint256 internal constant MULTIPLIER_SCALE = 10;
 
     mapping(uint256 periodId => Period) internal _periods;
     mapping(address user => mapping(uint256 periodId => uint256)) internal _principal;
@@ -34,6 +42,8 @@ contract PotVault is IPotVault {
     error TransferFailed();
     error NothingToClaim();
     error AlreadySet();
+
+    event StreakSBTUpdated(address indexed streakSBT);
 
     constructor(IERC20 _token, uint256 _minContribution) {
         token = _token;
@@ -52,6 +62,13 @@ contract PotVault is IPotVault {
         drawManager = _drawManager;
     }
 
+    /// @notice Wire (or update) the StreakSBT used to weight ticket minting. Admin only.
+    /// @dev Setting address(0) falls back to a flat 1.0x multiplier for everyone.
+    function setStreakSBT(IStreakSBT _streakSBT) external onlyAdmin {
+        streakSBT = _streakSBT;
+        emit StreakSBTUpdated(address(_streakSBT));
+    }
+
     /// @inheritdoc IPotVault
     function currentPeriod() public view returns (uint256) {
         return block.timestamp / 1 days;
@@ -66,8 +83,9 @@ contract PotVault is IPotVault {
         // Pull funds. Checks-effects-interactions: state is updated before any external call below.
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
 
-        // 1 ticket per `minContribution` deposited. Streak multiplier is applied in a later milestone.
-        ticketsMinted = amount / minContribution;
+        // 1 ticket per `minContribution`, scaled by the caller's streak multiplier.
+        uint256 baseTickets = amount / minContribution;
+        ticketsMinted = baseTickets * _multiplierX10(msg.sender) / MULTIPLIER_SCALE;
 
         Period storage p = _periods[periodId];
         p.id = periodId;
@@ -118,6 +136,15 @@ contract PotVault is IPotVault {
     function fundJara(uint256 periodId, uint256 amount) external {
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
         _periods[periodId].jaraPot += amount;
+    }
+
+    // -------------------------------------------------------------- internal
+
+    /// @dev Caller's ticket multiplier (scaled by 10), clamped to >= 1.0x so it can only help.
+    function _multiplierX10(address user) internal view returns (uint256) {
+        if (address(streakSBT) == address(0)) return MULTIPLIER_SCALE;
+        uint256 m = streakSBT.multiplierOf(user);
+        return m < MULTIPLIER_SCALE ? MULTIPLIER_SCALE : m;
     }
 
     // ----------------------------------------------------------------- views
