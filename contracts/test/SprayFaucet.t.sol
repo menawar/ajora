@@ -125,4 +125,92 @@ contract SprayFaucetTest is Test {
         vm.expectRevert(SprayFaucet.InsufficientCampaignBudget.selector);
         faucet.welcomeTicket(amara);
     }
+
+    // ---------------------------------------------------------------- spray
+
+    function test_SprayCreditsFriendAndDebitsCampaign() public {
+        _fund(MTN, 10e18);
+        _verify(amara);
+        _verify(kevin);
+        uint256 period = vault.currentPeriod();
+
+        vm.prank(amara);
+        faucet.spray(kevin);
+
+        assertEq(vault.ticketsOf(kevin, period), 1, "friend got the odds");
+        assertEq(vault.ticketsOf(amara, period), 0, "sender gets nothing on-chain");
+        assertEq(faucet.dailySpraysLeft(amara), 2);
+    }
+
+    function test_SprayRateLimitAndDailyReset() public {
+        _fund(MTN, 10e18);
+        _verify(amara);
+        _verify(kevin);
+
+        vm.startPrank(amara);
+        faucet.spray(kevin);
+        faucet.spray(kevin);
+        faucet.spray(kevin);
+        assertEq(faucet.dailySpraysLeft(amara), 0);
+        vm.expectRevert(SprayFaucet.SprayLimitReached.selector);
+        faucet.spray(kevin);
+        vm.stopPrank();
+
+        // Next day window: allowance resets.
+        vm.warp(block.timestamp + 1 days);
+        vm.prank(amara);
+        faucet.spray(kevin);
+        assertEq(faucet.dailySpraysLeft(amara), 2);
+    }
+
+    function test_RevertSprayUnverifiedEitherSide() public {
+        _fund(MTN, 10e18);
+        _verify(amara);
+
+        vm.prank(amara); // recipient unverified
+        vm.expectRevert(SprayFaucet.NotVerified.selector);
+        faucet.spray(kevin);
+
+        vm.prank(kevin); // sender unverified
+        vm.expectRevert(SprayFaucet.NotVerified.selector);
+        faucet.spray(amara);
+    }
+
+    function test_RevertSelfSpray() public {
+        _fund(MTN, 10e18);
+        _verify(amara);
+        vm.prank(amara);
+        vm.expectRevert(SprayFaucet.SelfSpray.selector);
+        faucet.spray(amara);
+    }
+
+    /// @notice Even a ring of verified accounts can't extract more than the campaign holds.
+    function test_DrainResistance_SpendNeverExceedsFunding() public {
+        _fund(MTN, 1e18); // backs exactly 10 free tickets
+        address[] memory ring = new address[](5);
+        for (uint256 i = 0; i < 5; i++) {
+            ring[i] = address(uint160(0x2000 + i));
+            vm.prank(verifier);
+            faucet.setVerified(ring[i], true);
+        }
+
+        uint256 issued = 0;
+        for (uint256 i = 0; i < 5; i++) {
+            // Each ring member welcomes + sprays the next member up to the limit.
+            try faucet.welcomeTicket(ring[i]) {
+                issued++;
+            } catch { }
+            for (uint256 s = 0; s < 3; s++) {
+                vm.prank(ring[i]);
+                try faucet.spray(ring[(i + 1) % 5]) {
+                    issued++;
+                } catch { }
+            }
+        }
+
+        assertEq(issued, 10, "exactly the funded ticket count issued");
+        assertEq(faucet.campaignBalance(MTN), 0);
+        uint256 period = vault.currentPeriod();
+        assertEq(vault.periodInfo(period).jaraPot, 1e18, "every issued ticket fully backed");
+    }
 }
