@@ -37,10 +37,11 @@ contract SprayFaucet is ISprayFaucet {
 
     error NotAdmin();
     error NotVerifier();
-    error NotImplementedYet();
     error NotVerified();
     error AlreadyWelcomed();
     error InsufficientCampaignBudget();
+    error SelfSpray();
+    error SprayLimitReached();
 
     constructor(PotVault _vault, address _verifier) {
         vault = _vault;
@@ -117,8 +118,19 @@ contract SprayFaucet is ISprayFaucet {
     }
 
     /// @inheritdoc ISprayFaucet
-    function spray(address) external pure {
-        revert NotImplementedYet(); // lands in a later commit
+    /// @dev Both sides must be verified humans: the sender so bots can't farm the faucet,
+    ///      the recipient so budget only flows to real phones. Sender pays nothing —
+    ///      status is the incentive (AJORA_SPEC.md §5).
+    function spray(address friend) external {
+        if (friend == msg.sender) revert SelfSpray();
+        if (!_verified[msg.sender] || !_verified[friend]) revert NotVerified();
+
+        uint256 day = block.timestamp / 1 days;
+        if (_spraysSent[msg.sender][day] >= MAX_SPRAYS_PER_DAY) revert SprayLimitReached();
+        _spraysSent[msg.sender][day] += 1;
+
+        uint256 periodId = _issueFreeTicket(friend);
+        emit Sprayed(msg.sender, friend, periodId, ticketValue);
     }
 
     // ---------------------------------------------------------------- views
