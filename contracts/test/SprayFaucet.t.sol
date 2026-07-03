@@ -90,4 +90,39 @@ contract SprayFaucetTest is Test {
         vm.expectRevert(SprayFaucet.NotVerifier.selector);
         faucet.setVerified(amara, true);
     }
+
+    // ------------------------------------------------------- welcome ticket
+
+    function test_WelcomeTicketCreditsOddsAndBacksJara() public {
+        _fund(MTN, 10e18);
+        _verify(amara);
+        uint256 period = vault.currentPeriod();
+
+        faucet.welcomeTicket(amara);
+
+        assertEq(vault.ticketsOf(amara, period), 1, "1 ticket of odds");
+        assertEq(vault.principalOf(amara, period), 0, "no principal claim");
+        assertEq(vault.periodInfo(period).jaraPot, MIN, "backing moved to jara pot");
+        assertEq(faucet.campaignBalance(MTN), 10e18 - MIN, "campaign debited");
+    }
+
+    function test_RevertWelcomeUnverified() public {
+        _fund(MTN, 10e18);
+        vm.expectRevert(SprayFaucet.NotVerified.selector);
+        faucet.welcomeTicket(amara);
+    }
+
+    function test_RevertSecondWelcome() public {
+        _fund(MTN, 10e18);
+        _verify(amara);
+        faucet.welcomeTicket(amara);
+        vm.expectRevert(SprayFaucet.AlreadyWelcomed.selector);
+        faucet.welcomeTicket(amara);
+    }
+
+    function test_RevertWelcomeWhenCampaignEmpty() public {
+        _verify(amara); // nothing funded at all
+        vm.expectRevert(SprayFaucet.InsufficientCampaignBudget.selector);
+        faucet.welcomeTicket(amara);
+    }
 }
