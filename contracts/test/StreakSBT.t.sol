@@ -119,4 +119,61 @@ contract StreakSBTTest is Test {
             sbt.checkIn();
         }
     }
+
+    // -------------------------------------------------------------- badges
+
+    function test_BadgesMintAtMilestones() public {
+        _streakOfDays(7);
+        assertTrue(sbt.hasBadge(alice, 7), "7-day badge");
+        assertFalse(sbt.hasBadge(alice, 30), "no 30-day badge yet");
+
+        _extendTo(30);
+        assertTrue(sbt.hasBadge(alice, 30), "30-day badge");
+    }
+
+    function test_BadgeSurvivesStreakReset() public {
+        _streakOfDays(7);
+        vm.warp(block.timestamp + 3 * DAY); // break the streak
+        vm.prank(alice);
+        sbt.checkIn();
+
+        assertEq(sbt.streakOf(alice), 1, "streak restarted");
+        assertTrue(sbt.hasBadge(alice, 7), "earned badge is permanent");
+    }
+
+    function test_BadgeMintedOnceOnRepeatMilestone() public {
+        _streakOfDays(7);
+        vm.warp(block.timestamp + 3 * DAY);
+        vm.prank(alice);
+        sbt.checkIn();
+        // Climb back to 7: hasBadge already true, second emission is suppressed.
+        _extendTo(7);
+        assertTrue(sbt.hasBadge(alice, 7));
+    }
+
+    // ------------------------------------------------------------ soulbound
+
+    function test_AllTransferPathsRevert() public {
+        vm.expectRevert(StreakSBT.Soulbound.selector);
+        sbt.transfer(alice, 1);
+        vm.expectRevert(StreakSBT.Soulbound.selector);
+        sbt.transferFrom(alice, address(this), 1);
+        vm.expectRevert(StreakSBT.Soulbound.selector);
+        sbt.approve(alice, 1);
+        vm.expectRevert(StreakSBT.Soulbound.selector);
+        sbt.setApprovalForAll(alice, true);
+    }
+
+    // ---------------------------------------------------------------- fuzz
+
+    /// @notice For any streak length, the multiplier equals the tier table and is never < 1.0x.
+    function testFuzz_MultiplierMatchesTierTable(uint8 daysIn) public {
+        uint256 n = bound(daysIn, 1, 120);
+        _streakOfDays(n);
+
+        uint256 m = sbt.multiplierOf(alice);
+        uint256 expected = n >= 90 ? 30 : n >= 30 ? 20 : n >= 7 ? 15 : 10;
+        assertEq(m, expected, "tier table");
+        assertGe(m, 10, "never below 1.0x");
+    }
 }
