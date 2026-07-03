@@ -101,4 +101,78 @@ contract DrawManagerTest is Test {
         assertEq(draw.weightOnNumber(period, 3), 0, "old bucket backed out");
         assertEq(draw.weightOnNumber(period, 8), 20);
     }
+
+    // ------------------------------------------------------------ resolution
+
+    function test_ResolveDerivesWinningNumberAndSnapshotsPot() public {
+        uint256 period = vault.currentPeriod();
+        _save(amara, 1e18);
+        vm.prank(amara);
+        draw.pickNumber(4);
+        _fundJara(period, 9e18);
+
+        vm.warp(block.timestamp + DAY); // period over
+        vm.prank(keeper);
+        draw.resolveDraw(period, _seedFor(4));
+
+        DrawManager.Draw memory d = draw.drawOf(period);
+        assertTrue(d.resolved);
+        assertEq(d.winningNumber, 4);
+        assertEq(d.pot, 9e18, "pot snapshotted");
+        assertEq(d.totalWinningWeight, 10);
+        assertTrue(draw.isWinner(amara, period));
+    }
+
+    function test_RevertResolveNotKeeper() public {
+        uint256 period = vault.currentPeriod();
+        vm.warp(block.timestamp + DAY);
+        vm.expectRevert(DrawManager.NotKeeper.selector);
+        draw.resolveDraw(period, 1);
+    }
+
+    function test_RevertResolveCurrentPeriod() public {
+        uint256 period = vault.currentPeriod();
+        vm.prank(keeper);
+        vm.expectRevert(DrawManager.PeriodNotOver.selector);
+        draw.resolveDraw(period, 1);
+    }
+
+    function test_RevertResolveTwice() public {
+        uint256 period = vault.currentPeriod();
+        vm.warp(block.timestamp + DAY);
+        vm.startPrank(keeper);
+        draw.resolveDraw(period, 1);
+        vm.expectRevert(DrawManager.AlreadyResolved.selector);
+        draw.resolveDraw(period, 2);
+        vm.stopPrank();
+    }
+
+    function test_NoWinnerRecyclesPotToCurrentPeriod() public {
+        uint256 period = vault.currentPeriod();
+        _save(amara, 1e18);
+        vm.prank(amara);
+        draw.pickNumber(4);
+        _fundJara(period, 9e18);
+
+        vm.warp(block.timestamp + DAY);
+        uint256 nextPeriod = vault.currentPeriod();
+        vm.prank(keeper);
+        draw.resolveDraw(period, _seedFor(5)); // 5 wins, only 4 was picked
+
+        assertEq(vault.periodInfo(period).jaraPot, 0, "old period emptied");
+        assertEq(vault.periodInfo(nextPeriod).jaraPot, 9e18, "pot rolled forward");
+        assertEq(draw.drawOf(period).pot, 0, "nothing claimable");
+        assertFalse(draw.isWinner(amara, period));
+    }
+
+    function test_WinningNumberAlwaysInRange() public {
+        // seed % 9 + 1 spans exactly 1..9 — check the extremes.
+        uint256 period = vault.currentPeriod();
+        vm.warp(block.timestamp + DAY);
+        vm.prank(keeper);
+        draw.resolveDraw(period, type(uint256).max);
+        uint8 n = draw.drawOf(period).winningNumber;
+        assertGe(n, 1);
+        assertLe(n, 9);
+    }
 }
