@@ -64,6 +64,16 @@ npm run dev
 
 See [`AJORA_SPEC.md` §15](./AJORA_SPEC.md#15-4-week-build-plan) for the detailed plan.
 
+## Deployments
+
+### Celo mainnet (chain 42220)
+
+| Contract | Address | Notes |
+|----------|---------|-------|
+| `PotVault` | [`0x975b5E91FD239511d3B7A2d421c1e40F122989B0`](https://celoscan.io/address/0x975b5E91FD239511d3B7A2d421c1e40F122989B0) | Stablecoin: cUSD · min contribution: 0.10 cUSD |
+
+Machine-readable: [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json)
+
 ## License
 
 [MIT](./LICENSE)

@@ -1,0 +1,16 @@
+{
+  "network": "celo-mainnet",
+  "chainId": 42220,
+  "rpc": "https://forno.celo.org",
+  "explorer": "https://celoscan.io",
+  "contracts": {
+    "PotVault": {
+      "address": "0x975b5E91FD239511d3B7A2d421c1e40F122989B0",
+      "stablecoin": "0x765DE816845861e75A25fCA122bb6898B8B1282a",
+      "stablecoinSymbol": "cUSD",
+      "minContribution": "100000000000000000",
+      "admin": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
+      "deployedAt": "2026-07-03"
+    }
+  }
+}
