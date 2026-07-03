@@ -26,6 +26,9 @@ contract PotVault is IPotVault {
     /// @notice Source of each user's streak-based ticket multiplier (optional; admin-settable).
     IStreakSBT public streakSBT;
 
+    /// @notice Address allowed to credit sponsor/welcome tickets (the SprayFaucet). Set once.
+    address public sprayFaucet;
+
     address public admin;
 
     /// @dev Ticket multiplier is scaled by 10: 10 = 1.0x, 15 = 1.5x, 30 = 3.0x.
@@ -42,8 +45,11 @@ contract PotVault is IPotVault {
     error TransferFailed();
     error NothingToClaim();
     error AlreadySet();
+    error NotSprayFaucet();
 
     event StreakSBTUpdated(address indexed streakSBT);
+    event SprayFaucetSet(address indexed sprayFaucet);
+    event TicketsCredited(address indexed user, uint256 indexed periodId, uint256 tickets);
 
     constructor(IERC20 _token, uint256 _minContribution) {
         token = _token;
@@ -67,6 +73,13 @@ contract PotVault is IPotVault {
     function setStreakSBT(IStreakSBT _streakSBT) external onlyAdmin {
         streakSBT = _streakSBT;
         emit StreakSBTUpdated(address(_streakSBT));
+    }
+
+    /// @notice One-time wiring of the SprayFaucet allowed to credit sponsor/welcome tickets.
+    function setSprayFaucet(address _sprayFaucet) external onlyAdmin {
+        if (sprayFaucet != address(0)) revert AlreadySet();
+        sprayFaucet = _sprayFaucet;
+        emit SprayFaucetSet(_sprayFaucet);
     }
 
     /// @inheritdoc IPotVault
@@ -136,6 +149,17 @@ contract PotVault is IPotVault {
     function fundJara(uint256 periodId, uint256 amount) external {
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
         _periods[periodId].jaraPot += amount;
+    }
+
+    /// @notice Credit sponsor/welcome tickets to a user with no principal. SprayFaucet only.
+    /// @dev These tickets carry draw odds but never create a principal claim, so no-loss is unaffected.
+    function creditTickets(address user, uint256 periodId, uint256 tickets) external {
+        if (msg.sender != sprayFaucet) revert NotSprayFaucet();
+        Period storage p = _periods[periodId];
+        p.id = periodId;
+        p.totalTickets += tickets;
+        _tickets[user][periodId] += tickets;
+        emit TicketsCredited(user, periodId, tickets);
     }
 
     // -------------------------------------------------------------- internal

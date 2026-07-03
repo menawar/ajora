@@ -124,6 +124,36 @@ contract PotVaultTest is Test {
         assertEq(tickets, 10, "flat 1.0x when no StreakSBT wired");
     }
 
+    function test_CreditTickets_WelcomeTicketHasNoPrincipal() public {
+        address faucet = address(0xFA);
+        vault.setSprayFaucet(faucet);
+
+        uint256 period = vault.currentPeriod();
+        vm.prank(faucet);
+        vault.creditTickets(bob, period, 1); // one sponsor-funded welcome ticket
+
+        assertEq(vault.ticketsOf(bob, period), 1, "welcome ticket minted");
+        assertEq(vault.principalOf(bob, period), 0, "no principal created");
+
+        // Bob never deposited, so there is nothing to reclaim (no-loss unaffected).
+        vm.prank(bob);
+        vm.expectRevert(PotVault.NothingToClaim.selector);
+        vault.claimPrincipal(period);
+    }
+
+    function test_RevertCreditTicketsFromNonFaucet() public {
+        uint256 period = vault.currentPeriod();
+        vault.setSprayFaucet(address(0xFA));
+        vm.expectRevert(PotVault.NotSprayFaucet.selector);
+        vault.creditTickets(bob, period, 1);
+    }
+
+    function test_RevertSetSprayFaucetTwice() public {
+        vault.setSprayFaucet(address(0xFA));
+        vm.expectRevert(PotVault.AlreadySet.selector);
+        vault.setSprayFaucet(address(0xFB));
+    }
+
     function testFuzz_PrincipalRoundTrip(uint256 amount) public {
         amount = bound(amount, MIN, 100e18);
         uint256 period = vault.currentPeriod();
