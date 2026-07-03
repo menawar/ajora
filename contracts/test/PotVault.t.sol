@@ -5,6 +5,8 @@ import { Test } from "forge-std/Test.sol";
 import { PotVault } from "../src/PotVault.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
+import { MockStreakSBT } from "./mocks/MockStreakSBT.sol";
+import { IStreakSBT } from "../src/interfaces/IStreakSBT.sol";
 
 contract PotVaultTest is Test {
     PotVault internal vault;
@@ -96,6 +98,62 @@ contract PotVaultTest is Test {
         assertEq(vault.claimPrincipal(period), 1e18);
     }
 
+    function test_TicketsScaleWithStreakMultiplier() public {
+        MockStreakSBT streak = new MockStreakSBT();
+        streak.setMultiplier(alice, 15); // 1.5x
+        vault.setStreakSBT(IStreakSBT(address(streak)));
+
+        uint256 period = vault.currentPeriod();
+        uint256 tickets = _contribute(alice, 1e18); // base 10 * 1.5 = 15
+
+        assertEq(tickets, 15, "1.5x streak multiplier applied");
+        assertEq(vault.ticketsOf(alice, period), 15);
+    }
+
+    function test_MultiplierClampedToOneWhenBelowScale() public {
+        MockStreakSBT streak = new MockStreakSBT();
+        streak.setMultiplier(alice, 3); // < 10 → must clamp to 1.0x, never reduce tickets
+        vault.setStreakSBT(IStreakSBT(address(streak)));
+
+        uint256 tickets = _contribute(alice, 1e18);
+        assertEq(tickets, 10, "multiplier below 1.0x is clamped up to 1.0x");
+    }
+
+    function test_NoStreakSBT_DefaultsToOneX() public {
+        uint256 tickets = _contribute(alice, 1e18);
+        assertEq(tickets, 10, "flat 1.0x when no StreakSBT wired");
+    }
+
+    function test_CreditTickets_WelcomeTicketHasNoPrincipal() public {
+        address faucet = address(0xFA);
+        vault.setSprayFaucet(faucet);
+
+        uint256 period = vault.currentPeriod();
+        vm.prank(faucet);
+        vault.creditTickets(bob, period, 1); // one sponsor-funded welcome ticket
+
+        assertEq(vault.ticketsOf(bob, period), 1, "welcome ticket minted");
+        assertEq(vault.principalOf(bob, period), 0, "no principal created");
+
+        // Bob never deposited, so there is nothing to reclaim (no-loss unaffected).
+        vm.prank(bob);
+        vm.expectRevert(PotVault.NothingToClaim.selector);
+        vault.claimPrincipal(period);
+    }
+
+    function test_RevertCreditTicketsFromNonFaucet() public {
+        uint256 period = vault.currentPeriod();
+        vault.setSprayFaucet(address(0xFA));
+        vm.expectRevert(PotVault.NotSprayFaucet.selector);
+        vault.creditTickets(bob, period, 1);
+    }
+
+    function test_RevertSetSprayFaucetTwice() public {
+        vault.setSprayFaucet(address(0xFA));
+        vm.expectRevert(PotVault.AlreadySet.selector);
+        vault.setSprayFaucet(address(0xFB));
+    }
+
     function testFuzz_PrincipalRoundTrip(uint256 amount) public {
         amount = bound(amount, MIN, 100e18);
         uint256 period = vault.currentPeriod();
@@ -103,5 +161,18 @@ contract PotVaultTest is Test {
 
         vm.prank(alice);
         assertEq(vault.claimPrincipal(period), amount);
+    }
+
+    /// @notice The streak multiplier may only help: tickets are never below the un-weighted base.
+    function testFuzz_MultiplierNeverReducesTickets(uint8 multX10, uint256 amount) public {
+        amount = bound(amount, MIN, 1000e18);
+        cusd.mint(alice, amount); // ensure alice can cover the fuzzed amount
+        MockStreakSBT streak = new MockStreakSBT();
+        streak.setMultiplier(alice, multX10);
+        vault.setStreakSBT(IStreakSBT(address(streak)));
+
+        uint256 base = amount / MIN;
+        uint256 tickets = _contribute(alice, amount);
+        assertGe(tickets, base, "multiplier must never reduce tickets below base");
     }
 }

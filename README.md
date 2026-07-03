@@ -74,6 +74,9 @@ See [`AJORA_SPEC.md` §15](./AJORA_SPEC.md#15-4-week-build-plan) for the detaile
 
 Machine-readable: [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json)
 
+> ℹ️ This is the initial Week-1 `PotVault`. Streak-weighted tickets and sponsor/welcome tickets (#1)
+> ship in a redeploy once `StreakSBT` (#2) and `SprayFaucet` (#3) land.
+
 ## License
 
 [MIT](./LICENSE)
