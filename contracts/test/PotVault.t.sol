@@ -148,6 +148,22 @@ contract PotVaultTest is Test {
         vault.creditTickets(bob, period, 1);
     }
 
+    function test_RollJaraMovesPotBetweenPeriods_DrawManagerOnly() public {
+        uint256 period = vault.currentPeriod();
+        cusd.mint(address(this), 5e18);
+        cusd.approve(address(vault), 5e18);
+        vault.fundJara(period, 5e18);
+        vault.setDrawManager(address(this));
+
+        vault.rollJara(period, period + 1, 5e18);
+        assertEq(vault.periodInfo(period).jaraPot, 0);
+        assertEq(vault.periodInfo(period + 1).jaraPot, 5e18);
+
+        vm.prank(alice);
+        vm.expectRevert(PotVault.NotDrawManager.selector);
+        vault.rollJara(period + 1, period, 1e18);
+    }
+
     function test_RevertSetSprayFaucetTwice() public {
         vault.setSprayFaucet(address(0xFA));
         vm.expectRevert(PotVault.AlreadySet.selector);

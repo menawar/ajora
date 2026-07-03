@@ -151,6 +151,19 @@ contract PotVault is IPotVault {
         _periods[periodId].jaraPot += amount;
     }
 
+    /// @notice Move a period's unwon jaraPot into another period. DrawManager only.
+    /// @dev Used to recycle the pot forward when nobody picked the winning number — a
+    ///      spec §6 sink. Funds never leave the vault, so principal accounting is untouched.
+    function rollJara(uint256 fromPeriod, uint256 toPeriod, uint256 amount) external {
+        if (msg.sender != drawManager) revert NotDrawManager();
+        Period storage from = _periods[fromPeriod];
+        require(amount <= from.jaraPot, "exceeds jara pot");
+        from.jaraPot -= amount;
+        Period storage to = _periods[toPeriod];
+        to.id = toPeriod;
+        to.jaraPot += amount;
+    }
+
     /// @notice Credit sponsor/welcome tickets to a user with no principal. SprayFaucet only.
     /// @dev These tickets carry draw odds but never create a principal claim, so no-loss is unaffected.
     function creditTickets(address user, uint256 periodId, uint256 tickets) external {
