@@ -65,4 +65,58 @@ contract StreakSBTTest is Test {
         sbt.checkIn();
         assertEq(sbt.streakOf(alice), 1, "gap restarts the streak");
     }
+
+    // ------------------------------------------------------ multiplier tiers
+
+    function test_TierBoundaries() public {
+        _streakOfDays(6);
+        assertEq(sbt.multiplierOf(alice), 10, "day 6 still 1.0x");
+
+        vm.warp(block.timestamp + DAY);
+        vm.prank(alice);
+        sbt.checkIn(); // day 7
+        assertEq(sbt.multiplierOf(alice), 15, "day 7 hits 1.5x");
+    }
+
+    function test_TierThirtyAndNinety() public {
+        _streakOfDays(29);
+        assertEq(sbt.multiplierOf(alice), 15, "day 29 still 1.5x");
+
+        vm.warp(block.timestamp + DAY);
+        vm.prank(alice);
+        sbt.checkIn(); // day 30
+        assertEq(sbt.multiplierOf(alice), 20, "day 30 hits 2.0x");
+
+        _extendTo(90);
+        assertEq(sbt.multiplierOf(alice), 30, "day 90 hits 3.0x");
+    }
+
+    function test_LivenessYesterdayCountsTodayLapsedDoesNot() public {
+        _streakOfDays(10);
+
+        // Next day, before checking in: streak still live (checked in yesterday).
+        vm.warp(block.timestamp + DAY);
+        assertEq(sbt.streakOf(alice), 10);
+        assertEq(sbt.multiplierOf(alice), 15);
+
+        // One more day with no check-in: streak is broken, multiplier falls to 1.0x.
+        vm.warp(block.timestamp + DAY);
+        assertEq(sbt.streakOf(alice), 0, "lapsed streak reads 0");
+        assertEq(sbt.multiplierOf(alice), 10, "broken streak falls back to 1.0x");
+    }
+
+    function test_UnknownUserIsFlatOneX() public {
+        assertEq(sbt.streakOf(address(0xDEAD)), 0);
+        assertEq(sbt.multiplierOf(address(0xDEAD)), 10);
+    }
+
+    /// @dev Continue alice's existing streak up to `target` days.
+    function _extendTo(uint256 target) internal {
+        uint256 current = sbt.streakOf(alice);
+        for (uint256 i = current; i < target; i++) {
+            vm.warp(block.timestamp + DAY);
+            vm.prank(alice);
+            sbt.checkIn();
+        }
+    }
 }
