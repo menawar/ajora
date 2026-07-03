@@ -162,4 +162,17 @@ contract PotVaultTest is Test {
         vm.prank(alice);
         assertEq(vault.claimPrincipal(period), amount);
     }
+
+    /// @notice The streak multiplier may only help: tickets are never below the un-weighted base.
+    function testFuzz_MultiplierNeverReducesTickets(uint8 multX10, uint256 amount) public {
+        amount = bound(amount, MIN, 1000e18);
+        cusd.mint(alice, amount); // ensure alice can cover the fuzzed amount
+        MockStreakSBT streak = new MockStreakSBT();
+        streak.setMultiplier(alice, multX10);
+        vault.setStreakSBT(IStreakSBT(address(streak)));
+
+        uint256 base = amount / MIN;
+        uint256 tickets = _contribute(alice, amount);
+        assertGe(tickets, base, "multiplier must never reduce tickets below base");
+    }
 }
