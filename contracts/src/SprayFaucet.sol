@@ -38,6 +38,9 @@ contract SprayFaucet is ISprayFaucet {
     error NotAdmin();
     error NotVerifier();
     error NotImplementedYet();
+    error NotVerified();
+    error AlreadyWelcomed();
+    error InsufficientCampaignBudget();
 
     constructor(PotVault _vault, address _verifier) {
         vault = _vault;
@@ -91,8 +94,26 @@ contract SprayFaucet is ISprayFaucet {
     // ---------------------------------------------------------- free tickets
 
     /// @inheritdoc ISprayFaucet
-    function welcomeTicket(address) external pure {
-        revert NotImplementedYet(); // lands in the next commit
+    function welcomeTicket(address user) external {
+        if (!_verified[user]) revert NotVerified();
+        if (welcomed[user]) revert AlreadyWelcomed();
+        welcomed[user] = true;
+
+        uint256 periodId = _issueFreeTicket(user);
+        emit WelcomeTicket(user, periodId, ticketValue);
+    }
+
+    /// @dev Spend one ticketValue from the active campaign: back it in the period's jaraPot
+    ///      and credit one ticket of odds to `user`. Reverts if the campaign can't cover it.
+    function _issueFreeTicket(address user) internal returns (uint256 periodId) {
+        bytes32 campaign = activeCampaign;
+        uint256 balance = _campaignBalance[campaign];
+        if (balance < ticketValue) revert InsufficientCampaignBudget();
+        _campaignBalance[campaign] = balance - ticketValue;
+
+        periodId = vault.currentPeriod();
+        vault.fundJara(periodId, ticketValue); // prize backing moves to the pot
+        vault.creditTickets(user, periodId, 1); // odds credited, no principal claim
     }
 
     /// @inheritdoc ISprayFaucet
