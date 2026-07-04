@@ -48,6 +48,26 @@ jobs:
       - name: Typecheck & build
         run: npm run build
 
+  slither:
+    name: Static analysis (Slither)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install Slither
+        run: pipx install slither-analyzer
+
+      - name: Run Slither (fails on any non-triaged finding)
+        run: slither .
+
   e2e:
     name: E2E happy path (anvil)
     runs-on: ubuntu-latest
