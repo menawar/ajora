@@ -66,7 +66,8 @@ contract PotVaultStreakIntegrationTest is Test {
         uint256 tickets = _saveAndCheckIn(amara, 1e18);
         assertEq(tickets, 10, "broken streak mints base tickets");
 
-        // No-loss: today's principal is still fully redeemable.
+        // No-loss: that day's principal is fully redeemable once its period closes.
+        vm.warp(block.timestamp + DAY);
         vm.prank(amara);
         assertEq(vault.claimPrincipal(periodAfterBreak), 1e18);
     }

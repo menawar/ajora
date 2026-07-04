@@ -50,10 +50,11 @@ contract PotVaultTest is Test {
         vm.stopPrank();
     }
 
-    /// @notice No-loss guarantee: principal is always fully redeemable.
+    /// @notice No-loss guarantee: principal is always fully redeemable once the period closes.
     function test_NoLoss_ClaimPrincipalReturnsExactly() public {
         uint256 period = vault.currentPeriod();
         _contribute(alice, 2e18);
+        vm.warp(block.timestamp + 1 days); // period closes
 
         uint256 before = cusd.balanceOf(alice);
         vm.prank(alice);
@@ -64,9 +65,25 @@ contract PotVaultTest is Test {
         assertEq(vault.principalOf(alice, period), 0);
     }
 
+    /// @notice Regression for #28: principal can't exit while its tickets are in the live draw.
+    function test_RevertClaimPrincipalWhilePeriodOpen() public {
+        uint256 period = vault.currentPeriod();
+        _contribute(alice, 1e18);
+
+        vm.prank(alice);
+        vm.expectRevert(PotVault.PeriodStillOpen.selector);
+        vault.claimPrincipal(period);
+
+        // Unlocks the moment the period closes.
+        vm.warp(block.timestamp + 1 days);
+        vm.prank(alice);
+        assertEq(vault.claimPrincipal(period), 1e18);
+    }
+
     function test_RevertClaimPrincipalTwice() public {
         uint256 period = vault.currentPeriod();
         _contribute(alice, 1e18);
+        vm.warp(block.timestamp + 1 days);
 
         vm.startPrank(alice);
         vault.claimPrincipal(period);
@@ -93,7 +110,8 @@ contract PotVaultTest is Test {
         uint256 won = vault.claimWinnings(period);
         assertEq(won, 3e18);
 
-        // Alice's principal is untouched and still fully redeemable.
+        // Alice's principal is untouched and still fully redeemable after close.
+        vm.warp(block.timestamp + 1 days);
         vm.prank(alice);
         assertEq(vault.claimPrincipal(period), 1e18);
     }
@@ -136,6 +154,7 @@ contract PotVaultTest is Test {
         assertEq(vault.principalOf(bob, period), 0, "no principal created");
 
         // Bob never deposited, so there is nothing to reclaim (no-loss unaffected).
+        vm.warp(block.timestamp + 1 days);
         vm.prank(bob);
         vm.expectRevert(PotVault.NothingToClaim.selector);
         vault.claimPrincipal(period);
@@ -174,6 +193,7 @@ contract PotVaultTest is Test {
         amount = bound(amount, MIN, 100e18);
         uint256 period = vault.currentPeriod();
         _contribute(alice, amount);
+        vm.warp(block.timestamp + 1 days);
 
         vm.prank(alice);
         assertEq(vault.claimPrincipal(period), amount);

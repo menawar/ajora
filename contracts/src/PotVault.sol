@@ -46,6 +46,7 @@ contract PotVault is IPotVault {
     error NothingToClaim();
     error AlreadySet();
     error NotSprayFaucet();
+    error PeriodStillOpen();
 
     event StreakSBTUpdated(address indexed streakSBT);
     event SprayFaucetSet(address indexed sprayFaucet);
@@ -112,8 +113,12 @@ contract PotVault is IPotVault {
     }
 
     /// @inheritdoc IPotVault
-    /// @dev No-loss guarantee: a user can always reclaim exactly what they contributed.
+    /// @dev No-loss guarantee: a user always reclaims exactly what they contributed. The
+    ///      current period is locked until it closes — otherwise principal could exit while
+    ///      its draw tickets stay live, a free option on the jara pot (issue #28). Today's
+    ///      savings ride in tonight's draw and unlock right after.
     function claimPrincipal(uint256 periodId) external returns (uint256 amount) {
+        if (periodId >= currentPeriod()) revert PeriodStillOpen();
         amount = _principal[msg.sender][periodId];
         if (amount == 0) revert NothingToClaim();
 
