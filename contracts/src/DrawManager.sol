@@ -164,15 +164,21 @@ contract DrawManager is IDrawManager {
     }
 
     /// @inheritdoc IDrawManager
+    /// @dev Two liveness cases: (a) the previous anchor's reveal window was missed, or
+    ///      (b) the period never received a commit at all (keeper outage across its final
+    ///      window) — without a bootstrap path that period's jaraPot would be stuck forever.
+    ///      Post-close commits can't steer the outcome: picks are frozen and the seed still
+    ///      blends a future blockhash, so grinding secrets at commit time buys nothing.
+    ///      A live, unexpired anchor can never be replaced.
     function recommitSeed(uint256 periodId, bytes32 commitment) external {
         if (msg.sender != keeper) revert NotKeeper();
         if (periodId >= vault.currentPeriod()) revert PeriodNotOver();
         if (_draws[periodId].resolved) revert AlreadyResolved();
 
         SeedCommit storage c = seedCommits[periodId];
-        if (c.commitment == bytes32(0)) revert NoCommit();
-        // Only when the previous reveal window was genuinely missed.
-        if (block.number <= uint256(c.anchorBlock) + 256) revert AnchorStillLive();
+        if (c.commitment != bytes32(0) && block.number <= uint256(c.anchorBlock) + 256) {
+            revert AnchorStillLive();
+        }
 
         c.commitment = commitment;
         c.anchorBlock = uint64(block.number + ANCHOR_DELAY);
