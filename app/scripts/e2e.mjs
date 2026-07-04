@@ -9,7 +9,15 @@ import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createPublicClient, createWalletClient, http, parseUnits } from "viem";
+import {
+  createPublicClient,
+  createTestClient,
+  createWalletClient,
+  encodeAbiParameters,
+  http,
+  keccak256,
+  parseUnits,
+} from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { foundry } from "viem/chains";
 
@@ -103,7 +111,53 @@ try {
   if (info.totalTickets !== 10n) fail("periodInfo.totalTickets mismatch");
   ok("all UI reads consistent (tickets, principal, streak, pick, periodInfo)");
 
-  console.log("\nE2E happy path PASSED");
+  // ---- the full draw cycle: fund -> commit -> mine past anchor -> reveal ----
+  const testClient = createTestClient({ chain: foundry, mode: "anvil", transport: http(rpc) });
+  const potFunding = parseUnits("1", 18);
+  await write(deployer, cusd, "mint", [deployer.address, potFunding]);
+  await write(deployer, cusd, "approve", [vault.address, potFunding]);
+  await write(deployer, vault, "fundJara", [period, potFunding]);
+
+  const periodEnd = (period + 1n) * 86_400n;
+  await testClient.setNextBlockTimestamp({ timestamp: periodEnd - 300n });
+  await testClient.mine({ blocks: 1 });
+
+  const secret = keccak256(encodeAbiParameters([{ type: "string" }], ["e2e-secret"]));
+  const commitment = keccak256(encodeAbiParameters([{ type: "bytes32" }], [secret]));
+  await write(deployer, draw, "commitSeed", [period, commitment]);
+  const [, anchorBlock] = await read(draw, "seedCommits", [period]);
+  // Mine past the anchor with 1s spacing so time also passes the period end.
+  await testClient.mine({ blocks: 1210, interval: 1 });
+  await write(deployer, draw, "revealAndResolve", [period, secret]);
+  ok("committed, mined past the anchor, revealed");
+
+  // ---- verify the draw exactly like RANDOMNESS.md tells any user to ----
+  const resolved = await read(draw, "drawOf", [period]);
+  if (!resolved.resolved) fail("draw not resolved");
+  const anchorHash = (await publicClient.getBlock({ blockNumber: BigInt(anchorBlock) })).hash;
+  const expectedSeed = BigInt(
+    keccak256(
+      encodeAbiParameters([{ type: "bytes32" }, { type: "bytes32" }], [secret, anchorHash]),
+    ),
+  );
+  if (resolved.seed !== expectedSeed) fail("seed does not match the public recipe");
+  if (BigInt(resolved.winningNumber) !== (expectedSeed % 9n) + 1n) fail("number != seed rule");
+  ok(`draw publicly verifiable — winning number ${resolved.winningNumber}`);
+
+  // ---- both outcomes are valid end-states; assert whichever happened ----
+  if (resolved.winningNumber === 7) {
+    await write(user, draw, "claimPrize", [period]);
+    await write(user, vault, "claimWinnings", [period]);
+    const bal = await read(cusd, "balanceOf", [user.address]);
+    if (bal < potFunding) fail("winner did not receive the pot");
+    ok("user won and claimed the pot");
+  } else {
+    const nextInfo = await read(vault, "periodInfo", [await read(vault, "currentPeriod")]);
+    if (nextInfo.jaraPot !== potFunding) fail("unwon pot did not roll forward");
+    ok("no winner — pot rolled into the current period");
+  }
+
+  console.log("\nE2E full loop PASSED");
 } finally {
   anvil.kill();
 }

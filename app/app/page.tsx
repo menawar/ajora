@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { formatUnits } from "viem";
 import { ConnectBar } from "../components/ConnectBar";
 import { StreakChip } from "../components/StreakChip";
+import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
 
@@ -25,6 +27,7 @@ export default function Home() {
   const { address } = useWallet();
   const pot = usePotToday();
   const { save, status, reset } = useSave();
+  const { myPick } = useDraw();
 
   const busy = status.step === "approving" || status.step === "saving";
 
@@ -80,6 +83,15 @@ export default function Home() {
             You have <strong>{pot.myTickets.toString()}</strong> tickets ·{" "}
             <strong>{cusd(pot.myPrincipal)} cUSD</strong> saved today (always withdrawable)
           </p>
+        )}
+
+        {address && pot.myTickets > 0n && myPick.number === 0 && (
+          <Link
+            href="/pick"
+            className="rounded-xl border border-celo-gold bg-celo-gold/10 px-4 py-3 text-center font-semibold text-amber-700"
+          >
+            Your tickets need a number — pick now 🎯
+          </Link>
         )}
       </section>
 
