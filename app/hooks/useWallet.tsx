@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { injectedProvider, isMiniPay } from "../lib/clients";
+import { captureRef } from "../lib/share";
 
 type Address = `0x${string}`;
 
@@ -51,6 +52,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    captureRef(); // persist ?ref=CODE for later on-chain attribution
     const provider = injectedProvider();
     setNoProvider(!provider);
     setMiniPay(isMiniPay());

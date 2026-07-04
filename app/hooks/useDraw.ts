@@ -21,7 +21,7 @@ export interface LastDraw {
   /** Connected user's state for that draw. */
   won: boolean;
   claimed: boolean;
-  /** Pro-rata prize if won and unclaimed (0 otherwise). */
+  /** Pro-rata prize when won (claimed or not; 0 otherwise). */
   prize: bigint;
 }
 
@@ -82,7 +82,7 @@ export function useDraw() {
           ]);
           won = isWinner;
           claimed = hasClaimed;
-          if (won && !claimed) {
+          if (won) {
             prize = (draw.pot * lastPick[1]) / draw.totalWinningWeight;
           }
         }
