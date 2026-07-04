@@ -135,14 +135,6 @@ contract DrawManager is IDrawManager {
     // ------------------------------------------------------------ resolution
 
     /// @inheritdoc IDrawManager
-    /// @dev DEPRECATED trust-the-keeper path; superseded by commitSeed/revealAndResolve and
-    ///      removed once all callers migrate (this branch).
-    function resolveDraw(uint256 periodId, uint256 seed) external {
-        if (msg.sender != keeper) revert NotKeeper();
-        _resolve(periodId, seed);
-    }
-
-    /// @inheritdoc IDrawManager
     function commitSeed(uint256 periodId, bytes32 commitment) external {
         if (msg.sender != keeper) revert NotKeeper();
         // Only the current period, and only inside its final window.
