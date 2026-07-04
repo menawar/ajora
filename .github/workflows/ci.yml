@@ -47,3 +47,26 @@ jobs:
 
       - name: Typecheck & build
         run: npm run build
+
+  e2e:
+    name: E2E happy path (anvil)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build contracts
+        run: forge build
+        working-directory: contracts
+
+      - name: Run e2e flow
+        run: npm install && npm run e2e
+        working-directory: app
