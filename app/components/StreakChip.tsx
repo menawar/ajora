@@ -1,6 +1,7 @@
 "use client";
 
 import { ShareButtons } from "./ShareButtons";
+import { useCrew } from "../hooks/useCrew";
 import { useStreak } from "../hooks/useStreak";
 import { useWallet } from "../hooks/useWallet";
 
@@ -14,6 +15,7 @@ function multiplierLabel(x10: bigint): string {
 export function StreakChip() {
   const { address } = useWallet();
   const { streakDays, multiplierX10, checkedInToday, checkIn, checkingIn, loading } = useStreak();
+  const { myCode } = useCrew();
 
   if (!address || loading) return null;
 
@@ -42,6 +44,7 @@ export function StreakChip() {
         <ShareButtons
           card={{ kind: "milestone", streakDays: days, multiplier: multiplierLabel(multiplierX10) }}
           text={`🔥 ${days}-day saving streak on Ajora — ${multiplierLabel(multiplierX10)} ticket boost earned. No-loss savings, daily draws.`}
+          refCode={myCode || undefined}
         />
       )}
     </div>
