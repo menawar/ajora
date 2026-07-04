@@ -30,6 +30,9 @@ contract SprayFaucet is ISprayFaucet {
     /// @notice Campaign whose budget currently backs free tickets.
     bytes32 public activeCampaign;
 
+    /// @notice CrewRegistry allowed to trigger referral bonuses. Set once.
+    address public crewRegistry;
+
     mapping(bytes32 campaignId => uint256) internal _campaignBalance;
     mapping(address user => bool) internal _verified;
     mapping(address user => bool) public welcomed;
@@ -42,6 +45,8 @@ contract SprayFaucet is ISprayFaucet {
     error InsufficientCampaignBudget();
     error SelfSpray();
     error SprayLimitReached();
+    error NotCrewRegistry();
+    error AlreadySet();
 
     constructor(PotVault _vault, address _verifier) {
         vault = _vault;
@@ -70,6 +75,12 @@ contract SprayFaucet is ISprayFaucet {
             emit CampaignActivated(campaignId);
         }
         emit SponsorFunded(msg.sender, amount, campaignId);
+    }
+
+    /// @notice One-time wiring of the CrewRegistry allowed to pay referral bonuses.
+    function setCrewRegistry(address _crewRegistry) external onlyAdmin {
+        if (crewRegistry != address(0)) revert AlreadySet();
+        crewRegistry = _crewRegistry;
     }
 
     /// @notice Point free-ticket spending at a different campaign. Admin only.
@@ -131,6 +142,14 @@ contract SprayFaucet is ISprayFaucet {
 
         uint256 periodId = _issueFreeTicket(friend);
         emit Sprayed(msg.sender, friend, periodId, ticketValue);
+    }
+
+    /// @inheritdoc ISprayFaucet
+    function referralBonus(address referrer) external {
+        if (msg.sender != crewRegistry) revert NotCrewRegistry();
+        if (!_verified[referrer]) revert NotVerified();
+        uint256 periodId = _issueFreeTicket(referrer);
+        emit ReferralBonus(referrer, periodId, ticketValue);
     }
 
     // ---------------------------------------------------------------- views

@@ -15,6 +15,7 @@ interface ISprayFaucet {
         address indexed from, address indexed to, uint256 indexed periodId, uint256 value
     );
     event Verified(address indexed user, bool verified);
+    event ReferralBonus(address indexed referrer, uint256 indexed periodId, uint256 value);
 
     /// @notice Deposit sponsor budget into a campaign. Pulls stablecoin from the caller.
     function fundSponsorPool(uint256 amount, bytes32 campaignId) external;
@@ -25,6 +26,10 @@ interface ISprayFaucet {
 
     /// @notice Gift a free sponsor-funded ticket to a verified friend. Rate-limited per day.
     function spray(address friend) external;
+
+    /// @notice One sponsor-backed bonus ticket for a referrer whose invite vested.
+    /// @dev CrewRegistry-only; not rate-limited (vesting fires once per referred user).
+    function referralBonus(address referrer) external;
 
     /// @notice Sprays the caller can still send in the current day window.
     function dailySpraysLeft(address user) external view returns (uint256);
