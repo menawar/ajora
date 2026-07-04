@@ -76,6 +76,7 @@ contract CrewRegistryTest is Test {
         assertEq(registry.referrerOf(kevin), amara);
         assertEq(registry.referrerOf(kwame), kevin);
         assertEq(registry.memberCount(crewId), 3);
+        assertEq(registry.codeOf(kevin), KEVIN_CODE, "reverse lookup for the UI");
     }
 
     function test_GuardsSelfReferralDuplicatesAndUnknownCodes() public {

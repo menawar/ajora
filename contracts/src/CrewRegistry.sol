@@ -30,6 +30,7 @@ contract CrewRegistry is ICrewRegistry {
     mapping(address user => uint256) public crewOf;
     mapping(address user => address) public referrerOf;
     mapping(bytes32 code => address) public codeOwner;
+    mapping(address user => bytes32) public codeOf; // reverse lookup for the UI
     mapping(uint256 crewId => uint256) public memberCount;
     mapping(uint256 crewId => mapping(uint256 periodId => uint256)) public crewSavings;
     mapping(address user => SaveStats) internal _saves;
@@ -99,6 +100,7 @@ contract CrewRegistry is ICrewRegistry {
         if (code == bytes32(0)) revert EmptyCode();
         if (codeOwner[code] != address(0)) revert CodeTaken();
         codeOwner[code] = user;
+        codeOf[user] = code;
     }
 
     // ------------------------------------------------------------- savings

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { formatUnits } from "viem";
 import { ConnectBar } from "../../components/ConnectBar";
 import { ShareButtons } from "../../components/ShareButtons";
+import { useCrew } from "../../hooks/useCrew";
 import { useDraw } from "../../hooks/useDraw";
 import { usePotToday } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
@@ -48,6 +49,7 @@ export default function DrawPage() {
   const pot = usePotToday();
   const { last, myPick, loading, claimPrize, claiming, error } = useDraw();
   const { streakDays } = useStreak();
+  const { myCode } = useCrew();
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
@@ -107,6 +109,7 @@ export default function DrawPage() {
                     streakDays: Number(streakDays),
                   }}
                   text={`I just chopped ${cusd(last.prize)} cUSD in Ajora's daily draw — no-loss savings, real winnings 💸`}
+                  refCode={myCode || undefined}
                 />
               </div>
             ) : (
