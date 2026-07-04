@@ -47,6 +47,7 @@ contract CrewRegistry is ICrewRegistry {
     error NoReferrer();
     error AlreadyVested();
     error NotEnoughSaveDays();
+    error ZeroAddress();
 
     constructor() {
         admin = msg.sender;
@@ -59,12 +60,14 @@ contract CrewRegistry is ICrewRegistry {
 
     /// @notice One-time wiring of the PotVault that feeds contribution events.
     function setVault(address _vault) external onlyAdmin {
+        if (_vault == address(0)) revert ZeroAddress();
         if (vault != address(0)) revert AlreadySet();
         vault = _vault;
     }
 
     /// @notice One-time wiring of the faucet that pays referral bonuses.
     function setFaucet(SprayFaucet _faucet) external onlyAdmin {
+        if (address(_faucet) == address(0)) revert ZeroAddress();
         if (address(faucet) != address(0)) revert AlreadySet();
         faucet = _faucet;
     }

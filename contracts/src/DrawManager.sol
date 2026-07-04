@@ -66,8 +66,10 @@ contract DrawManager is IDrawManager {
     error AnchorNotReady();
     error AnchorExpired();
     error AnchorStillLive();
+    error ZeroAddress();
 
     constructor(PotVault _vault, address _keeper) {
+        if (_keeper == address(0)) revert ZeroAddress();
         vault = _vault;
         admin = msg.sender;
         keeper = _keeper;
@@ -80,6 +82,7 @@ contract DrawManager is IDrawManager {
 
     /// @notice Rotate the keeper address. Admin only.
     function setKeeper(address _keeper) external onlyAdmin {
+        if (_keeper == address(0)) revert ZeroAddress();
         keeper = _keeper;
     }
 
