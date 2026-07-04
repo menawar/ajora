@@ -5,11 +5,37 @@
   "explorer": "https://celoscan.io",
   "contracts": {
     "PotVault": {
-      "address": "0x975b5E91FD239511d3B7A2d421c1e40F122989B0",
+      "address": "0x682F385c3034c42C94ad0e394B825348C518FA37",
       "stablecoin": "0x765DE816845861e75A25fCA122bb6898B8B1282a",
       "stablecoinSymbol": "cUSD",
       "minContribution": "100000000000000000",
       "admin": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
+      "verification": "sourcify:exact_match",
+      "deployedAt": "2026-07-04"
+    },
+    "StreakSBT": {
+      "address": "0x4f2f814277a252f97FeCa7355CDC8d062338BC7d",
+      "verification": "sourcify:exact_match",
+      "deployedAt": "2026-07-04"
+    },
+    "SprayFaucet": {
+      "address": "0xF9A41E3c295D533C64f61CC5e3385Ba00a6B32Cb",
+      "verifier": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
+      "ticketValue": "100000000000000000",
+      "verification": "sourcify:exact_match",
+      "deployedAt": "2026-07-04"
+    },
+    "DrawManager": {
+      "address": "0xfBCbE3FbE29F516077d773fd4B0F356F914F4A51",
+      "keeper": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
+      "verification": "sourcify:exact_match",
+      "deployedAt": "2026-07-04"
+    }
+  },
+  "deprecated": {
+    "PotVault_v0": {
+      "address": "0x975b5E91FD239511d3B7A2d421c1e40F122989B0",
+      "note": "Initial unwired Week-1 vault (2026-07-03); superseded by the wired core above",
       "deployedAt": "2026-07-03"
     }
   }

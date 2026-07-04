@@ -1,0 +1,43 @@
+name: Deploy to Alfajores
+
+# Tag-triggered testnet deploys: push a tag like `deploy-testnet-v1`.
+# Requires the DEPLOYER_PRIVATE_KEY repository secret (a throwaway testnet key).
+on:
+  push:
+    tags:
+      - "deploy-testnet-*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Build & test first
+        run: |
+          forge build
+          forge test
+
+      - name: Deploy wired core to Alfajores
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          STABLECOIN: "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" # Alfajores cUSD
+          MIN_CONTRIBUTION: "100000000000000000"
+        run: |
+          if [ -z "$PRIVATE_KEY" ]; then
+            echo "DEPLOYER_PRIVATE_KEY secret not set — skipping deploy." && exit 1
+          fi
+          forge script script/Deploy.s.sol:Deploy \
+            --rpc-url https://alfajores-forno.celo-testnet.org \
+            --broadcast --private-key "$PRIVATE_KEY"
+
+      - name: Show deployed addresses
+        run: grep -h "contractAddress" broadcast/Deploy.s.sol/44787/run-latest.json | head -10
