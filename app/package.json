@@ -9,7 +9,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "gen:abis": "node scripts/gen-abis.mjs",
-    "e2e": "node scripts/e2e.mjs"
+    "e2e": "node scripts/e2e.mjs",
+    "keeper:tick": "node scripts/keeper-tick.mjs"
   },
   "dependencies": {
     "next": "^15.1.6",
