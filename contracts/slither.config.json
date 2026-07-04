@@ -1,0 +1,6 @@
+{
+  "filter_paths": "lib/|test/|script/",
+  "exclude_informational": true,
+  "exclude_optimization": true,
+  "detectors_to_exclude": "weak-prng,divide-before-multiply,incorrect-equality,erc721-interface,reentrancy-benign,reentrancy-events,timestamp"
+}

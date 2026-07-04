@@ -51,6 +51,7 @@ contract PotVault is IPotVault {
     error AlreadySet();
     error NotSprayFaucet();
     error PeriodStillOpen();
+    error ZeroAddress();
 
     event StreakSBTUpdated(address indexed streakSBT);
     event SprayFaucetSet(address indexed sprayFaucet);
@@ -70,6 +71,7 @@ contract PotVault is IPotVault {
 
     /// @notice One-time wiring of the DrawManager that is allowed to settle winnings.
     function setDrawManager(address _drawManager) external onlyAdmin {
+        if (_drawManager == address(0)) revert ZeroAddress(); // set-once: zero would brick
         if (drawManager != address(0)) revert AlreadySet();
         drawManager = _drawManager;
     }
@@ -90,6 +92,7 @@ contract PotVault is IPotVault {
 
     /// @notice One-time wiring of the SprayFaucet allowed to credit sponsor/welcome tickets.
     function setSprayFaucet(address _sprayFaucet) external onlyAdmin {
+        if (_sprayFaucet == address(0)) revert ZeroAddress(); // set-once: zero would brick
         if (sprayFaucet != address(0)) revert AlreadySet();
         sprayFaucet = _sprayFaucet;
         emit SprayFaucetSet(_sprayFaucet);

@@ -47,15 +47,17 @@ contract SprayFaucet is ISprayFaucet {
     error SprayLimitReached();
     error NotCrewRegistry();
     error AlreadySet();
+    error ZeroAddress();
 
     constructor(PotVault _vault, address _verifier) {
+        if (_verifier == address(0)) revert ZeroAddress();
         vault = _vault;
         token = _vault.token();
         ticketValue = _vault.minContribution();
         admin = msg.sender;
         verifier = _verifier;
         // The vault pulls jara funding via transferFrom; authorize it once.
-        token.approve(address(_vault), type(uint256).max);
+        require(token.approve(address(_vault), type(uint256).max), "approve failed");
     }
 
     modifier onlyAdmin() {
@@ -79,6 +81,7 @@ contract SprayFaucet is ISprayFaucet {
 
     /// @notice One-time wiring of the CrewRegistry allowed to pay referral bonuses.
     function setCrewRegistry(address _crewRegistry) external onlyAdmin {
+        if (_crewRegistry == address(0)) revert ZeroAddress();
         if (crewRegistry != address(0)) revert AlreadySet();
         crewRegistry = _crewRegistry;
     }
