@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 import { IERC20 } from "./interfaces/IERC20.sol";
 import { IPotVault } from "./interfaces/IPotVault.sol";
 import { IStreakSBT } from "./interfaces/IStreakSBT.sol";
+import { ICrewRegistry } from "./interfaces/ICrewRegistry.sol";
 
 /// @title PotVault
 /// @notice Week-1 core of Ajora: custodies daily savings in a Mento stablecoin, mints draw
@@ -29,6 +30,9 @@ contract PotVault is IPotVault {
     /// @notice Address allowed to credit sponsor/welcome tickets (the SprayFaucet). Set once.
     address public sprayFaucet;
 
+    /// @notice Observer notified of contributions for crew aggregation (optional, updatable).
+    ICrewRegistry public crewRegistry;
+
     address public admin;
 
     /// @dev Ticket multiplier is scaled by 10: 10 = 1.0x, 15 = 1.5x, 30 = 3.0x.
@@ -50,6 +54,7 @@ contract PotVault is IPotVault {
 
     event StreakSBTUpdated(address indexed streakSBT);
     event SprayFaucetSet(address indexed sprayFaucet);
+    event CrewRegistryUpdated(address indexed crewRegistry);
     event TicketsCredited(address indexed user, uint256 indexed periodId, uint256 tickets);
 
     constructor(IERC20 _token, uint256 _minContribution) {
@@ -74,6 +79,13 @@ contract PotVault is IPotVault {
     function setStreakSBT(IStreakSBT _streakSBT) external onlyAdmin {
         streakSBT = _streakSBT;
         emit StreakSBTUpdated(address(_streakSBT));
+    }
+
+    /// @notice Wire (or update) the crew registry observer. A faulty registry can never
+    ///         brick savings — the hook is fire-and-forget (try/catch).
+    function setCrewRegistry(ICrewRegistry _crewRegistry) external onlyAdmin {
+        crewRegistry = _crewRegistry;
+        emit CrewRegistryUpdated(address(_crewRegistry));
     }
 
     /// @notice One-time wiring of the SprayFaucet allowed to credit sponsor/welcome tickets.
@@ -110,6 +122,11 @@ contract PotVault is IPotVault {
         _tickets[msg.sender][periodId] += ticketsMinted;
 
         emit Contributed(msg.sender, periodId, amount, ticketsMinted);
+
+        // Crew aggregation is an observer, never a gate.
+        if (address(crewRegistry) != address(0)) {
+            try crewRegistry.recordContribution(msg.sender, periodId, amount) { } catch { }
+        }
     }
 
     /// @inheritdoc IPotVault
