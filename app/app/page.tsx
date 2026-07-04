@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { formatUnits } from "viem";
 import { ConnectBar } from "../components/ConnectBar";
+import { Onboarding } from "../components/Onboarding";
 import { StreakChip } from "../components/StreakChip";
 import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
@@ -38,6 +39,7 @@ export default function Home() {
         <p className="mt-1 text-gray-500">Save small, keep every cent, chop jara.</p>
       </header>
 
+      <Onboarding />
       <ConnectBar />
       <StreakChip />
 
@@ -48,7 +50,9 @@ export default function Home() {
         </div>
         <div className="mt-1 flex justify-between text-sm opacity-90">
           <span>Draw closes in {countdown(pot.secondsToClose)}</span>
-          <span>{pot.totalTickets.toString()} tickets in</span>
+          <Link href="/board" className="underline">
+            {pot.totalTickets.toString()} tickets in →
+          </Link>
         </div>
       </section>
 
