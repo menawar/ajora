@@ -50,7 +50,9 @@ export default function Home() {
         </div>
         <div className="mt-1 flex justify-between text-sm opacity-90">
           <span>Draw closes in {countdown(pot.secondsToClose)}</span>
-          <span>{pot.totalTickets.toString()} tickets in</span>
+          <Link href="/board" className="underline">
+            {pot.totalTickets.toString()} tickets in →
+          </Link>
         </div>
       </section>
 
