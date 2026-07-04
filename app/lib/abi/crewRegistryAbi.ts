@@ -1,44 +1,20 @@
-// Auto-generated from contracts/out/SprayFaucet.sol/SprayFaucet.json — do not edit.
+// Auto-generated from contracts/out/CrewRegistry.sol/CrewRegistry.json — do not edit.
 // Regenerate with: npm run gen:abis
-export const sprayFaucetAbi = [
+export const crewRegistryAbi = [
   {
     "type": "constructor",
-    "inputs": [
-      {
-        "name": "_vault",
-        "type": "address",
-        "internalType": "contract PotVault"
-      },
-      {
-        "name": "_verifier",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "MAX_SPRAYS_PER_DAY",
+    "name": "VESTING_DAYS",
     "inputs": [],
     "outputs": [
       {
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "activeCampaign",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "bytes32",
-        "internalType": "bytes32"
       }
     ],
     "stateMutability": "view"
@@ -58,27 +34,14 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "campaignBalance",
+    "name": "codeOwner",
     "inputs": [
       {
-        "name": "campaignId",
+        "name": "code",
         "type": "bytes32",
         "internalType": "bytes32"
       }
     ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "crewRegistry",
-    "inputs": [],
     "outputs": [
       {
         "name": "",
@@ -90,7 +53,26 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "dailySpraysLeft",
+    "name": "createCrew",
+    "inputs": [
+      {
+        "name": "code",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "crewId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "crewOf",
     "inputs": [
       {
         "name": "user",
@@ -109,17 +91,115 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "fundSponsorPool",
+    "name": "crewSavings",
     "inputs": [
+      {
+        "name": "crewId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "periodId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "faucet",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract SprayFaucet"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "joinCrew",
+    "inputs": [
+      {
+        "name": "inviterCode",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "myCode",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "crewId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "memberCount",
+    "inputs": [
+      {
+        "name": "crewId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "nextCrewId",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "recordContribution",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "periodId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
       {
         "name": "amount",
         "type": "uint256",
         "internalType": "uint256"
-      },
-      {
-        "name": "campaignId",
-        "type": "bytes32",
-        "internalType": "bytes32"
       }
     ],
     "outputs": [],
@@ -127,7 +207,7 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "isVerified",
+    "name": "referralVested",
     "inputs": [
       {
         "name": "user",
@@ -146,78 +226,33 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "referralBonus",
-    "inputs": [
-      {
-        "name": "referrer",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setActiveCampaign",
-    "inputs": [
-      {
-        "name": "campaignId",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setCrewRegistry",
-    "inputs": [
-      {
-        "name": "_crewRegistry",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setVerified",
+    "name": "referrerOf",
     "inputs": [
       {
         "name": "user",
         "type": "address",
         "internalType": "address"
-      },
-      {
-        "name": "verified",
-        "type": "bool",
-        "internalType": "bool"
       }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "spray",
-    "inputs": [
+    "outputs": [
       {
-        "name": "friend",
+        "name": "",
         "type": "address",
         "internalType": "address"
       }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
+    "stateMutability": "view"
   },
   {
     "type": "function",
-    "name": "ticketValue",
-    "inputs": [],
+    "name": "savedDayCount",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
     "outputs": [
       {
         "name": "",
@@ -229,16 +264,29 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "token",
-    "inputs": [],
-    "outputs": [
+    "name": "setFaucet",
+    "inputs": [
       {
-        "name": "",
+        "name": "_faucet",
         "type": "address",
-        "internalType": "contract IERC20"
+        "internalType": "contract SprayFaucet"
       }
     ],
-    "stateMutability": "view"
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setVault",
+    "inputs": [
+      {
+        "name": "_vault",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -248,19 +296,6 @@ export const sprayFaucetAbi = [
       {
         "name": "",
         "type": "address",
-        "internalType": "contract PotVault"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "verifier",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
         "internalType": "address"
       }
     ],
@@ -268,10 +303,10 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
-    "name": "welcomeTicket",
+    "name": "vestReferral",
     "inputs": [
       {
-        "name": "user",
+        "name": "referred",
         "type": "address",
         "internalType": "address"
       }
@@ -280,32 +315,56 @@ export const sprayFaucetAbi = [
     "stateMutability": "nonpayable"
   },
   {
-    "type": "function",
-    "name": "welcomed",
+    "type": "event",
+    "name": "ContributionRecorded",
     "inputs": [
       {
-        "name": "user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
+        "name": "crewId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
       {
-        "name": "",
-        "type": "bool",
-        "internalType": "bool"
+        "name": "member",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "periodId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
-    "stateMutability": "view"
+    "anonymous": false
   },
   {
     "type": "event",
-    "name": "CampaignActivated",
+    "name": "CrewCreated",
     "inputs": [
       {
-        "name": "campaignId",
-        "type": "bytes32",
+        "name": "crewId",
+        "type": "uint256",
         "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "founder",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "code",
+        "type": "bytes32",
+        "indexed": false,
         "internalType": "bytes32"
       }
     ],
@@ -313,7 +372,32 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "event",
-    "name": "ReferralBonus",
+    "name": "CrewJoined",
+    "inputs": [
+      {
+        "name": "crewId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "member",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "referrer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ReferralVested",
     "inputs": [
       {
         "name": "referrer",
@@ -322,119 +406,18 @@ export const sprayFaucetAbi = [
         "internalType": "address"
       },
       {
-        "name": "periodId",
-        "type": "uint256",
+        "name": "referred",
+        "type": "address",
         "indexed": true,
-        "internalType": "uint256"
-      },
-      {
-        "name": "value",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
+        "internalType": "address"
       }
     ],
     "anonymous": false
   },
   {
-    "type": "event",
-    "name": "SponsorFunded",
-    "inputs": [
-      {
-        "name": "sponsor",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      },
-      {
-        "name": "campaignId",
-        "type": "bytes32",
-        "indexed": true,
-        "internalType": "bytes32"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "Sprayed",
-    "inputs": [
-      {
-        "name": "from",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "to",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "periodId",
-        "type": "uint256",
-        "indexed": true,
-        "internalType": "uint256"
-      },
-      {
-        "name": "value",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "Verified",
-    "inputs": [
-      {
-        "name": "user",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "verified",
-        "type": "bool",
-        "indexed": false,
-        "internalType": "bool"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "WelcomeTicket",
-    "inputs": [
-      {
-        "name": "user",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "periodId",
-        "type": "uint256",
-        "indexed": true,
-        "internalType": "uint256"
-      },
-      {
-        "name": "value",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
+    "type": "error",
+    "name": "AlreadyInCrew",
+    "inputs": []
   },
   {
     "type": "error",
@@ -443,12 +426,22 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "error",
-    "name": "AlreadyWelcomed",
+    "name": "AlreadyVested",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "InsufficientCampaignBudget",
+    "name": "CodeTaken",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "EmptyCode",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoReferrer",
     "inputs": []
   },
   {
@@ -458,27 +451,22 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "error",
-    "name": "NotCrewRegistry",
+    "name": "NotEnoughSaveDays",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "NotVerified",
+    "name": "NotVault",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "NotVerifier",
+    "name": "SelfReferral",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "SelfSpray",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "SprayLimitReached",
+    "name": "UnknownCode",
     "inputs": []
   }
 ] as const;
