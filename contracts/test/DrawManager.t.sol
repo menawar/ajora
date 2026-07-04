@@ -49,9 +49,30 @@ contract DrawManagerTest is Test {
         vm.stopPrank();
     }
 
-    /// @dev Seed that resolves to winning number `n` (winning = seed % 9 + 1).
-    function _seedFor(uint8 n) internal pure returns (uint256) {
-        return uint256(n) - 1;
+    bytes32 internal constant ANCHOR_HASH = keccak256("test-anchor");
+
+    /// @dev Resolve `periodId` so that `target` wins, via the real commit->reveal flow:
+    ///      brute-force a secret whose blended seed lands on `target`, commit it inside the
+    ///      final window, mine past the anchor, pin the anchor hash, and reveal.
+    function _resolveWithNumber(uint256 periodId, uint8 target) internal {
+        uint256 periodEnd = (periodId + 1) * DAY;
+
+        bytes32 secret;
+        for (uint256 i = 0;; i++) {
+            secret = bytes32(i);
+            uint256 seed = uint256(keccak256(abi.encode(secret, ANCHOR_HASH)));
+            if (uint8(seed % 9) + 1 == target) break;
+        }
+
+        vm.warp(periodEnd - 5 minutes);
+        vm.prank(keeper);
+        draw.commitSeed(periodId, keccak256(abi.encode(secret)));
+        (, uint64 anchor) = draw.seedCommits(periodId);
+
+        vm.warp(periodEnd + 1 hours);
+        vm.roll(uint256(anchor) + 10);
+        vm.setBlockhash(anchor, ANCHOR_HASH);
+        draw.revealAndResolve(periodId, secret);
     }
 
     // ----------------------------------------------------------------- picks
@@ -111,9 +132,7 @@ contract DrawManagerTest is Test {
         draw.pickNumber(4);
         _fundJara(period, 9e18);
 
-        vm.warp(block.timestamp + DAY); // period over
-        vm.prank(keeper);
-        draw.resolveDraw(period, _seedFor(4));
+        _resolveWithNumber(period, 4);
 
         DrawManager.Draw memory d = draw.drawOf(period);
         assertTrue(d.resolved);
@@ -123,28 +142,39 @@ contract DrawManagerTest is Test {
         assertTrue(draw.isWinner(amara, period));
     }
 
-    function test_RevertResolveNotKeeper() public {
+    function test_RevertRevealBeforePeriodOver() public {
+        // Defense in depth: even a mined anchor can't resolve a period still in flight.
         uint256 period = vault.currentPeriod();
-        vm.warp(block.timestamp + DAY);
-        vm.expectRevert(DrawManager.NotKeeper.selector);
-        draw.resolveDraw(period, 1);
-    }
-
-    function test_RevertResolveCurrentPeriod() public {
-        uint256 period = vault.currentPeriod();
+        uint256 periodEnd = (period + 1) * DAY;
+        vm.warp(periodEnd - 5 minutes);
+        bytes32 secret = bytes32(uint256(42));
         vm.prank(keeper);
+        draw.commitSeed(period, keccak256(abi.encode(secret)));
+        (, uint64 anchor) = draw.seedCommits(period);
+
+        vm.roll(uint256(anchor) + 10); // anchor mined but period NOT over
+        vm.setBlockhash(anchor, ANCHOR_HASH);
         vm.expectRevert(DrawManager.PeriodNotOver.selector);
-        draw.resolveDraw(period, 1);
+        draw.revealAndResolve(period, secret);
     }
 
-    function test_RevertResolveTwice() public {
+    function test_RevertSecondRevealAlreadyResolved() public {
         uint256 period = vault.currentPeriod();
-        vm.warp(block.timestamp + DAY);
-        vm.startPrank(keeper);
-        draw.resolveDraw(period, 1);
+        _save(amara, 1e18);
+        vm.prank(amara);
+        draw.pickNumber(4);
+        _resolveWithNumber(period, 4);
+
+        // Replaying the same reveal can't resolve twice.
+        (bytes32 commitment,) = draw.seedCommits(period);
+        bytes32 secret;
+        for (uint256 i = 0;; i++) {
+            secret = bytes32(i);
+            if (keccak256(abi.encode(secret)) == commitment) break;
+            if (i > 1000) revert("secret not found");
+        }
         vm.expectRevert(DrawManager.AlreadyResolved.selector);
-        draw.resolveDraw(period, 2);
-        vm.stopPrank();
+        draw.revealAndResolve(period, secret);
     }
 
     function test_NoWinnerRecyclesPotToCurrentPeriod() public {
@@ -154,26 +184,13 @@ contract DrawManagerTest is Test {
         draw.pickNumber(4);
         _fundJara(period, 9e18);
 
-        vm.warp(block.timestamp + DAY);
+        _resolveWithNumber(period, 5); // 5 wins, only 4 was picked
         uint256 nextPeriod = vault.currentPeriod();
-        vm.prank(keeper);
-        draw.resolveDraw(period, _seedFor(5)); // 5 wins, only 4 was picked
 
         assertEq(vault.periodInfo(period).jaraPot, 0, "old period emptied");
         assertEq(vault.periodInfo(nextPeriod).jaraPot, 9e18, "pot rolled forward");
         assertEq(draw.drawOf(period).pot, 0, "nothing claimable");
         assertFalse(draw.isWinner(amara, period));
-    }
-
-    function test_WinningNumberAlwaysInRange() public {
-        // seed % 9 + 1 spans exactly 1..9 — check the extremes.
-        uint256 period = vault.currentPeriod();
-        vm.warp(block.timestamp + DAY);
-        vm.prank(keeper);
-        draw.resolveDraw(period, type(uint256).max);
-        uint8 n = draw.drawOf(period).winningNumber;
-        assertGe(n, 1);
-        assertLe(n, 9);
     }
 
     // ---------------------------------------------------------------- claims
@@ -192,9 +209,7 @@ contract DrawManagerTest is Test {
         draw.pickNumber(2);
         _fundJara(period, 8e18);
 
-        vm.warp(block.timestamp + DAY);
-        vm.prank(keeper);
-        draw.resolveDraw(period, _seedFor(6));
+        _resolveWithNumber(period, 6);
     }
 
     function test_WinnersSplitPotProRata() public {
@@ -257,9 +272,7 @@ contract DrawManagerTest is Test {
         draw.pickNumber(9);
         _fundJara(period, pot);
 
-        vm.warp(block.timestamp + DAY);
-        vm.prank(keeper);
-        draw.resolveDraw(period, _seedFor(9));
+        _resolveWithNumber(period, 9);
 
         vm.prank(amara);
         uint256 a = draw.claimPrize(period);

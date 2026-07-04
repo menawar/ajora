@@ -24,6 +24,11 @@ contract DrawManager is IDrawManager {
         uint256 totalWinningWeight; // sum of weights on the winning number
     }
 
+    struct SeedCommit {
+        bytes32 commitment; // keccak256(abi.encode(secret))
+        uint64 anchorBlock; // future block whose hash blends into the seed
+    }
+
     PotVault public immutable vault;
 
     address public admin;
@@ -35,6 +40,15 @@ contract DrawManager is IDrawManager {
     mapping(uint256 periodId => mapping(uint8 number => uint256)) public weightOnNumber;
     mapping(uint256 periodId => Draw) internal _draws;
     mapping(address user => mapping(uint256 periodId => bool)) public claimed;
+    mapping(uint256 periodId => SeedCommit) public seedCommits;
+
+    /// @notice Commits are only accepted in the final window of a period, keeping the
+    ///         keeper's knowledge horizon as short as possible.
+    uint256 public constant COMMIT_WINDOW = 15 minutes;
+
+    /// @notice Blocks between commit and anchor (~20 min on Celo's ~1s blocks), placing the
+    ///         anchor safely after the period closes.
+    uint256 public constant ANCHOR_DELAY = 1200;
 
     error NotAdmin();
     error NotKeeper();
@@ -45,6 +59,13 @@ contract DrawManager is IDrawManager {
     error NotResolved();
     error NotAWinner();
     error AlreadyClaimed();
+    error CommitWindowClosed();
+    error AlreadyCommitted();
+    error NoCommit();
+    error BadReveal();
+    error AnchorNotReady();
+    error AnchorExpired();
+    error AnchorStillLive();
 
     constructor(PotVault _vault, address _keeper) {
         vault = _vault;
@@ -114,8 +135,57 @@ contract DrawManager is IDrawManager {
     // ------------------------------------------------------------ resolution
 
     /// @inheritdoc IDrawManager
-    function resolveDraw(uint256 periodId, uint256 seed) external {
+    function commitSeed(uint256 periodId, bytes32 commitment) external {
         if (msg.sender != keeper) revert NotKeeper();
+        // Only the current period, and only inside its final window.
+        if (periodId != vault.currentPeriod()) revert CommitWindowClosed();
+        uint256 periodEnd = (periodId + 1) * 1 days;
+        if (periodEnd - block.timestamp > COMMIT_WINDOW) revert CommitWindowClosed();
+
+        SeedCommit storage c = seedCommits[periodId];
+        if (c.commitment != bytes32(0)) revert AlreadyCommitted();
+        c.commitment = commitment;
+        c.anchorBlock = uint64(block.number + ANCHOR_DELAY);
+        emit SeedCommitted(periodId, commitment, c.anchorBlock);
+    }
+
+    /// @inheritdoc IDrawManager
+    function revealAndResolve(uint256 periodId, bytes32 secret) external {
+        SeedCommit storage c = seedCommits[periodId];
+        if (c.commitment == bytes32(0)) revert NoCommit();
+        if (keccak256(abi.encode(secret)) != c.commitment) revert BadReveal();
+        if (block.number <= c.anchorBlock) revert AnchorNotReady();
+
+        bytes32 anchorHash = _anchorHash(c.anchorBlock);
+        if (anchorHash == bytes32(0)) revert AnchorExpired();
+
+        uint256 seed = uint256(keccak256(abi.encode(secret, anchorHash)));
+        _resolve(periodId, seed);
+    }
+
+    /// @inheritdoc IDrawManager
+    function recommitSeed(uint256 periodId, bytes32 commitment) external {
+        if (msg.sender != keeper) revert NotKeeper();
+        if (periodId >= vault.currentPeriod()) revert PeriodNotOver();
+        if (_draws[periodId].resolved) revert AlreadyResolved();
+
+        SeedCommit storage c = seedCommits[periodId];
+        if (c.commitment == bytes32(0)) revert NoCommit();
+        // Only when the previous reveal window was genuinely missed.
+        if (block.number <= uint256(c.anchorBlock) + 256) revert AnchorStillLive();
+
+        c.commitment = commitment;
+        c.anchorBlock = uint64(block.number + ANCHOR_DELAY);
+        emit SeedRecommitted(periodId, commitment, c.anchorBlock);
+    }
+
+    /// @dev Seam for tests; EVM blockhash returns 0 outside the trailing 256 blocks.
+    function _anchorHash(uint256 blockNumber) internal view virtual returns (bytes32) {
+        return blockhash(blockNumber);
+    }
+
+    /// @dev Shared resolution: derive the number, snapshot the pot, recycle when unwon.
+    function _resolve(uint256 periodId, uint256 seed) internal {
         if (periodId >= vault.currentPeriod()) revert PeriodNotOver();
         Draw storage d = _draws[periodId];
         if (d.resolved) revert AlreadyResolved();

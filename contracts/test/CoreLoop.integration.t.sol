@@ -55,6 +55,27 @@ contract CoreLoopIntegrationTest is Test {
         vm.stopPrank();
     }
 
+    bytes32 internal constant ANCHOR_HASH = keccak256("test-anchor");
+
+    /// @dev Resolve via the real commit->reveal flow so that `target` wins.
+    function _resolveWithNumber(uint256 periodId, uint8 target) internal {
+        uint256 periodEnd = (periodId + 1) * DAY;
+        bytes32 secret;
+        for (uint256 i = 0;; i++) {
+            secret = bytes32(i);
+            uint256 seed = uint256(keccak256(abi.encode(secret, ANCHOR_HASH)));
+            if (uint8(seed % 9) + 1 == target) break;
+        }
+        vm.warp(periodEnd - 5 minutes);
+        vm.prank(keeper);
+        draw.commitSeed(periodId, keccak256(abi.encode(secret)));
+        (, uint64 anchor) = draw.seedCommits(periodId);
+        vm.warp(periodEnd + 1 hours);
+        vm.roll(uint256(anchor) + 10);
+        vm.setBlockhash(anchor, ANCHOR_HASH);
+        draw.revealAndResolve(periodId, secret);
+    }
+
     /// @dev One user session: check in, save, pick — the 40-second loop.
     function _session(address who, uint256 amount, uint8 number) internal {
         vm.startPrank(who);
@@ -83,10 +104,8 @@ contract CoreLoopIntegrationTest is Test {
         vm.stopPrank();
         uint256 day1Pot = 9e18 + MIN; // sponsor top-up + spray backing
 
-        // ---------- Day 2: 8 PM keeper resolves day 1 — Kevin's 9 hits ----------
-        vm.warp(block.timestamp + DAY);
-        vm.prank(keeper);
-        draw.resolveDraw(day1, 8); // 8 % 9 + 1 = 9
+        // ---------- Day 2: keeper's committed seed reveals — Kevin's 9 hits ----------
+        _resolveWithNumber(day1, 9);
 
         assertTrue(draw.isWinner(kevin, day1));
         assertFalse(draw.isWinner(amara, day1));
@@ -108,10 +127,8 @@ contract CoreLoopIntegrationTest is Test {
         vm.stopPrank();
 
         // ---------- Day 3: nobody picked 7 -> pot rolls into day 3 ----------
-        vm.warp(block.timestamp + DAY);
+        _resolveWithNumber(day2, 7); // 7 unpicked
         uint256 day3 = vault.currentPeriod();
-        vm.prank(keeper);
-        draw.resolveDraw(day2, 6); // 6 % 9 + 1 = 7, unpicked
 
         assertEq(vault.periodInfo(day2).jaraPot, 0);
         assertEq(vault.periodInfo(day3).jaraPot, 5e18, "unwon pot fuels tomorrow");

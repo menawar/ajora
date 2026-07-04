@@ -12,6 +12,7 @@ Ajora is a **no-loss prize-linked savings game** built as a [MiniPay](https://ww
 The name blends **Ajo** (the trusted savings circle) with **jara** (the free bonus you always keep). "Ajora" also means *"deep"* in Wolaita — a deep pool of savings.
 
 📄 **Full design + technical spec:** [`AJORA_SPEC.md`](./AJORA_SPEC.md)
+🎲 **Draw randomness — scheme & how to verify any draw yourself:** [`contracts/RANDOMNESS.md`](./contracts/RANDOMNESS.md)
 
 ---
 
