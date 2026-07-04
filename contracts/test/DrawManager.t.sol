@@ -175,4 +175,102 @@ contract DrawManagerTest is Test {
         assertGe(n, 1);
         assertLe(n, 9);
     }
+
+    // ---------------------------------------------------------------- claims
+
+    /// @dev Amara 10 tickets and Kevin 30 tickets both pick 6; Kwame picks 2. Pot 8 cUSD.
+    function _setupResolvedDraw() internal returns (uint256 period) {
+        period = vault.currentPeriod();
+        _save(amara, 1e18); // 10 tickets
+        _save(kevin, 3e18); // 30 tickets
+        _save(kwame, 1e18); // 10 tickets
+        vm.prank(amara);
+        draw.pickNumber(6);
+        vm.prank(kevin);
+        draw.pickNumber(6);
+        vm.prank(kwame);
+        draw.pickNumber(2);
+        _fundJara(period, 8e18);
+
+        vm.warp(block.timestamp + DAY);
+        vm.prank(keeper);
+        draw.resolveDraw(period, _seedFor(6));
+    }
+
+    function test_WinnersSplitPotProRata() public {
+        uint256 period = _setupResolvedDraw();
+
+        vm.prank(amara);
+        uint256 aShare = draw.claimPrize(period);
+        vm.prank(kevin);
+        uint256 kShare = draw.claimPrize(period);
+
+        assertEq(aShare, 2e18, "10/40 of 8");
+        assertEq(kShare, 6e18, "30/40 of 8");
+
+        // Settled into vault winnings, withdrawable as real stablecoin.
+        vm.prank(amara);
+        assertEq(vault.claimWinnings(period), 2e18);
+        vm.prank(kevin);
+        assertEq(vault.claimWinnings(period), 6e18);
+    }
+
+    function test_RevertClaimTwice() public {
+        uint256 period = _setupResolvedDraw();
+        vm.startPrank(amara);
+        draw.claimPrize(period);
+        vm.expectRevert(DrawManager.AlreadyClaimed.selector);
+        draw.claimPrize(period);
+        vm.stopPrank();
+    }
+
+    function test_RevertClaimByLoser() public {
+        uint256 period = _setupResolvedDraw();
+        vm.prank(kwame); // picked 2, winning number was 6
+        vm.expectRevert(DrawManager.NotAWinner.selector);
+        draw.claimPrize(period);
+    }
+
+    function test_RevertClaimBeforeResolve() public {
+        uint256 period = vault.currentPeriod();
+        _save(amara, 1e18);
+        vm.startPrank(amara);
+        draw.pickNumber(6);
+        vm.expectRevert(DrawManager.NotResolved.selector);
+        draw.claimPrize(period);
+        vm.stopPrank();
+    }
+
+    /// @notice For any pot and weights, total claims never exceed the pot and principal
+    ///         stays fully redeemable for everyone.
+    function testFuzz_ClaimsNeverExceedPot(uint96 potRaw, uint8 wA, uint8 wK) public {
+        uint256 pot = bound(uint256(potRaw), 1, 50e18);
+        uint256 saveA = MIN * (uint256(wA) % 50 + 1);
+        uint256 saveK = MIN * (uint256(wK) % 50 + 1);
+
+        uint256 period = vault.currentPeriod();
+        _save(amara, saveA);
+        _save(kevin, saveK);
+        vm.prank(amara);
+        draw.pickNumber(9);
+        vm.prank(kevin);
+        draw.pickNumber(9);
+        _fundJara(period, pot);
+
+        vm.warp(block.timestamp + DAY);
+        vm.prank(keeper);
+        draw.resolveDraw(period, _seedFor(9));
+
+        vm.prank(amara);
+        uint256 a = draw.claimPrize(period);
+        vm.prank(kevin);
+        uint256 k = draw.claimPrize(period);
+
+        assertLe(a + k, pot, "claims bounded by pot");
+
+        vm.prank(amara);
+        assertEq(vault.claimPrincipal(period), saveA, "principal untouched");
+        vm.prank(kevin);
+        assertEq(vault.claimPrincipal(period), saveK, "principal untouched");
+    }
 }
