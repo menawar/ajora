@@ -82,7 +82,8 @@ contract OnboardingIntegrationTest is Test {
         assertEq(won, pot);
         assertEq(cusd.balanceOf(newUser), pot, "real cUSD, zero deposit");
 
-        // 6. No-loss check: Amara's principal remains fully redeemable.
+        // 6. No-loss check: Amara's principal remains fully redeemable after the period closes.
+        vm.warp(block.timestamp + 1 days);
         vm.prank(amara);
         assertEq(vault.claimPrincipal(period), 1e18);
     }
