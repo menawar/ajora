@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { formatUnits } from "viem";
 import { ConnectBar } from "../../components/ConnectBar";
+import { ShareButtons } from "../../components/ShareButtons";
 import { useDraw } from "../../hooks/useDraw";
 import { usePotToday } from "../../hooks/usePotVault";
+import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
 
 function cusd(value: bigint): string {
@@ -45,6 +47,7 @@ export default function DrawPage() {
   const { address } = useWallet();
   const pot = usePotToday();
   const { last, myPick, loading, claimPrize, claiming, error } = useDraw();
+  const { streakDays } = useStreak();
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
@@ -97,6 +100,14 @@ export default function DrawPage() {
                 ) : (
                   <p className="text-sm text-gray-500">Prize claimed — it&apos;s in your wallet.</p>
                 )}
+                <ShareButtons
+                  card={{
+                    kind: "win",
+                    amountCusd: cusd(last.prize),
+                    streakDays: Number(streakDays),
+                  }}
+                  text={`I just chopped ${cusd(last.prize)} cUSD in Ajora's daily draw — no-loss savings, real winnings 💸`}
+                />
               </div>
             ) : (
               <p className="mt-4 text-sm text-gray-500">
