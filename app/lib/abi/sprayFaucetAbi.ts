@@ -77,6 +77,19 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
+    "name": "crewRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "dailySpraysLeft",
     "inputs": [
       {
@@ -133,12 +146,38 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
+    "name": "referralBonus",
+    "inputs": [
+      {
+        "name": "referrer",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setActiveCampaign",
     "inputs": [
       {
         "name": "campaignId",
         "type": "bytes32",
         "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setCrewRegistry",
+    "inputs": [
+      {
+        "name": "_crewRegistry",
+        "type": "address",
+        "internalType": "address"
       }
     ],
     "outputs": [],
@@ -274,6 +313,31 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "event",
+    "name": "ReferralBonus",
+    "inputs": [
+      {
+        "name": "referrer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "periodId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "value",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "SponsorFunded",
     "inputs": [
       {
@@ -374,6 +438,11 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "error",
+    "name": "AlreadySet",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "AlreadyWelcomed",
     "inputs": []
   },
@@ -385,6 +454,11 @@ export const sprayFaucetAbi = [
   {
     "type": "error",
     "name": "NotAdmin",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotCrewRegistry",
     "inputs": []
   },
   {

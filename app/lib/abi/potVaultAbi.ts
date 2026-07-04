@@ -112,6 +112,19 @@ export const potVaultAbi = [
   },
   {
     "type": "function",
+    "name": "crewRegistry",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract ICrewRegistry"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "currentPeriod",
     "inputs": [],
     "outputs": [
@@ -260,6 +273,19 @@ export const potVaultAbi = [
         "name": "amount",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setCrewRegistry",
+    "inputs": [
+      {
+        "name": "_crewRegistry",
+        "type": "address",
+        "internalType": "contract ICrewRegistry"
       }
     ],
     "outputs": [],
@@ -423,6 +449,19 @@ export const potVaultAbi = [
   },
   {
     "type": "event",
+    "name": "CrewRegistryUpdated",
+    "inputs": [
+      {
+        "name": "crewRegistry",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "PrincipalClaimed",
     "inputs": [
       {
@@ -550,6 +589,11 @@ export const potVaultAbi = [
   {
     "type": "error",
     "name": "NothingToClaim",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PeriodStillOpen",
     "inputs": []
   },
   {
