@@ -14,6 +14,8 @@ interface IDrawManager {
     event NumberPicked(
         address indexed user, uint256 indexed periodId, uint8 number, uint256 weight
     );
+    event SeedCommitted(uint256 indexed periodId, bytes32 commitment, uint256 anchorBlock);
+    event SeedRecommitted(uint256 indexed periodId, bytes32 commitment, uint256 anchorBlock);
     event DrawResolved(
         uint256 indexed periodId,
         uint256 seed,
@@ -33,6 +35,21 @@ interface IDrawManager {
     /// @dev Derives winningNumber = (seed % 9) + 1 and snapshots the pot. If no tickets sit
     ///      on the winning number, the jara is recycled into the current period instead.
     function resolveDraw(uint256 periodId, uint256 seed) external;
+
+    /// @notice Commit keccak256(abi.encode(secret)) for the *current* period during its final
+    ///         COMMIT_WINDOW. Keeper only. Pins anchorBlock = block.number + ANCHOR_DELAY,
+    ///         whose hash cannot exist yet — so the final seed is unknowable to the keeper.
+    function commitSeed(uint256 periodId, bytes32 commitment) external;
+
+    /// @notice Reveal the secret after the period ends and the anchor block is mined; derives
+    ///         seed = keccak256(abi.encode(secret, blockhash(anchorBlock))) and resolves.
+    /// @dev Permissionless: the commitment binds the secret, so anyone may relay the reveal.
+    function revealAndResolve(uint256 periodId, bytes32 secret) external;
+
+    /// @notice Liveness fallback: start a fresh commit→anchor→reveal cycle when a reveal
+    ///         window was missed (anchor hash expired unrevealed). Keeper only. Each use is
+    ///         an on-chain event — deliberate misses are publicly countable grinding.
+    function recommitSeed(uint256 periodId, bytes32 commitment) external;
 
     /// @notice Settle the caller's share of a resolved period's pot into their PotVault
     ///         winnings balance (withdrawable via PotVault.claimWinnings).
