@@ -1,14 +1,15 @@
 import { celo, celoAlfajores } from "viem/chains";
-import type { Chain } from "viem";
 
 /**
  * Active chain, selected by NEXT_PUBLIC_CHAIN_ID (defaults to Celo mainnet).
  * Both chain objects ship Celo's formatters/serializers, so transactions may
  * pay gas in a Mento stablecoin via `feeCurrency` — core MiniPay UX.
+ * NOTE: deliberately un-annotated so the Celo-specific formatter generics
+ * (which type `feeCurrency`) flow through viem's client inference.
  */
 const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 42220);
 
-export const chain: Chain = CHAIN_ID === celoAlfajores.id ? celoAlfajores : celo;
+export const chain = CHAIN_ID === celoAlfajores.id ? celoAlfajores : celo;
 
 export const isTestnet = chain.id === celoAlfajores.id;
 

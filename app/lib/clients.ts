@@ -4,13 +4,11 @@ import {
   custom,
   http,
   type EIP1193Provider,
-  type PublicClient,
-  type WalletClient,
 } from "viem";
 import { chain } from "./chain";
 
 /** Shared read client over the public RPC — works with no wallet present. */
-export const publicClient: PublicClient = createPublicClient({
+export const publicClient = createPublicClient({
   chain,
   transport: http(),
 });
@@ -32,7 +30,7 @@ export function injectedProvider(): (EIP1193Provider & { isMiniPay?: boolean }) 
 }
 
 /** Wallet client over the injected provider; undefined outside a wallet context. */
-export function walletClient(): WalletClient | undefined {
+export function walletClient() {
   const provider = injectedProvider();
   if (!provider) return undefined;
   return createWalletClient({ chain, transport: custom(provider) });
