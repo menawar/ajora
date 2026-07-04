@@ -1,0 +1,47 @@
+name: Draw keeper
+
+# Stateless ticks around the daily boundary (00:00 UTC). Each run reads chain
+# state and does exactly what's needed — extra runs are no-ops, so overlapping
+# or delayed crons are harmless. GH cron has jitter; the recommit/bootstrap
+# paths in the tick absorb missed windows.
+#
+# Requires the KEEPER_PRIVATE_KEY repository secret (the DrawManager keeper).
+on:
+  schedule:
+    - cron: "46 23 * * *" # commit inside the final 15-minute window
+    - cron: "8 0 * * *" # reveal shortly after the anchor is mined (~00:06)
+    - cron: "18 0 * * *" # retry / recommit if the window was missed
+    - cron: "38 0 * * *" # reveal after a recommit cycle
+    - cron: "58 0 * * *" # final safety pass
+  workflow_dispatch: {} # manual tick any time
+
+concurrency:
+  group: draw-keeper
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm install
+
+      - name: Keeper tick
+        env:
+          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
+        run: |
+          if [ -z "$KEEPER_PRIVATE_KEY" ]; then
+            echo "KEEPER_PRIVATE_KEY secret not set — dry run only."
+            DRY_RUN=1 npm run keeper:tick
+          else
+            npm run keeper:tick
+          fi

@@ -176,4 +176,29 @@ contract DrawRandomnessTest is Test {
         vm.expectRevert(DrawManager.NotKeeper.selector);
         draw.recommitSeed(period, COMMITMENT);
     }
+
+    /// @notice Liveness bootstrap: a period whose entire commit window was missed can still
+    ///         be committed post-close and resolved — its pot is never stuck.
+    function test_RecommitBootstrapsPeriodThatNeverGotACommit() public {
+        // No commit at all before the period ends.
+        vm.warp(periodEnd + 2 hours);
+
+        vm.prank(keeper);
+        draw.recommitSeed(period, COMMITMENT);
+        (, uint64 anchor) = draw.seedCommits(period);
+        assertEq(anchor, block.number + draw.ANCHOR_DELAY());
+
+        vm.roll(uint256(anchor) + 5);
+        vm.setBlockhash(anchor, keccak256("bootstrap-hash"));
+        draw.revealAndResolve(period, SECRET);
+        assertTrue(draw.drawOf(period).resolved, "missed period resolved via bootstrap");
+    }
+
+    function test_RevertBootstrapForCurrentPeriod() public {
+        // Bootstrap only exists for closed periods — current period uses commitSeed.
+        vm.warp(periodEnd - 5 minutes);
+        vm.prank(keeper);
+        vm.expectRevert(DrawManager.PeriodNotOver.selector);
+        draw.recommitSeed(period, COMMITMENT);
+    }
 }

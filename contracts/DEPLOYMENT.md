@@ -57,9 +57,17 @@ forge script script/Deploy.s.sol:Deploy \
    `cusd.approve(faucet, X)` then `faucet.fundSponsorPool(X, "launch")`.
 6. Update the app env (`NEXT_PUBLIC_*` addresses).
 
-## Keeper daily cycle (until #15 automates it)
+## Keeper (automated)
 
-- **23:45–24:00 UTC:** `commitSeed(currentPeriod, keccak256(abi.encode(secret)))`
-- **after 00:00 UTC + anchor mined (~20 min):** `revealAndResolve(period, secret)`
-  within the 256-block window
-- missed window → `recommitSeed` (fresh cycle; publicly visible event)
+The stateless tick (`app/scripts/keeper-tick.mjs`) runs on GitHub Actions cron
+(`.github/workflows/keeper.yml`: 23:46 commit, 00:08 reveal, three safety passes,
+plus manual dispatch). Set the **`KEEPER_PRIVATE_KEY`** repository secret; without
+it the workflow dry-runs. Secrets are derived per period as
+`keccak256(privkey ‖ periodId)` — no state between runs, and a period that
+missed its whole commit window is bootstrapped via `recommitSeed`.
+
+Manual tick any time:
+
+```bash
+cd app && KEEPER_PRIVATE_KEY=0x… npm run keeper:tick   # or DRY_RUN=1
+```

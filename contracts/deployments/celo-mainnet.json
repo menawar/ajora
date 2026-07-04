@@ -5,7 +5,7 @@
   "explorer": "https://celoscan.io",
   "contracts": {
     "PotVault": {
-      "address": "0x0A0354bA400191Ad323fF73581468601c3821C16",
+      "address": "0x6B8617f4B6BfA6752802e883136C18720294497f",
       "stablecoin": "0x765DE816845861e75A25fCA122bb6898B8B1282a",
       "stablecoinSymbol": "cUSD",
       "minContribution": "100000000000000000",
@@ -14,25 +14,32 @@
       "deployedAt": "2026-07-04"
     },
     "StreakSBT": {
-      "address": "0x8442Df756f1f3c55B2e9CCbA53FD85Ea17ef13DF",
+      "address": "0x2390CD7A18DEc4240617ED421671790f33E4d674",
       "verification": "sourcify:exact_match",
       "deployedAt": "2026-07-04"
     },
     "SprayFaucet": {
-      "address": "0xc602Db6844855E487ff6fCBe8126d715dB1B3650",
+      "address": "0xA0076cE2954227f62eE7A9a35dD62c56DE516f00",
       "verifier": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
       "ticketValue": "100000000000000000",
       "verification": "sourcify:exact_match",
       "deployedAt": "2026-07-04"
     },
     "DrawManager": {
-      "address": "0x405795B9F0Fc0701D62B83fE53062435BF357A23",
+      "address": "0x18E08293D58Fbf1E434671694879f24ef63e57a8",
       "keeper": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
       "verification": "sourcify:exact_match",
       "deployedAt": "2026-07-04"
     }
   },
   "deprecated": {
+    "core_v2": {
+      "note": "DrawManager lacked the recommitSeed liveness bootstrap (#15): a fully missed commit window left the period's jaraPot stuck. Never funded, zero users. Superseded 2026-07-04.",
+      "PotVault": "0x0A0354bA400191Ad323fF73581468601c3821C16",
+      "StreakSBT": "0x8442Df756f1f3c55B2e9CCbA53FD85Ea17ef13DF",
+      "SprayFaucet": "0xc602Db6844855E487ff6fCBe8126d715dB1B3650",
+      "DrawManager": "0x405795B9F0Fc0701D62B83fE53062435BF357A23"
+    },
     "core_v1": {
       "note": "Vulnerable to issue #28 (current-period principal exit kept draw tickets). Never funded, zero users. Superseded 2026-07-04.",
       "PotVault": "0x682F385c3034c42C94ad0e394B825348C518FA37",

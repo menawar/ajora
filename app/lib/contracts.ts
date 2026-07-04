@@ -18,28 +18,28 @@ export const contracts = {
   potVault: {
     address: addr(
       process.env.NEXT_PUBLIC_POTVAULT_ADDRESS,
-      "0x0A0354bA400191Ad323fF73581468601c3821C16",
+      "0x6B8617f4B6BfA6752802e883136C18720294497f",
     ),
     abi: potVaultAbi,
   },
   streakSBT: {
     address: addr(
       process.env.NEXT_PUBLIC_STREAKSBT_ADDRESS,
-      "0x8442Df756f1f3c55B2e9CCbA53FD85Ea17ef13DF",
+      "0x2390CD7A18DEc4240617ED421671790f33E4d674",
     ),
     abi: streakSBTAbi,
   },
   sprayFaucet: {
     address: addr(
       process.env.NEXT_PUBLIC_SPRAYFAUCET_ADDRESS,
-      "0xc602Db6844855E487ff6fCBe8126d715dB1B3650",
+      "0xA0076cE2954227f62eE7A9a35dD62c56DE516f00",
     ),
     abi: sprayFaucetAbi,
   },
   drawManager: {
     address: addr(
       process.env.NEXT_PUBLIC_DRAWMANAGER_ADDRESS,
-      "0x405795B9F0Fc0701D62B83fE53062435BF357A23",
+      "0x18E08293D58Fbf1E434671694879f24ef63e57a8",
     ),
     abi: drawManagerAbi,
   },
