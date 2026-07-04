@@ -67,17 +67,18 @@ See [`AJORA_SPEC.md` §15](./AJORA_SPEC.md#15-4-week-build-plan) for the detaile
 
 ## Deployments
 
-### Celo mainnet (chain 42220)
+### Celo mainnet (chain 42220) — wired core, sources verified (Sourcify exact match)
 
-| Contract | Address | Notes |
-|----------|---------|-------|
-| `PotVault` | [`0x975b5E91FD239511d3B7A2d421c1e40F122989B0`](https://celoscan.io/address/0x975b5E91FD239511d3B7A2d421c1e40F122989B0) | Stablecoin: cUSD · min contribution: 0.10 cUSD |
+| Contract | Address |
+|----------|---------|
+| `PotVault` | [`0x682F385c3034c42C94ad0e394B825348C518FA37`](https://celoscan.io/address/0x682F385c3034c42C94ad0e394B825348C518FA37) |
+| `StreakSBT` | [`0x4f2f814277a252f97FeCa7355CDC8d062338BC7d`](https://celoscan.io/address/0x4f2f814277a252f97FeCa7355CDC8d062338BC7d) |
+| `SprayFaucet` | [`0xF9A41E3c295D533C64f61CC5e3385Ba00a6B32Cb`](https://celoscan.io/address/0xF9A41E3c295D533C64f61CC5e3385Ba00a6B32Cb) |
+| `DrawManager` | [`0xfBCbE3FbE29F516077d773fd4B0F356F914F4A51`](https://celoscan.io/address/0xfBCbE3FbE29F516077d773fd4B0F356F914F4A51) |
 
-Machine-readable: [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json)
-
-> ℹ️ This is the initial Week-1 `PotVault`. `StreakSBT` (#2) and `SprayFaucet` (#3) are implemented
-> on `main`; the wired redeploy (PotVault + StreakSBT + SprayFaucet) ships with the deploy
-> pipeline in #20.
+Stablecoin: cUSD · min contribution / ticket value: 0.10 cUSD · full details + deprecated v0 vault:
+[`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json) ·
+runbook: [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md)
 
 ## License
 
