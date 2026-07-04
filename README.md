@@ -71,10 +71,10 @@ See [`AJORA_SPEC.md` §15](./AJORA_SPEC.md#15-4-week-build-plan) for the detaile
 
 | Contract | Address |
 |----------|---------|
-| `PotVault` | [`0x682F385c3034c42C94ad0e394B825348C518FA37`](https://celoscan.io/address/0x682F385c3034c42C94ad0e394B825348C518FA37) |
-| `StreakSBT` | [`0x4f2f814277a252f97FeCa7355CDC8d062338BC7d`](https://celoscan.io/address/0x4f2f814277a252f97FeCa7355CDC8d062338BC7d) |
-| `SprayFaucet` | [`0xF9A41E3c295D533C64f61CC5e3385Ba00a6B32Cb`](https://celoscan.io/address/0xF9A41E3c295D533C64f61CC5e3385Ba00a6B32Cb) |
-| `DrawManager` | [`0xfBCbE3FbE29F516077d773fd4B0F356F914F4A51`](https://celoscan.io/address/0xfBCbE3FbE29F516077d773fd4B0F356F914F4A51) |
+| `PotVault` | [`0x0A0354bA400191Ad323fF73581468601c3821C16`](https://celoscan.io/address/0x0A0354bA400191Ad323fF73581468601c3821C16) |
+| `StreakSBT` | [`0x8442Df756f1f3c55B2e9CCbA53FD85Ea17ef13DF`](https://celoscan.io/address/0x8442Df756f1f3c55B2e9CCbA53FD85Ea17ef13DF) |
+| `SprayFaucet` | [`0xc602Db6844855E487ff6fCBe8126d715dB1B3650`](https://celoscan.io/address/0xc602Db6844855E487ff6fCBe8126d715dB1B3650) |
+| `DrawManager` | [`0x405795B9F0Fc0701D62B83fE53062435BF357A23`](https://celoscan.io/address/0x405795B9F0Fc0701D62B83fE53062435BF357A23) |
 
 Stablecoin: cUSD · min contribution / ticket value: 0.10 cUSD · full details + deprecated v0 vault:
 [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json) ·
