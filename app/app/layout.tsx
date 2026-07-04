@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { WalletProvider } from "../hooks/useWallet";
+import { TabBar } from "../components/TabBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,8 +28,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="min-h-dvh bg-white text-gray-900 antialiased">
-        <WalletProvider>{children}</WalletProvider>
+      <body className="min-h-dvh bg-white pb-16 text-gray-900 antialiased">
+        <WalletProvider>
+          {children}
+          <TabBar />
+        </WalletProvider>
       </body>
     </html>
   );

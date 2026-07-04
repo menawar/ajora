@@ -2,6 +2,7 @@
 
 import { formatUnits } from "viem";
 import { ConnectBar } from "../components/ConnectBar";
+import { StreakChip } from "../components/StreakChip";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
 
@@ -35,6 +36,7 @@ export default function Home() {
       </header>
 
       <ConnectBar />
+      <StreakChip />
 
       <section className="rounded-2xl bg-gradient-to-br from-celo-green to-celo-gold p-5 text-white shadow-sm">
         <div className="text-sm opacity-90">Today&apos;s jara pot</div>
