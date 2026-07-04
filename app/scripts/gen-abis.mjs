@@ -12,7 +12,7 @@ const out = join(root, "..", "contracts", "out");
 const dest = join(root, "lib", "abi");
 mkdirSync(dest, { recursive: true });
 
-const contracts = ["PotVault", "StreakSBT", "SprayFaucet", "DrawManager"];
+const contracts = ["PotVault", "StreakSBT", "SprayFaucet", "DrawManager", "CrewRegistry"];
 
 for (const name of contracts) {
   const artifact = JSON.parse(readFileSync(join(out, `${name}.sol`, `${name}.json`), "utf8"));
