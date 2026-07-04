@@ -34,6 +34,25 @@ export const crewRegistryAbi = [
   },
   {
     "type": "function",
+    "name": "codeOf",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "codeOwner",
     "inputs": [
       {

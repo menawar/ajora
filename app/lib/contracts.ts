@@ -2,6 +2,7 @@ import { potVaultAbi } from "./abi/potVaultAbi";
 import { streakSBTAbi } from "./abi/streakSBTAbi";
 import { sprayFaucetAbi } from "./abi/sprayFaucetAbi";
 import { drawManagerAbi } from "./abi/drawManagerAbi";
+import { crewRegistryAbi } from "./abi/crewRegistryAbi";
 import { erc20Abi } from "./abi/erc20Abi";
 import { CUSD_ADDRESS } from "./chain";
 
@@ -44,4 +45,16 @@ export const contracts = {
     abi: drawManagerAbi,
   },
   cusd: { address: CUSD_ADDRESS, abi: erc20Abi },
+  crewRegistry: {
+    // No mainnet default yet: lands with the v4 completion (CompleteV4.s.sol).
+    address: addr(
+      process.env.NEXT_PUBLIC_CREWREGISTRY_ADDRESS,
+      "0x0000000000000000000000000000000000000000",
+    ),
+    abi: crewRegistryAbi,
+  },
 } as const;
+
+/** Crew features light up once the registry address is configured. */
+export const crewsEnabled =
+  (contracts.crewRegistry.address as string) !== "0x0000000000000000000000000000000000000000";
