@@ -55,8 +55,8 @@ contract Treasury is ITreasury {
     /// @inheritdoc ITreasury
     /// @dev Thin passthrough: DrawManager.recycleUnclaimed is already permissionless after
     ///      the claim window; this keeps the spec's Treasury surface for the sweep keeper.
-    function sweepUnclaimed(uint256 periodId) external {
-        drawManager.recycleUnclaimed(periodId);
+    function sweepUnclaimed(uint256 periodId) external returns (uint256 amount) {
+        return drawManager.recycleUnclaimed(periodId);
     }
 
     /// @notice Route treasury funds into a period's prize pot. Admin only.

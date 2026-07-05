@@ -70,7 +70,8 @@ contract YieldAdapter is IYieldAdapter {
         if (totalDeployed + amount > depositCap) revert CapExceeded();
         totalDeployed += amount;
 
-        if (!token.transferFrom(address(vault), address(this), amount)) revert TransferFailed();
+        // msg.sender == vault (onlyVault), spelled that way so the pull is visibly self-approved
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
         if (!token.approve(address(pool), amount)) revert TransferFailed();
         pool.supply(address(token), amount, address(this), 0);
         emit Deposited(amount);

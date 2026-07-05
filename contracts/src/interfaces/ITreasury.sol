@@ -13,6 +13,6 @@ interface ITreasury {
     function collectRake(uint256 amount, uint256 periodId) external;
 
     /// @notice Recycle a resolved period's unclaimed prize remainder forward. Permissionless
-    ///         once the claim window has passed.
-    function sweepUnclaimed(uint256 periodId) external;
+    ///         once the claim window has passed. Returns the amount recycled.
+    function sweepUnclaimed(uint256 periodId) external returns (uint256 amount);
 }
