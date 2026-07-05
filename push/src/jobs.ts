@@ -98,6 +98,32 @@ export async function runStreakJob(deps: JobDeps): Promise<JobReport> {
   return report;
 }
 
+/**
+ * Claim-expiry reminders (#62): two slots per win — "early" once ≤4 days remain,
+ * "final" once ≤1 day remains. Slot-scoped dedupe refs make each at-most-once.
+ */
+export async function runClaimJob(deps: JobDeps): Promise<JobReport> {
+  const now = deps.now ?? Date.now;
+  const fetchJson = deps.fetchJson ?? defaultFetchJson;
+  const report = empty("claim");
+
+  const digest = (await fetchJson(`${deps.indexerUrl}/notify/unclaimed`)) as {
+    rows: { address: string; periodId: string; amount: string; daysLeft: number }[];
+  };
+
+  for (const r of digest.rows) {
+    const slot = r.daysLeft <= 1 ? "final" : r.daysLeft <= 4 ? "early" : null;
+    if (!slot) continue;
+    await attempt(deps, report, now(), [r.address], "claim", `p${r.periodId}-${slot}`, {
+      title: slot === "final" ? "⏳ Last day to claim your jara!" : "💰 Your jara is waiting",
+      body: `${cusd(r.amount)} cUSD unclaimed — ${r.daysLeft} day${r.daysLeft === 1 ? "" : "s"} left before it recycles.`,
+      tag: `claim-${r.periodId}`,
+      url: "/wallet",
+    });
+  }
+  return report;
+}
+
 async function attempt(
   deps: JobDeps,
   report: JobReport,

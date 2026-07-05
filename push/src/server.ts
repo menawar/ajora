@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { PushStore } from "./store.ts";
-import { runDrawJob, runStreakJob, type JobDeps } from "./jobs.ts";
+import { runClaimJob, runDrawJob, runStreakJob, type JobDeps } from "./jobs.ts";
 import { configureVapid, makeSender, readVapidEnv } from "./webpush.ts";
 
 /**
@@ -76,6 +76,11 @@ export function buildApp(env: AppEnv): Hono {
     return c.json(await runStreakJob(env.jobs));
   });
 
+  app.post("/tick/claim", async (c) => {
+    if (!authed(c)) return c.json({ error: "unauthorized" }, 401);
+    return c.json(await runClaimJob(env.jobs));
+  });
+
   return app;
 }
 
@@ -103,6 +108,7 @@ function main(): void {
   setInterval(() => {
     runDrawJob(jobs).catch((err) => console.error("draw tick failed:", err));
     runStreakJob(jobs).catch((err) => console.error("streak tick failed:", err));
+    runClaimJob(jobs).catch((err) => console.error("claim tick failed:", err));
   }, TICK_MS).unref();
 
   const port = Number(process.env.PORT ?? 42070);
