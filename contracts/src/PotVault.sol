@@ -5,6 +5,7 @@ import { IERC20 } from "./interfaces/IERC20.sol";
 import { IPotVault } from "./interfaces/IPotVault.sol";
 import { IStreakSBT } from "./interfaces/IStreakSBT.sol";
 import { ICrewRegistry } from "./interfaces/ICrewRegistry.sol";
+import { IYieldAdapter } from "./interfaces/IYieldAdapter.sol";
 
 /// @title PotVault
 /// @notice Week-1 core of Ajora: custodies daily savings in a Mento stablecoin, mints draw
@@ -33,6 +34,21 @@ contract PotVault is IPotVault {
     /// @notice Observer notified of contributions for crew aggregation (optional, updatable).
     ICrewRegistry public crewRegistry;
 
+    /// @notice Routes idle principal to the yield venue (AJORA_SPEC.md §8.6). Optional.
+    IYieldAdapter public yieldAdapter;
+
+    /// @notice Adapter change staged behind the timelock (address(0) proposals detach yield).
+    IYieldAdapter public pendingYieldAdapter;
+
+    /// @notice Earliest timestamp the pending adapter can be applied; 0 = nothing proposed.
+    uint256 public yieldAdapterEta;
+
+    /// @notice Share of total assets (bps) that must stay liquid in-vault after deployIdle.
+    uint256 public liquidityBufferBps = 2_000;
+
+    /// @notice Delay between proposing and applying a yield adapter — users can exit first.
+    uint256 public constant ADAPTER_TIMELOCK = 24 hours;
+
     address public admin;
 
     /// @dev Ticket multiplier is scaled by 10: 10 = 1.0x, 15 = 1.5x, 30 = 3.0x.
@@ -52,11 +68,22 @@ contract PotVault is IPotVault {
     error NotSprayFaucet();
     error PeriodStillOpen();
     error ZeroAddress();
+    error NothingProposed();
+    error TimelockPending();
+    error AdapterNotDrained();
+    error BufferBreached();
+    error InvalidBps();
+    error NoAdapter();
 
     event StreakSBTUpdated(address indexed streakSBT);
     event SprayFaucetSet(address indexed sprayFaucet);
     event CrewRegistryUpdated(address indexed crewRegistry);
     event TicketsCredited(address indexed user, uint256 indexed periodId, uint256 tickets);
+    event YieldAdapterProposed(address indexed adapter, uint256 eta);
+    event YieldAdapterSet(address indexed adapter);
+    event LiquidityBufferSet(uint256 bps);
+    event PrincipalDeployed(uint256 amount);
+    event PrincipalRecalled(uint256 amount);
 
     constructor(IERC20 _token, uint256 _minContribution) {
         token = _token;
@@ -96,6 +123,74 @@ contract PotVault is IPotVault {
         if (sprayFaucet != address(0)) revert AlreadySet();
         sprayFaucet = _sprayFaucet;
         emit SprayFaucetSet(_sprayFaucet);
+    }
+
+    // ---------------------------------------------------------- yield routing
+
+    /// @notice Stage a yield adapter change behind the 24h timelock. Proposing address(0)
+    ///         detaches yield routing entirely. Admin only.
+    function proposeYieldAdapter(IYieldAdapter adapter) external onlyAdmin {
+        pendingYieldAdapter = adapter;
+        yieldAdapterEta = block.timestamp + ADAPTER_TIMELOCK;
+        emit YieldAdapterProposed(address(adapter), yieldAdapterEta);
+    }
+
+    /// @notice Apply the staged adapter once the timelock elapses. The outgoing adapter must
+    ///         be fully drained first (recallDeployed), so principal can never be stranded
+    ///         behind a venue the vault no longer talks to.
+    function applyYieldAdapter() external onlyAdmin {
+        if (yieldAdapterEta == 0) revert NothingProposed();
+        if (block.timestamp < yieldAdapterEta) revert TimelockPending();
+        if (address(yieldAdapter) != address(0) && yieldAdapter.totalDeployed() != 0) {
+            revert AdapterNotDrained();
+        }
+        yieldAdapter = pendingYieldAdapter;
+        pendingYieldAdapter = IYieldAdapter(address(0));
+        yieldAdapterEta = 0;
+        emit YieldAdapterSet(address(yieldAdapter));
+    }
+
+    /// @notice Set the in-vault liquidity buffer (bps of total assets). Admin only.
+    /// @dev The buffer only gates deployIdle; claims always auto-recall, so raising or
+    ///      lowering it never touches redeemability — just how much sits in the venue.
+    function setLiquidityBuffer(uint256 bps) external onlyAdmin {
+        if (bps > 10_000) revert InvalidBps();
+        liquidityBufferBps = bps;
+        emit LiquidityBufferSet(bps);
+    }
+
+    /// @notice Push idle principal into the yield venue, keeping the liquidity buffer
+    ///         in-vault. Admin only (the harvest keeper never touches principal).
+    function deployIdle(uint256 amount) external onlyAdmin {
+        IYieldAdapter adapter = yieldAdapter;
+        if (address(adapter) == address(0)) revert NoAdapter();
+
+        uint256 balance = token.balanceOf(address(this));
+        uint256 required = (balance + adapter.totalDeployed()) * liquidityBufferBps / 10_000;
+        if (amount > balance || balance - amount < required) revert BufferBreached();
+
+        if (!token.approve(address(adapter), amount)) revert TransferFailed();
+        adapter.deposit(amount);
+        emit PrincipalDeployed(amount);
+    }
+
+    /// @notice Recall deployed principal from the venue back into the vault. Admin only.
+    function recallDeployed(uint256 amount) external onlyAdmin {
+        IYieldAdapter adapter = yieldAdapter;
+        if (address(adapter) == address(0)) revert NoAdapter();
+        adapter.withdraw(amount);
+        emit PrincipalRecalled(amount);
+    }
+
+    /// @dev Claims never wait on the buffer: if the vault is short, pull the shortfall from
+    ///      the venue right now. Called after all state updates (CEI preserved).
+    function _ensureLiquidity(uint256 amount) internal {
+        uint256 balance = token.balanceOf(address(this));
+        if (balance >= amount) return;
+        IYieldAdapter adapter = yieldAdapter;
+        if (address(adapter) == address(0)) return; // transfer below will revert cleanly
+        adapter.withdraw(amount - balance);
+        emit PrincipalRecalled(amount - balance);
     }
 
     /// @inheritdoc IPotVault
@@ -145,6 +240,7 @@ contract PotVault is IPotVault {
         _principal[msg.sender][periodId] = 0;
         _periods[periodId].totalPrincipal -= amount;
 
+        _ensureLiquidity(amount);
         if (!token.transfer(msg.sender, amount)) revert TransferFailed();
         emit PrincipalClaimed(msg.sender, periodId, amount);
     }
@@ -156,6 +252,7 @@ contract PotVault is IPotVault {
 
         _winnings[msg.sender][periodId] = 0;
 
+        _ensureLiquidity(amount);
         if (!token.transfer(msg.sender, amount)) revert TransferFailed();
         emit WinningsClaimed(msg.sender, periodId, amount);
     }
