@@ -50,6 +50,9 @@ as strings:
 - `GET /users/:address` — profile aggregates + win history (win cards)
 - `GET /metrics/daily?days=` — DAU, new users, tx count, principal in, jara paid,
   d1/d7 retention, k-factor per day (spec §12 `daily_metrics`)
+- `GET /flags` — ring-detection heuristics over the spray graph (§13): reciprocal
+  sprays and 5+ repeat pairs. Leaderboards exclude flagged addresses by default;
+  pass `?includeFlagged=true` for the raw view (sybil-adjusted vs raw, §14)
 
 Plus the standard Ponder surfaces: GraphQL at `/` and `/graphql`, direct SQL
 over HTTP at `/sql/*` (`@ponder/client`).
