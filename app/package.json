@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "gen:abis": "node scripts/gen-abis.mjs",
     "e2e": "node scripts/e2e.mjs",
-    "keeper:tick": "node scripts/keeper-tick.mjs"
+    "keeper:tick": "node scripts/keeper-tick.mjs",
+    "metrics": "node scripts/collect-metrics.mjs"
   },
   "dependencies": {
     "next": "^15.1.6",
