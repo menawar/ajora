@@ -48,6 +48,7 @@ export const draws = onchainTable("draws", (t) => ({
   seed: t.bigint().notNull(),
   pot: t.bigint().notNull(),
   totalWinningWeight: t.bigint().notNull(),
+  resolvedAt: t.bigint().notNull(), // claim-window anchor (DrawManager.CLAIM_WINDOW)
 }));
 
 /**
