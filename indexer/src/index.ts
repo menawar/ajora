@@ -23,6 +23,7 @@ interface UserDelta {
   tickets?: bigint;
   streak?: number;
   multiplierX10?: number;
+  checkInDay?: bigint;
   verified?: boolean;
 }
 
@@ -155,6 +156,7 @@ ponder.on("StreakSBT:CheckedIn", async ({ event, context }) => {
   await upsertUser(context, event.args.user, event.block.timestamp, {
     streak: Number(event.args.streakDays),
     multiplierX10: Number(event.args.multiplierX10),
+    checkInDay: periodOf(event.block.timestamp),
   });
   await touch(context, event.args.user, event.block.timestamp);
 });
@@ -176,6 +178,7 @@ async function upsertUser(
       ticketsAllTime: delta.tickets ?? 0n,
       currentStreak: delta.streak ?? 0,
       multiplierX10: delta.multiplierX10 ?? 10,
+      lastCheckInDay: delta.checkInDay ?? 0n,
       verified: delta.verified ?? false,
     })
     .onConflictDoUpdate((row) => ({
@@ -184,6 +187,7 @@ async function upsertUser(
       ticketsAllTime: row.ticketsAllTime + (delta.tickets ?? 0n),
       currentStreak: delta.streak ?? row.currentStreak,
       multiplierX10: delta.multiplierX10 ?? row.multiplierX10,
+      lastCheckInDay: delta.checkInDay ?? row.lastCheckInDay,
       verified: delta.verified ?? row.verified,
     }));
 }

@@ -214,6 +214,55 @@ app.get("/users/:address", async (c) => {
 });
 
 /**
+ * Streak-at-risk addresses for the push service (#16): checked in yesterday but not yet
+ * today, so the streak breaks at the next rollover. Nudge window is the caller's concern.
+ */
+app.get("/notify/at-risk", async (c) => {
+  const today = currentPeriod();
+  const rows = await db
+    .select({ address: schema.users.address, streak: schema.users.currentStreak })
+    .from(schema.users)
+    .where(eq(schema.users.lastCheckInDay, today - 1n));
+  return json(c, { day: today, rows });
+});
+
+/**
+ * Draw outcome digest for the push service (#16): who to congratulate, who to console.
+ * `resolved: false` until the keeper reveals — callers poll after 00:08 UTC.
+ */
+app.get("/notify/draw/:id", async (c) => {
+  const periodId = BigInt(c.req.param("id"));
+  const [draw] = await db.select().from(schema.draws).where(eq(schema.draws.periodId, periodId));
+  if (!draw) return json(c, { resolved: false, periodId });
+
+  const pickers = await db
+    .select({
+      address: schema.picks.user,
+      number: schema.picks.number,
+      weight: schema.picks.weight,
+    })
+    .from(schema.picks)
+    .where(eq(schema.picks.periodId, periodId));
+
+  const winners = pickers
+    .filter((p) => p.number === draw.winningNumber)
+    .map((p) => ({
+      address: p.address,
+      share: draw.totalWinningWeight > 0n ? (draw.pot * p.weight) / draw.totalWinningWeight : 0n,
+    }));
+  const losers = pickers.filter((p) => p.number !== draw.winningNumber).map((p) => p.address);
+
+  return json(c, {
+    resolved: true,
+    periodId,
+    winningNumber: draw.winningNumber,
+    pot: draw.pot,
+    winners,
+    losers,
+  });
+});
+
+/**
  * Daily rollup (AJORA_SPEC.md §12 daily_metrics): DAU, new users, tx count,
  * principal in, jara paid, d1/d7 retention, k-factor. ?days=N window, default 30.
  */

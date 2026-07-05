@@ -9,6 +9,7 @@ export const users = onchainTable("users", (t) => ({
   ticketsAllTime: t.bigint().notNull(),
   currentStreak: t.integer().notNull(),
   multiplierX10: t.integer().notNull(), // 10 = 1.0x, mirrors StreakSBT
+  lastCheckInDay: t.bigint().notNull(), // 0 = never; feeds streak-at-risk nudges (#16)
   verified: t.boolean().notNull(),
 }));
 

@@ -5,6 +5,7 @@ import { formatUnits } from "viem";
 import { ConnectBar } from "../components/ConnectBar";
 import { Onboarding } from "../components/Onboarding";
 import { StreakChip } from "../components/StreakChip";
+import { PushToggle } from "../components/PushToggle";
 import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
@@ -42,6 +43,7 @@ export default function Home() {
       <Onboarding />
       <ConnectBar />
       <StreakChip />
+      <PushToggle />
 
       <section className="rounded-2xl bg-gradient-to-br from-celo-green to-celo-gold p-5 text-white shadow-sm">
         <div className="text-sm opacity-90">Today&apos;s jara pot</div>
