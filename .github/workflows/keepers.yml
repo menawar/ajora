@@ -1,0 +1,85 @@
+name: Keepers (wave 2)
+
+# Hourly: harvest venue yield into tonight's pot (#53).
+# Daily 01:15 UTC: sweep expired claim windows (#54), vest qualified referrals (#55),
+# and the dead-man's-switch draw check (#56) — an unresolved period with players
+# opens an alert issue.
+# Every job is an env-gated no-op until the v5 addresses are configured as repo
+# variables (YIELD_ADAPTER, TREASURY, CREW_REGISTRY, INDEXER_URL).
+
+on:
+  schedule:
+    - cron: "20 * * * *" # hourly harvest
+    - cron: "15 1 * * *" # daily sweep + vest + watchdog
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  harvest:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '20 * * * *'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Harvest
+        run: node scripts/keeper-extras.mjs harvest
+        env:
+          YIELD_ADAPTER: ${{ vars.YIELD_ADAPTER }}
+          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
+          DRY_RUN: ${{ secrets.KEEPER_PRIVATE_KEY == '' && '1' || '' }}
+
+  daily:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '15 1 * * *'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+
+      - name: Sweep expired claim windows
+        run: node scripts/keeper-extras.mjs sweep
+        env:
+          TREASURY: ${{ vars.TREASURY }}
+          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
+          DRY_RUN: ${{ secrets.KEEPER_PRIVATE_KEY == '' && '1' || '' }}
+
+      - name: Vest qualified referrals
+        run: node scripts/keeper-extras.mjs vest
+        env:
+          CREW_REGISTRY: ${{ vars.CREW_REGISTRY }}
+          INDEXER_URL: ${{ vars.INDEXER_URL }}
+          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
+          DRY_RUN: ${{ secrets.KEEPER_PRIVATE_KEY == '' && '1' || '' }}
+
+      - name: Draw watchdog
+        id: watchdog
+        run: node scripts/keeper-extras.mjs watchdog
+        continue-on-error: true
+
+      - name: Alert on missed draw
+        if: steps.watchdog.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list -R "$GITHUB_REPOSITORY" --label draw-missed --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" -R "$GITHUB_REPOSITORY" --body "Still unresolved at $(date -u +%FT%TZ)."
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" \
+              --title "Missed draw: yesterday has players but no resolution" \
+              --label draw-missed --label area:backend \
+              --body "Dead-man's switch (#56) tripped at $(date -u +%FT%TZ). Recovery: recommitSeed path in DEPLOYMENT.md."
+          fi
