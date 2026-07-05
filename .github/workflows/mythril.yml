@@ -1,0 +1,53 @@
+name: Mythril
+
+# Symbolic execution is slow (minutes per contract), so this runs weekly + on demand
+# rather than per-PR. Slither is the fast per-PR gate (ci.yml); Mythril goes deeper on
+# the money-bearing contracts. Findings land as a job summary + artifact for triage in
+# SECURITY-TRIAGE.md — the job fails only on Mythril errors, not on findings, so triage
+# stays a human step (issue #19).
+
+on:
+  schedule:
+    - cron: "17 4 * * 1" # Mondays 04:17 UTC
+  workflow_dispatch:
+
+jobs:
+  mythril:
+    name: Mythril (symbolic execution)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Flatten money-bearing contracts
+        run: |
+          mkdir -p mythril-out
+          for c in PotVault DrawManager SprayFaucet YieldAdapter Treasury CrewRegistry; do
+            forge flatten "src/$c.sol" -o "mythril-out/$c.flat.sol"
+          done
+
+      - name: Run Mythril
+        run: |
+          for c in PotVault DrawManager SprayFaucet YieldAdapter Treasury CrewRegistry; do
+            echo "=== $c ===" | tee -a mythril-out/report.txt
+            docker run --rm -v "$PWD/mythril-out:/src" mythril/myth:latest \
+              analyze "/src/$c.flat.sol" --solv 0.8.24 --execution-timeout 300 \
+              -o markdown >> mythril-out/report.txt 2>&1 || true
+          done
+
+      - name: Job summary
+        run: cat mythril-out/report.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mythril-report
+          path: contracts/mythril-out/report.txt
+          retention-days: 90
