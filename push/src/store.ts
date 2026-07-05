@@ -10,7 +10,7 @@ export interface Subscription {
   quietEnd: number;
 }
 
-export type SendKind = "won" | "lost" | "streak";
+export type SendKind = "won" | "lost" | "streak" | "claim";
 
 /**
  * SQLite-backed store (node:sqlite, zero native deps). The UNIQUE(endpoint, kind, ref)
