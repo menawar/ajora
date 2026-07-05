@@ -135,6 +135,22 @@ for (const u of users) {
 }
 for (const v of verifiedNow) if (!summary.verified.includes(v)) summary.verified.push(v);
 
+// Push delivery snapshot (#70): optional — the rollup works without a push service.
+let push = null;
+if (process.env.PUSH_URL) {
+  try {
+    const res = await fetch(`${process.env.PUSH_URL}/metrics`, {
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (res.ok) {
+      const m = await res.json();
+      push = { subscribers: m.subscribers, sends: m.sends };
+    }
+  } catch (err) {
+    console.warn(`push metrics unavailable: ${err.message}`);
+  }
+}
+
 const row = {
   periodId: Number(periodId),
   date: new Date(Number(startTs) * 1000).toISOString().slice(0, 10),
@@ -149,6 +165,7 @@ const row = {
   picks,
   checkIns,
   resolved,
+  push, // { subscribers, sends: [{kind, ok, failed}] } or null when no PUSH_URL
   note: "periodId-topic exact; CheckedIn/Verified block-window approximate",
 };
 
