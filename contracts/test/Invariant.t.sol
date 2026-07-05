@@ -128,8 +128,7 @@ contract VaultHandler is Test {
 
     function deployIdle(uint256 amount) external {
         uint256 balance = cusd.balanceOf(address(vault));
-        uint256 required =
-            (balance + adapter.totalDeployed()) * vault.liquidityBufferBps() / 10_000;
+        uint256 required = (balance + adapter.totalDeployed()) * vault.liquidityBufferBps() / 10_000;
         if (balance <= required) return;
         amount = bound(amount, 1, balance - required);
         vm.prank(vault.admin());
