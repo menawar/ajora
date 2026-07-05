@@ -48,6 +48,28 @@ jobs:
       - name: Typecheck & build
         run: npm run build
 
+  push-service:
+    name: Push service (backend)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: push
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # node:sqlite + native TS execution
+
+      - name: Install deps
+        run: npm install
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
   slither:
     name: Static analysis (Slither)
     runs-on: ubuntu-latest
