@@ -8,7 +8,7 @@
     "start": "node src/server.ts",
     "tick:draw": "node src/cli.ts draw",
     "tick:streak": "node src/cli.ts streak",
-    "test": "node --test test/",
+    "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit",
     "vapid": "web-push generate-vapid-keys"
   },
