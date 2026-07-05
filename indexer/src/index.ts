@@ -97,6 +97,7 @@ ponder.on("DrawManager:DrawResolved", async ({ event, context }) => {
     seed: event.args.seed,
     pot: event.args.pot,
     totalWinningWeight: event.args.totalWinningWeight,
+    resolvedAt: event.block.timestamp,
   });
 });
 

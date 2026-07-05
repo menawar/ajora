@@ -226,6 +226,65 @@ app.get("/notify/at-risk", async (c) => {
   return json(c, { day: today, rows });
 });
 
+/** Mirrors DrawManager.CLAIM_WINDOW: winners have 7 days from resolution to claim. */
+const CLAIM_WINDOW_S = 7n * 86_400n;
+
+/**
+ * Claim-expiry digest for the push service (#62): winners of still-claimable draws who
+ * have not finished collecting — never settled (no claimPrize) or settled but not
+ * withdrawn — with whole days left before the sweep recycles the remainder.
+ */
+app.get("/notify/unclaimed", async (c) => {
+  const now = BigInt(Math.floor(Date.now() / 1000));
+  const openDraws = await db
+    .select()
+    .from(schema.draws)
+    .where(gte(schema.draws.resolvedAt, now - CLAIM_WINDOW_S));
+
+  const rows: {
+    address: string;
+    periodId: bigint;
+    amount: bigint;
+    daysLeft: number;
+    stage: "unsettled" | "settled";
+  }[] = [];
+
+  for (const draw of openDraws) {
+    if (draw.totalWinningWeight === 0n) continue; // pot already recycled at resolution
+    const secondsLeft = draw.resolvedAt + CLAIM_WINDOW_S - now;
+    const daysLeft = Number((secondsLeft + 86_399n) / 86_400n);
+
+    const winners = await db
+      .select({
+        address: schema.picks.user,
+        weight: schema.picks.weight,
+        settled: schema.wins.amount,
+        claimed: schema.wins.claimed,
+      })
+      .from(schema.picks)
+      .leftJoin(
+        schema.wins,
+        and(eq(schema.wins.user, schema.picks.user), eq(schema.wins.periodId, schema.picks.periodId)),
+      )
+      .where(
+        and(eq(schema.picks.periodId, draw.periodId), eq(schema.picks.number, draw.winningNumber)),
+      );
+
+    for (const w of winners) {
+      if (w.claimed === true) continue;
+      rows.push({
+        address: w.address,
+        periodId: draw.periodId,
+        amount: w.settled ?? (draw.pot * w.weight) / draw.totalWinningWeight,
+        daysLeft,
+        stage: w.settled == null ? "unsettled" : "settled",
+      });
+    }
+  }
+
+  return json(c, { rows });
+});
+
 /**
  * Draw outcome digest for the push service (#16): who to congratulate, who to console.
  * `resolved: false` until the keeper reveals — callers poll after 00:08 UTC.
