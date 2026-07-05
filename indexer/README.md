@@ -53,6 +53,10 @@ as strings:
 - `GET /flags` — ring-detection heuristics over the spray graph (§13): reciprocal
   sprays and 5+ repeat pairs. Leaderboards exclude flagged addresses by default;
   pass `?includeFlagged=true` for the raw view (sybil-adjusted vs raw, §14)
+- `GET /notify/draw/:id` — draw digest for the push service (`push/`): winners with
+  pro-rata shares + losers; `resolved: false` until the keeper reveals
+- `GET /notify/at-risk` — addresses whose streak breaks at the next rollover
+  (checked in yesterday, not yet today), for the evening nudge
 
 Plus the standard Ponder surfaces: GraphQL at `/` and `/graphql`, direct SQL
 over HTTP at `/sql/*` (`@ponder/client`).
