@@ -168,10 +168,7 @@ contract PotVault is IPotVault {
     }
 
     /// @notice Month-1 blast-radius caps (spec §13). 0 disables a cap.
-    function setDepositCaps(uint256 _userPeriodCap, uint256 _maxTotalPrincipal)
-        external
-        onlyAdmin
-    {
+    function setDepositCaps(uint256 _userPeriodCap, uint256 _maxTotalPrincipal) external onlyAdmin {
         userPeriodCap = _userPeriodCap;
         maxTotalPrincipal = _maxTotalPrincipal;
         emit DepositCapsSet(_userPeriodCap, _maxTotalPrincipal);
@@ -258,16 +255,19 @@ contract PotVault is IPotVault {
 
         uint256 periodId = currentPeriod();
 
-        if (userPeriodCap != 0 && _principal[msg.sender][periodId] + amount > userPeriodCap) {
+        // Pull funds, then account — reads and writes both stay on the post-call side (the
+        // triaged pull-then-account pattern; Mento stablecoins have no transfer hooks).
+        // Cap breaches revert the whole tx, pull included.
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+
+        _principal[msg.sender][periodId] += amount;
+        if (userPeriodCap != 0 && _principal[msg.sender][periodId] > userPeriodCap) {
             revert UserCapExceeded();
         }
         totalPrincipalOutstanding += amount;
         if (maxTotalPrincipal != 0 && totalPrincipalOutstanding > maxTotalPrincipal) {
             revert TvlCapExceeded();
         }
-
-        // Pull funds. Checks-effects-interactions: state is updated before any external call below.
-        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
 
         // 1 ticket per `minContribution`, scaled by the caller's streak multiplier.
         uint256 baseTickets = amount / minContribution;
@@ -278,7 +278,6 @@ contract PotVault is IPotVault {
         p.totalPrincipal += amount;
         p.totalTickets += ticketsMinted;
 
-        _principal[msg.sender][periodId] += amount;
         _tickets[msg.sender][periodId] += ticketsMinted;
 
         emit Contributed(msg.sender, periodId, amount, ticketsMinted);
