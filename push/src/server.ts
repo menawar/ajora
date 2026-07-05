@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
 import { PushStore } from "./store.ts";
 import { runDrawJob, runStreakJob, type JobDeps } from "./jobs.ts";
@@ -19,6 +20,22 @@ export interface AppEnv {
 
 export function buildApp(env: AppEnv): Hono {
   const app = new Hono();
+
+  // The Mini App calls from its own origin (#57). ALLOWED_ORIGINS is a comma list;
+  // unset means wide open, which is only acceptable in dev — set it in production.
+  const allowed = (process.env.ALLOWED_ORIGINS ?? "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
+  app.use(
+    "*",
+    cors({
+      origin: allowed.length ? allowed : "*",
+      allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      maxAge: 86_400,
+    }),
+  );
 
   app.get("/health", (c) =>
     c.json({ ok: true, subscribers: env.store.metrics().subscribers }),
