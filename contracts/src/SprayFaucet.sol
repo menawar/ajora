@@ -22,6 +22,11 @@ contract SprayFaucet is ISprayFaucet {
     /// @notice Max sprays a user may send per day window.
     uint256 public constant MAX_SPRAYS_PER_DAY = 3;
 
+    /// @notice Max free tickets one address may *receive* per day, across welcome, sprays,
+    ///         and referral bonuses. A verified ring can each send 3/day — without this,
+    ///         they could funnel unbounded sponsor budget into one account (spec §13).
+    uint256 public constant MAX_FREE_RECEIVED_PER_DAY = 3;
+
     address public admin;
 
     /// @notice Attests identity (MiniPay phone verification now, Self protocol in #18).
@@ -33,10 +38,17 @@ contract SprayFaucet is ISprayFaucet {
     /// @notice CrewRegistry allowed to trigger referral bonuses. Set once.
     address public crewRegistry;
 
+    /// @notice Lifetime cap on free value per human (spec §13); 0 disables the cap.
+    uint256 public maxFreeValuePerUser;
+
     mapping(bytes32 campaignId => uint256) internal _campaignBalance;
     mapping(address user => bool) internal _verified;
     mapping(address user => bool) public welcomed;
     mapping(address user => mapping(uint256 day => uint256)) internal _spraysSent;
+    mapping(address user => mapping(uint256 day => uint256)) internal _freeReceived;
+
+    /// @notice Lifetime free value received per address, in token units.
+    mapping(address user => uint256) public freeValueOf;
 
     error NotAdmin();
     error NotVerifier();
@@ -48,6 +60,10 @@ contract SprayFaucet is ISprayFaucet {
     error NotCrewRegistry();
     error AlreadySet();
     error ZeroAddress();
+    error DailyFreeLimitReached();
+    error LifetimeFreeCapReached();
+
+    event FreeValueCapSet(uint256 cap);
 
     constructor(PotVault _vault, address _verifier) {
         if (_verifier == address(0)) revert ZeroAddress();
@@ -56,6 +72,8 @@ contract SprayFaucet is ISprayFaucet {
         ticketValue = _vault.minContribution();
         admin = msg.sender;
         verifier = _verifier;
+        // Month-1 default: 30 free tickets (~3 cUSD) per human, lifetime. Admin-tunable.
+        maxFreeValuePerUser = 30 * ticketValue;
         // The vault pulls jara funding via transferFrom; authorize it once.
         require(token.approve(address(_vault), type(uint256).max), "approve failed");
     }
@@ -92,6 +110,12 @@ contract SprayFaucet is ISprayFaucet {
         emit CampaignActivated(campaignId);
     }
 
+    /// @notice Tune the lifetime free-value cap per human; 0 disables it. Admin only.
+    function setFreeValueCap(uint256 cap) external onlyAdmin {
+        maxFreeValuePerUser = cap;
+        emit FreeValueCapSet(cap);
+    }
+
     // ----------------------------------------------------------- verification
 
     /// @notice Attest (or revoke) a user's identity verification. Verifier only.
@@ -120,7 +144,18 @@ contract SprayFaucet is ISprayFaucet {
 
     /// @dev Spend one ticketValue from the active campaign: back it in the period's jaraPot
     ///      and credit one ticket of odds to `user`. Reverts if the campaign can't cover it.
+    ///      Single choke point for the per-human free-value caps — welcome, spray, and
+    ///      referral bonuses all pass through here.
     function _issueFreeTicket(address user) internal returns (uint256 periodId) {
+        uint256 day = block.timestamp / 1 days;
+        if (_freeReceived[user][day] >= MAX_FREE_RECEIVED_PER_DAY) revert DailyFreeLimitReached();
+        _freeReceived[user][day] += 1;
+
+        freeValueOf[user] += ticketValue;
+        if (maxFreeValuePerUser != 0 && freeValueOf[user] > maxFreeValuePerUser) {
+            revert LifetimeFreeCapReached();
+        }
+
         bytes32 campaign = activeCampaign;
         uint256 balance = _campaignBalance[campaign];
         if (balance < ticketValue) revert InsufficientCampaignBudget();
@@ -166,5 +201,11 @@ contract SprayFaucet is ISprayFaucet {
     /// @inheritdoc ISprayFaucet
     function campaignBalance(bytes32 campaignId) public view returns (uint256) {
         return _campaignBalance[campaignId];
+    }
+
+    /// @notice Free tickets `user` may still receive today (for spray UX).
+    function dailyFreeLeft(address user) public view returns (uint256) {
+        uint256 got = _freeReceived[user][block.timestamp / 1 days];
+        return got >= MAX_FREE_RECEIVED_PER_DAY ? 0 : MAX_FREE_RECEIVED_PER_DAY - got;
     }
 }
