@@ -11,6 +11,10 @@
     "gen:abis": "node scripts/gen-abis.mjs",
     "e2e": "node scripts/e2e.mjs",
     "keeper:tick": "node scripts/keeper-tick.mjs",
+    "keeper:harvest": "node scripts/keeper-extras.mjs harvest",
+    "keeper:sweep": "node scripts/keeper-extras.mjs sweep",
+    "keeper:vest": "node scripts/keeper-extras.mjs vest",
+    "keeper:watchdog": "node scripts/keeper-extras.mjs watchdog",
     "metrics": "node scripts/collect-metrics.mjs"
   },
   "dependencies": {
