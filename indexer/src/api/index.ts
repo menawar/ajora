@@ -40,13 +40,32 @@ const clampLimit = (c: HonoContext, fallback: number) => {
   return Number.isFinite(n) ? Math.min(Math.max(1, Math.trunc(n)), 100) : fallback;
 };
 
+const clampOffset = (c: HonoContext) => {
+  const n = Number(c.req.query("offset") ?? 0);
+  return Number.isFinite(n) && n > 0 ? Math.min(Math.trunc(n), 10_000) : 0;
+};
+
+/** Boards are eventually consistent anyway; let clients/CDNs hold them briefly (#64). */
+const CACHE_HEADER = "public, max-age=30, stale-while-revalidate=60";
+
 /**
  * Ring-detection heuristics (AJORA_SPEC.md §13), computed from on-chain data alone.
  * Flags exclude accounts from leaderboards/reward views — they never touch funds.
  * - reciprocal-spray: A sprayed B and B sprayed A (2-cycles are the cheapest wash loop).
  * - repeat-pair: the same sender sprayed the same recipient 5+ times (drip farming).
  */
+/** Flag computation does two joins; amortize it across requests (#64). */
+const FLAGS_TTL_MS = 60_000;
+let flagsCache: { at: number; flags: Map<string, string[]> } | null = null;
+
 async function computeFlags(): Promise<Map<string, string[]>> {
+  if (flagsCache && Date.now() - flagsCache.at < FLAGS_TTL_MS) return flagsCache.flags;
+  const flags = await computeFlagsUncached();
+  flagsCache = { at: Date.now(), flags };
+  return flags;
+}
+
+async function computeFlagsUncached(): Promise<Map<string, string[]>> {
   const back = alias(schema.sprays, "back");
   const reciprocal = await db
     .selectDistinct({ a: schema.sprays.from, b: schema.sprays.to })
@@ -110,8 +129,10 @@ app.get("/leaderboard/savers", async (c) => {
     .where(where)
     .groupBy(schema.contributions.user)
     .orderBy(desc(sum(schema.contributions.amount)))
-    .limit(clampLimit(c, 20));
-  return json(c, { period, excludedFlagged: flagged.length, rows });
+    .limit(clampLimit(c, 20))
+    .offset(clampOffset(c));
+  c.header("Cache-Control", CACHE_HEADER);
+  return json(c, { period, offset: clampOffset(c), excludedFlagged: flagged.length, rows });
 });
 
 /** All-time boards over the users table: ?by=saved (default) | won | streak. */
@@ -131,8 +152,10 @@ app.get("/leaderboard/alltime", async (c) => {
       flagged.length ? notInArray(schema.users.address, flagged as `0x${string}`[]) : undefined,
     )
     .orderBy(order)
-    .limit(clampLimit(c, 20));
-  return json(c, { by, excludedFlagged: flagged.length, rows });
+    .limit(clampLimit(c, 20))
+    .offset(clampOffset(c));
+  c.header("Cache-Control", CACHE_HEADER);
+  return json(c, { by, offset: clampOffset(c), excludedFlagged: flagged.length, rows });
 });
 
 /** Period state: totals while open, draw result + winners once resolved. */
@@ -224,6 +247,65 @@ app.get("/notify/at-risk", async (c) => {
     .from(schema.users)
     .where(eq(schema.users.lastCheckInDay, today - 1n));
   return json(c, { day: today, rows });
+});
+
+/** Mirrors DrawManager.CLAIM_WINDOW: winners have 7 days from resolution to claim. */
+const CLAIM_WINDOW_S = 7n * 86_400n;
+
+/**
+ * Claim-expiry digest for the push service (#62): winners of still-claimable draws who
+ * have not finished collecting — never settled (no claimPrize) or settled but not
+ * withdrawn — with whole days left before the sweep recycles the remainder.
+ */
+app.get("/notify/unclaimed", async (c) => {
+  const now = BigInt(Math.floor(Date.now() / 1000));
+  const openDraws = await db
+    .select()
+    .from(schema.draws)
+    .where(gte(schema.draws.resolvedAt, now - CLAIM_WINDOW_S));
+
+  const rows: {
+    address: string;
+    periodId: bigint;
+    amount: bigint;
+    daysLeft: number;
+    stage: "unsettled" | "settled";
+  }[] = [];
+
+  for (const draw of openDraws) {
+    if (draw.totalWinningWeight === 0n) continue; // pot already recycled at resolution
+    const secondsLeft = draw.resolvedAt + CLAIM_WINDOW_S - now;
+    const daysLeft = Number((secondsLeft + 86_399n) / 86_400n);
+
+    const winners = await db
+      .select({
+        address: schema.picks.user,
+        weight: schema.picks.weight,
+        settled: schema.wins.amount,
+        claimed: schema.wins.claimed,
+      })
+      .from(schema.picks)
+      .leftJoin(
+        schema.wins,
+        and(eq(schema.wins.user, schema.picks.user), eq(schema.wins.periodId, schema.picks.periodId)),
+      )
+      .where(
+        and(eq(schema.picks.periodId, draw.periodId), eq(schema.picks.number, draw.winningNumber)),
+      );
+
+    for (const w of winners) {
+      if (w.claimed === true) continue;
+      rows.push({
+        address: w.address,
+        periodId: draw.periodId,
+        amount: w.settled ?? (draw.pot * w.weight) / draw.totalWinningWeight,
+        daysLeft,
+        stage: w.settled == null ? "unsettled" : "settled",
+      });
+    }
+  }
+
+  return json(c, { rows });
 });
 
 /**

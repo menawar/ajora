@@ -1,7 +1,8 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
 import { PushStore } from "./store.ts";
-import { runDrawJob, runStreakJob, type JobDeps } from "./jobs.ts";
+import { runClaimJob, runDrawJob, runStreakJob, type JobDeps } from "./jobs.ts";
 import { configureVapid, makeSender, readVapidEnv } from "./webpush.ts";
 
 /**
@@ -19,6 +20,22 @@ export interface AppEnv {
 
 export function buildApp(env: AppEnv): Hono {
   const app = new Hono();
+
+  // The Mini App calls from its own origin (#57). ALLOWED_ORIGINS is a comma list;
+  // unset means wide open, which is only acceptable in dev — set it in production.
+  const allowed = (process.env.ALLOWED_ORIGINS ?? "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
+  app.use(
+    "*",
+    cors({
+      origin: allowed.length ? allowed : "*",
+      allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      maxAge: 86_400,
+    }),
+  );
 
   app.get("/health", (c) =>
     c.json({ ok: true, subscribers: env.store.metrics().subscribers }),
@@ -76,6 +93,11 @@ export function buildApp(env: AppEnv): Hono {
     return c.json(await runStreakJob(env.jobs));
   });
 
+  app.post("/tick/claim", async (c) => {
+    if (!authed(c)) return c.json({ error: "unauthorized" }, 401);
+    return c.json(await runClaimJob(env.jobs));
+  });
+
   return app;
 }
 
@@ -103,6 +125,7 @@ function main(): void {
   setInterval(() => {
     runDrawJob(jobs).catch((err) => console.error("draw tick failed:", err));
     runStreakJob(jobs).catch((err) => console.error("streak tick failed:", err));
+    runClaimJob(jobs).catch((err) => console.error("claim tick failed:", err));
   }, TICK_MS).unref();
 
   const port = Number(process.env.PORT ?? 42070);

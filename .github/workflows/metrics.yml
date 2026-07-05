@@ -36,6 +36,8 @@ jobs:
       - name: Collect
         run: node scripts/collect-metrics.mjs ${{ inputs.periodId }}
         working-directory: app
+        env:
+          PUSH_URL: ${{ vars.PUSH_URL }} # optional; rollup skips push metrics when unset
 
       - name: Commit rollup
         run: |

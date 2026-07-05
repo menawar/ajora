@@ -9,6 +9,7 @@ import {
   payouts,
   referrals,
   userDays,
+  campaignState,
 } from "ponder:schema";
 
 type EventWithLog = { transaction: { hash: `0x${string}` }; log: { logIndex: number } };
@@ -16,6 +17,9 @@ const logId = (event: EventWithLog) => `${event.transaction.hash}-${event.log.lo
 
 /** Mirrors PotVault.currentPeriod(): one period per UTC day. */
 const periodOf = (timestamp: bigint) => timestamp / 86_400n;
+
+/** The vault's stablecoin (cUSD, single-token v3). Multi-vault configs map this per vault. */
+const STABLECOIN = "0x765DE816845861e75A25fCA122bb6898B8B1282a" as const;
 
 interface UserDelta {
   saved?: bigint;
@@ -33,6 +37,7 @@ ponder.on("PotVault:Contributed", async ({ event, context }) => {
     user: event.args.user,
     periodId: event.args.periodId,
     amount: event.args.amount,
+    token: STABLECOIN,
     tickets: event.args.ticketsMinted,
     timestamp: event.block.timestamp,
   });
@@ -97,6 +102,7 @@ ponder.on("DrawManager:DrawResolved", async ({ event, context }) => {
     seed: event.args.seed,
     pot: event.args.pot,
     totalWinningWeight: event.args.totalWinningWeight,
+    resolvedAt: event.block.timestamp,
   });
 });
 
@@ -118,13 +124,22 @@ ponder.on("DrawManager:PrizeClaimed", async ({ event, context }) => {
 
 // Tickets are NOT counted here: SprayFaucet credits odds through
 // PotVault.creditTickets, which emits TicketsCredited in the same tx.
+ponder.on("SprayFaucet:CampaignActivated", async ({ event, context }) => {
+  await context.db
+    .insert(campaignState)
+    .values({ id: "active", campaignId: event.args.campaignId })
+    .onConflictDoUpdate({ campaignId: event.args.campaignId });
+});
+
 ponder.on("SprayFaucet:Sprayed", async ({ event, context }) => {
+  const active = await context.db.find(campaignState, { id: "active" });
   await context.db.insert(sprays).values({
     id: logId(event),
     from: event.args.from,
     to: event.args.to,
     periodId: event.args.periodId,
     value: event.args.value,
+    campaignId: active?.campaignId ?? `0x${"0".repeat(64)}`,
     timestamp: event.block.timestamp,
   });
   await touch(context, event.args.from, event.block.timestamp);
