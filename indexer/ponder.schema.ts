@@ -18,6 +18,7 @@ export const contributions = onchainTable("contributions", (t) => ({
   user: t.hex().notNull(),
   periodId: t.bigint().notNull(),
   amount: t.bigint().notNull(),
+  token: t.hex().notNull(), // §12 parity; constant until multi-stablecoin vaults land
   tickets: t.bigint().notNull(),
   timestamp: t.bigint().notNull(),
 }));
@@ -39,7 +40,14 @@ export const sprays = onchainTable("sprays", (t) => ({
   to: t.hex().notNull(),
   periodId: t.bigint().notNull(),
   value: t.bigint().notNull(),
+  campaignId: t.hex().notNull(), // §12: which sponsor budget backed this spray
   timestamp: t.bigint().notNull(),
+}));
+
+/** Singleton mirror of SprayFaucet.activeCampaign, kept via CampaignActivated events. */
+export const campaignState = onchainTable("campaign_state", (t) => ({
+  id: t.text().primaryKey(), // always "active"
+  campaignId: t.hex().notNull(),
 }));
 
 export const draws = onchainTable("draws", (t) => ({
