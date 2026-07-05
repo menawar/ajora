@@ -1,0 +1,34 @@
+[
+  {
+    "periodId": 20637,
+    "date": "2026-07-03",
+    "txCount": 0,
+    "activeUsers": 0,
+    "newUsers": 0,
+    "contributions": 0,
+    "principalIn": "0",
+    "prizesPaid": "0",
+    "sprays": 0,
+    "welcomes": 0,
+    "picks": 0,
+    "checkIns": 0,
+    "resolved": null,
+    "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
+  },
+  {
+    "periodId": 20638,
+    "date": "2026-07-04",
+    "txCount": 0,
+    "activeUsers": 0,
+    "newUsers": 0,
+    "contributions": 0,
+    "principalIn": "0",
+    "prizesPaid": "0",
+    "sprays": 0,
+    "welcomes": 0,
+    "picks": 0,
+    "checkIns": 0,
+    "resolved": null,
+    "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
+  }
+]

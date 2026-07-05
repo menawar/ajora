@@ -1,0 +1,47 @@
+name: Nightly metrics rollup
+
+# Scans yesterday's on-chain logs and commits the aggregate to metrics/*.json.
+# Vercel rebuilds on push, so /stats always shows the latest rollup — a proper
+# indexer (#14) replaces the data source without changing the JSON shape.
+on:
+  schedule:
+    - cron: "40 0 * * *" # after the keeper's reveal window
+  workflow_dispatch:
+    inputs:
+      periodId:
+        description: "Specific period to (re)collect (optional)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: metrics
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm install
+        working-directory: app
+
+      - name: Collect
+        run: node scripts/collect-metrics.mjs ${{ inputs.periodId }}
+        working-directory: app
+
+      - name: Commit rollup
+        run: |
+          git config user.name "ajora-metrics"
+          git config user.email "metrics@users.noreply.github.com"
+          git add metrics/
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "chore(metrics): rollup $(date -u +%F)"
+          git push
