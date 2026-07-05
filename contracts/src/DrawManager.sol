@@ -19,6 +19,7 @@ contract DrawManager is IDrawManager {
     struct Draw {
         bool resolved;
         uint8 winningNumber;
+        uint64 resolvedAt; // claim window anchor — late resolutions still get a full window
         uint256 seed;
         uint256 pot; // jaraPot snapshotted at resolution
         uint256 totalWinningWeight; // sum of weights on the winning number
@@ -50,6 +51,10 @@ contract DrawManager is IDrawManager {
     ///         anchor safely after the period closes.
     uint256 public constant ANCHOR_DELAY = 1200;
 
+    /// @notice How long winners have to claim after resolution before the remainder is
+    ///         recycled into the current pot (spec §6 sink).
+    uint256 public constant CLAIM_WINDOW = 7 days;
+
     error NotAdmin();
     error NotKeeper();
     error InvalidNumber();
@@ -67,6 +72,9 @@ contract DrawManager is IDrawManager {
     error AnchorExpired();
     error AnchorStillLive();
     error ZeroAddress();
+    error ClaimWindowClosed();
+    error WindowStillOpen();
+    error NothingToRecycle();
 
     constructor(PotVault _vault, address _keeper) {
         if (_keeper == address(0)) revert ZeroAddress();
@@ -206,6 +214,7 @@ contract DrawManager is IDrawManager {
         d.resolved = true;
         d.seed = seed;
         d.winningNumber = winningNumber;
+        d.resolvedAt = uint64(block.timestamp);
         d.totalWinningWeight = totalWinningWeight;
 
         if (totalWinningWeight == 0) {
@@ -229,6 +238,7 @@ contract DrawManager is IDrawManager {
     function claimPrize(uint256 periodId) external returns (uint256 amount) {
         Draw storage d = _draws[periodId];
         if (!d.resolved) revert NotResolved();
+        if (block.timestamp > uint256(d.resolvedAt) + CLAIM_WINDOW) revert ClaimWindowClosed();
         if (!isWinner(msg.sender, periodId)) revert NotAWinner();
         if (claimed[msg.sender][periodId]) revert AlreadyClaimed();
         claimed[msg.sender][periodId] = true;
@@ -240,5 +250,23 @@ contract DrawManager is IDrawManager {
         // pro-rata shares never exceeds the snapshotted pot (rounding dust stays behind).
         vault.settleWinnings(msg.sender, periodId, amount);
         emit PrizeClaimed(msg.sender, periodId, amount);
+    }
+
+    /// @notice Recycle whatever is left of a resolved period's pot — unclaimed prizes plus
+    ///         pro-rata rounding dust — into the current period. Permissionless once the
+    ///         claim window has passed (the Treasury sweep keeper calls it in practice).
+    /// @dev Settled winnings are untouchable here: settleWinnings already moved them out of
+    ///      the period's jaraPot into per-user credits, which never expire.
+    function recycleUnclaimed(uint256 periodId) external returns (uint256 amount) {
+        Draw storage d = _draws[periodId];
+        if (!d.resolved) revert NotResolved();
+        if (block.timestamp <= uint256(d.resolvedAt) + CLAIM_WINDOW) revert WindowStillOpen();
+
+        amount = vault.periodInfo(periodId).jaraPot;
+        if (amount == 0) revert NothingToRecycle();
+
+        uint256 toPeriod = vault.currentPeriod();
+        vault.rollJara(periodId, toPeriod, amount);
+        emit JaraRecycled(periodId, toPeriod, amount);
     }
 }
