@@ -22,6 +22,30 @@ accepted set — any other finding fails the build.
 | `reentrancy-benign` / `reentrancy-events` | token pulls in `contribute` / `fundJara` / `fundSponsorPool`; event ordering | Pull-then-account is the canonical vault pattern (accounting before a failed pull would be worse). Tokens are whitelisted Mento stablecoins (no transfer hooks). Event-after-call is cosmetic. |
 | `timestamp` | period / day windows | The whole game is defined in day windows; miner drift of seconds is immaterial and cannot move a draw's seed (see RANDOMNESS.md). |
 
+## Fixed (2026-07-05, #7 yield layer + #19 guards)
+
+| Finding | Fix |
+|---|---|
+| `arbitrary-send-erc20` on `YieldAdapter.deposit` | Pull rewritten as `transferFrom(msg.sender, …)` — semantically identical (`deposit` is `onlyVault`, so `msg.sender` **is** the vault) and visibly self-approved |
+| `unused-return` on `Treasury.sweepUnclaimed` | Sweep returns the recycled amount straight through |
+| `reentrancy-no-eth` on `contribute` cap checks | Cap checks moved to the post-pull side with the rest of accounting — no reads of claim-relevant state before the token call |
+
+## Hardening controls (#19), where they live, and what proves them
+
+| Control | Location | Proven by |
+|---|---|---|
+| Circuit breaker — blocks money-in only | `PotVault.pause` gates `contribute`/`deployIdle`; claims exempt | `PotVaultGuards.t.sol::test_ClaimsStillWorkWhilePaused` |
+| Timelocked unpause (24h) | `PotVault.unpause` + `UNPAUSE_TIMELOCK` | `test_UnpauseWaitsForTimelock` |
+| Month-1 deposit caps (per-user-period + TVL) | `PotVault.setDepositCaps`, checks in `contribute` | `test_UserPeriodCapEnforcedAcrossTopUps`, `test_TvlCapCountsOutstandingNotLifetime`, invariant `OutstandingPrincipalCounterIsExact` |
+| Yield venue whitelist + timelock | venue immutable per `YieldAdapter`; vault swap via 24h propose/apply + drain-first | `PotVaultYield.integration.t.sol` wiring tests |
+| Venue deposit cap | `YieldAdapter.depositCap` | `YieldAdapter.t.sol` cap tests |
+| Liquidity buffer + auto-recall | `PotVault.deployIdle` / `_ensureLiquidity` | buffer + auto-recall tests, Aave fork suite |
+| Harvest can't strand yield | `YieldAdapter.harvest` rejects past periods; only exit is `fundJara` | `test_RevertWhenHarvestIntoResolvedPastPeriod` |
+| Money conservation under fuzzing | `Invariant.t.sol` — 2 invariants over randomized contribute/claim/settle/deploy/recall/accrue/harvest | CI |
+
+Still open on #19: Mythril in CI (deliberately deferred — the Slither gate is live and
+Mythril's runtime cost wants its own scheduled workflow) and the external-review packet.
+
 ## Deliberate zero-allowed setters
 
 `PotVault.setStreakSBT(0)` (falls back to flat 1.0x) and `PotVault.setCrewRegistry(0)`

@@ -49,6 +49,23 @@ contract PotVault is IPotVault {
     /// @notice Delay between proposing and applying a yield adapter — users can exit first.
     uint256 public constant ADAPTER_TIMELOCK = 24 hours;
 
+    /// @notice When the circuit breaker tripped; 0 = not paused. Pause blocks money-in
+    ///         (contribute, deployIdle) only — claims always work, that's the no-loss deal.
+    uint256 public pausedAt;
+
+    /// @notice Cool-down before unpause (spec §13): after an incident pause, users get a
+    ///         full day of notice before deposits resume.
+    uint256 public constant UNPAUSE_TIMELOCK = 24 hours;
+
+    /// @notice Max principal per user per period; 0 = uncapped (spec §13 month-1 caps).
+    uint256 public userPeriodCap;
+
+    /// @notice Max total outstanding principal across all periods; 0 = uncapped.
+    uint256 public maxTotalPrincipal;
+
+    /// @notice Running sum of unredeemed principal, for the TVL cap.
+    uint256 public totalPrincipalOutstanding;
+
     address public admin;
 
     /// @dev Ticket multiplier is scaled by 10: 10 = 1.0x, 15 = 1.5x, 30 = 3.0x.
@@ -74,6 +91,11 @@ contract PotVault is IPotVault {
     error BufferBreached();
     error InvalidBps();
     error NoAdapter();
+    error IsPaused();
+    error NotPaused();
+    error UnpauseTimelocked();
+    error UserCapExceeded();
+    error TvlCapExceeded();
 
     event StreakSBTUpdated(address indexed streakSBT);
     event SprayFaucetSet(address indexed sprayFaucet);
@@ -84,6 +106,8 @@ contract PotVault is IPotVault {
     event LiquidityBufferSet(uint256 bps);
     event PrincipalDeployed(uint256 amount);
     event PrincipalRecalled(uint256 amount);
+    event CircuitBreaker(bool active);
+    event DepositCapsSet(uint256 userPeriodCap, uint256 maxTotalPrincipal);
 
     constructor(IERC20 _token, uint256 _minContribution) {
         token = _token;
@@ -125,6 +149,31 @@ contract PotVault is IPotVault {
         emit SprayFaucetSet(_sprayFaucet);
     }
 
+    // --------------------------------------------------------- circuit breaker
+
+    /// @notice Trip the circuit breaker: deposits and yield deployment stop immediately.
+    ///         Claims are deliberately exempt — pausing can never trap user money.
+    function pause() external onlyAdmin {
+        pausedAt = block.timestamp;
+        emit CircuitBreaker(true);
+    }
+
+    /// @notice Lift the breaker after the 24h cool-down (spec §13: timelock on unpause),
+    ///         so users see the all-clear coming before deposits resume.
+    function unpause() external onlyAdmin {
+        if (pausedAt == 0) revert NotPaused();
+        if (block.timestamp < pausedAt + UNPAUSE_TIMELOCK) revert UnpauseTimelocked();
+        pausedAt = 0;
+        emit CircuitBreaker(false);
+    }
+
+    /// @notice Month-1 blast-radius caps (spec §13). 0 disables a cap.
+    function setDepositCaps(uint256 _userPeriodCap, uint256 _maxTotalPrincipal) external onlyAdmin {
+        userPeriodCap = _userPeriodCap;
+        maxTotalPrincipal = _maxTotalPrincipal;
+        emit DepositCapsSet(_userPeriodCap, _maxTotalPrincipal);
+    }
+
     // ---------------------------------------------------------- yield routing
 
     /// @notice Stage a yield adapter change behind the 24h timelock. Proposing address(0)
@@ -162,6 +211,7 @@ contract PotVault is IPotVault {
     /// @notice Push idle principal into the yield venue, keeping the liquidity buffer
     ///         in-vault. Admin only (the harvest keeper never touches principal).
     function deployIdle(uint256 amount) external onlyAdmin {
+        if (pausedAt != 0) revert IsPaused();
         IYieldAdapter adapter = yieldAdapter;
         if (address(adapter) == address(0)) revert NoAdapter();
 
@@ -200,12 +250,24 @@ contract PotVault is IPotVault {
 
     /// @inheritdoc IPotVault
     function contribute(uint256 amount) external returns (uint256 ticketsMinted) {
+        if (pausedAt != 0) revert IsPaused();
         if (amount < minContribution) revert BelowMinimum();
 
         uint256 periodId = currentPeriod();
 
-        // Pull funds. Checks-effects-interactions: state is updated before any external call below.
+        // Pull funds, then account — reads and writes both stay on the post-call side (the
+        // triaged pull-then-account pattern; Mento stablecoins have no transfer hooks).
+        // Cap breaches revert the whole tx, pull included.
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+
+        _principal[msg.sender][periodId] += amount;
+        if (userPeriodCap != 0 && _principal[msg.sender][periodId] > userPeriodCap) {
+            revert UserCapExceeded();
+        }
+        totalPrincipalOutstanding += amount;
+        if (maxTotalPrincipal != 0 && totalPrincipalOutstanding > maxTotalPrincipal) {
+            revert TvlCapExceeded();
+        }
 
         // 1 ticket per `minContribution`, scaled by the caller's streak multiplier.
         uint256 baseTickets = amount / minContribution;
@@ -216,7 +278,6 @@ contract PotVault is IPotVault {
         p.totalPrincipal += amount;
         p.totalTickets += ticketsMinted;
 
-        _principal[msg.sender][periodId] += amount;
         _tickets[msg.sender][periodId] += ticketsMinted;
 
         emit Contributed(msg.sender, periodId, amount, ticketsMinted);
@@ -239,6 +300,7 @@ contract PotVault is IPotVault {
 
         _principal[msg.sender][periodId] = 0;
         _periods[periodId].totalPrincipal -= amount;
+        totalPrincipalOutstanding -= amount;
 
         _ensureLiquidity(amount);
         if (!token.transfer(msg.sender, amount)) revert TransferFailed();

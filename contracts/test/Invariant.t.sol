@@ -201,4 +201,14 @@ contract VaultInvariantTest is StdInvariant, Test {
             "vault balance + deployed != principal + jara + winnings"
         );
     }
+
+    /// @dev The TVL-cap counter must mirror real outstanding principal exactly, or caps
+    ///      would drift open (undercount) or jam deposits (overcount) over time.
+    function invariant_OutstandingPrincipalCounterIsExact() public view {
+        assertEq(
+            vault.totalPrincipalOutstanding(),
+            handler.ghostPrincipal(),
+            "totalPrincipalOutstanding != sum of unredeemed contributions"
+        );
+    }
 }
