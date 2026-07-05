@@ -11,6 +11,7 @@ import {
   desc,
   eq,
   gte,
+  notInArray,
   sql,
   sum,
 } from "ponder";
@@ -39,9 +40,66 @@ const clampLimit = (c: HonoContext, fallback: number) => {
   return Number.isFinite(n) ? Math.min(Math.max(1, Math.trunc(n)), 100) : fallback;
 };
 
-/** Top savers for one period (default: today). Feeds the "today's top savers" board. */
+/**
+ * Ring-detection heuristics (AJORA_SPEC.md §13), computed from on-chain data alone.
+ * Flags exclude accounts from leaderboards/reward views — they never touch funds.
+ * - reciprocal-spray: A sprayed B and B sprayed A (2-cycles are the cheapest wash loop).
+ * - repeat-pair: the same sender sprayed the same recipient 5+ times (drip farming).
+ */
+async function computeFlags(): Promise<Map<string, string[]>> {
+  const back = alias(schema.sprays, "back");
+  const reciprocal = await db
+    .selectDistinct({ a: schema.sprays.from, b: schema.sprays.to })
+    .from(schema.sprays)
+    .innerJoin(back, and(eq(back.from, schema.sprays.to), eq(back.to, schema.sprays.from)));
+
+  const repeat = await db
+    .select({ a: schema.sprays.from, b: schema.sprays.to })
+    .from(schema.sprays)
+    .groupBy(schema.sprays.from, schema.sprays.to)
+    .having(sql`count(*) >= 5`);
+
+  const flags = new Map<string, string[]>();
+  const add = (addr: string, reason: string) => {
+    const list = flags.get(addr) ?? [];
+    if (!list.includes(reason)) list.push(reason);
+    flags.set(addr, list);
+  };
+  for (const { a, b } of reciprocal) {
+    add(a, "reciprocal-spray");
+    add(b, "reciprocal-spray");
+  }
+  for (const { a, b } of repeat) {
+    add(a, "repeat-pair");
+    add(b, "repeat-pair");
+  }
+  return flags;
+}
+
+/** Flagged accounts + reasons, for the sybil-adjusted metrics view. */
+app.get("/flags", async (c) => {
+  const flags = await computeFlags();
+  return json(
+    c,
+    [...flags.entries()].map(([address, reasons]) => ({ address, reasons })),
+  );
+});
+
+const wantsFlagged = (c: HonoContext) => c.req.query("includeFlagged") === "true";
+
+/**
+ * Top savers for one period (default: today). Feeds the "today's top savers" board.
+ * Flagged accounts are excluded unless ?includeFlagged=true (raw view).
+ */
 app.get("/leaderboard/savers", async (c) => {
   const period = BigInt(c.req.query("period") ?? currentPeriod());
+  const flagged = wantsFlagged(c) ? [] : [...(await computeFlags()).keys()];
+  const where = flagged.length
+    ? and(
+        eq(schema.contributions.periodId, period),
+        notInArray(schema.contributions.user, flagged as `0x${string}`[]),
+      )
+    : eq(schema.contributions.periodId, period);
   const rows = await db
     .select({
       address: schema.contributions.user,
@@ -49,11 +107,11 @@ app.get("/leaderboard/savers", async (c) => {
       tickets: sum(schema.contributions.tickets),
     })
     .from(schema.contributions)
-    .where(eq(schema.contributions.periodId, period))
+    .where(where)
     .groupBy(schema.contributions.user)
     .orderBy(desc(sum(schema.contributions.amount)))
     .limit(clampLimit(c, 20));
-  return json(c, { period, rows });
+  return json(c, { period, excludedFlagged: flagged.length, rows });
 });
 
 /** All-time boards over the users table: ?by=saved (default) | won | streak. */
@@ -65,8 +123,16 @@ app.get("/leaderboard/alltime", async (c) => {
       : by === "streak"
         ? desc(schema.users.currentStreak)
         : desc(schema.users.totalSaved);
-  const rows = await db.select().from(schema.users).orderBy(order).limit(clampLimit(c, 20));
-  return json(c, { by, rows });
+  const flagged = wantsFlagged(c) ? [] : [...(await computeFlags()).keys()];
+  const rows = await db
+    .select()
+    .from(schema.users)
+    .where(
+      flagged.length ? notInArray(schema.users.address, flagged as `0x${string}`[]) : undefined,
+    )
+    .orderBy(order)
+    .limit(clampLimit(c, 20));
+  return json(c, { by, excludedFlagged: flagged.length, rows });
 });
 
 /** Period state: totals while open, draw result + winners once resolved. */
