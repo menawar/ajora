@@ -6,15 +6,10 @@ import { ConnectBar } from "../components/ConnectBar";
 import { Onboarding } from "../components/Onboarding";
 import { StreakChip } from "../components/StreakChip";
 import { PushToggle } from "../components/PushToggle";
+import { Countdown, localCloseTime } from "../components/Countdown";
 import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
-
-function countdown(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  return `${h}h ${m.toString().padStart(2, "0")}m`;
-}
 
 function cusd(value: bigint): string {
   const n = Number(formatUnits(value, 18));
@@ -51,7 +46,10 @@ export default function Home() {
           {pot.loading ? "…" : `${cusd(pot.jaraPot)} cUSD`}
         </div>
         <div className="mt-1 flex justify-between text-sm opacity-90">
-          <span>Draw closes in {countdown(pot.secondsToClose)}</span>
+          <span>
+            Draw closes in <Countdown closeAt={pot.closeAt} onExpire={pot.refetch} />
+            {pot.closeAt > 0 && ` (${localCloseTime(pot.closeAt)})`}
+          </span>
           <Link href="/board" className="underline">
             {pot.totalTickets.toString()} tickets in →
           </Link>
