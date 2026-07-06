@@ -1,0 +1,13 @@
+{
+  "name": "Ajora — Save small, chop jara",
+  "short_name": "Ajora",
+  "description": "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#35d07f",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

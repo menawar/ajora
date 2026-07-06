@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   title: "Ajora — Save small, chop jara",
   description:
     "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
+  manifest: "/manifest.json",
+  icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
   // Talent Protocol (Proof of Ship) project-ownership verification tag.
   other: {
     "talentapp:project_verification":
