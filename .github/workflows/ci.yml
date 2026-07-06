@@ -48,6 +48,10 @@ jobs:
       - name: Typecheck & build
         run: npm run build
 
+      # Spec §11: worst-route first-load JS ≤ 300 KB gz (baseline 2026-07-06: 204.6 KB).
+      - name: Bundle budget
+        run: npm run check:budget
+
   push-service:
     name: Push service (backend)
     runs-on: ubuntu-latest

@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "check:budget": "node scripts/check-bundle-budget.mjs",
     "gen:abis": "node scripts/gen-abis.mjs",
     "e2e": "node scripts/e2e.mjs",
     "keeper:tick": "node scripts/keeper-tick.mjs",
