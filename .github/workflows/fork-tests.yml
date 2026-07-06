@@ -1,0 +1,55 @@
+name: Aave fork tests
+
+# Weekly run of the fork suite against the live Aave v3 cUSD reserve (#67), so a
+# venue change (params, pause, upgrade) surfaces on its own instead of at the next
+# deploy. Uses the CELO_RPC secret when set (dedicated provider); falls back to
+# public forno so the check still runs before the secret exists.
+# Failures open (or bump) a single issue labeled fork-tests-failing.
+
+on:
+  schedule:
+    - cron: "43 5 * * 3" # Wednesdays 05:43 UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  fork:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Fork tests vs live Aave v3
+        id: fork
+        continue-on-error: true
+        env:
+          CELO_FORK_RPC: ${{ secrets.CELO_RPC != '' && secrets.CELO_RPC || 'https://forno.celo.org' }}
+        run: forge test --match-contract Fork -vvv
+
+      - name: Alert on failure
+        if: steps.fork.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list -R "$GITHUB_REPOSITORY" --label fork-tests-failing --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" -R "$GITHUB_REPOSITORY" --body "Still failing at $(date -u +%FT%TZ): $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" \
+              --title "Aave fork tests failing — venue drift?" \
+              --label fork-tests-failing --label area:contracts \
+              --body "Weekly fork suite failed at $(date -u +%FT%TZ). Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID. Check the Aave v3 cUSD reserve (pause/params/upgrade) before touching adapter code."
+          fi
+
+      - name: Propagate result
+        if: steps.fork.outcome == 'failure'
+        run: exit 1
