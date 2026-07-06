@@ -17,6 +17,9 @@ export interface PotToday {
   myPrincipal: bigint;
   /** Seconds until the current period closes (00:00 UTC) and the draw can run. */
   secondsToClose: number;
+  /** Absolute close time (unix seconds) — tick countdowns from this, not from
+   *  secondsToClose, which decays between polls (#95). */
+  closeAt: number;
   loading: boolean;
 }
 
@@ -30,6 +33,7 @@ export function usePotToday(): PotToday & { refetch: () => void } {
     myTickets: 0n,
     myPrincipal: 0n,
     secondsToClose: 0,
+    closeAt: 0,
     loading: true,
   });
 
@@ -69,6 +73,7 @@ export function usePotToday(): PotToday & { refetch: () => void } {
           myTickets,
           myPrincipal,
           secondsToClose: Math.max(0, closeAt - Math.floor(Date.now() / 1000)),
+          closeAt,
           loading: false,
         });
       } catch {
