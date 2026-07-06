@@ -89,6 +89,9 @@ Operating notes:
   exposure (month-1 default 1000 cUSD).
 - Fork-verify before any venue change:
   `CELO_FORK_RPC=https://forno.celo.org forge test --match-contract Fork`.
+- The same suite also runs weekly in CI (`fork-tests.yml`) and opens a
+  `fork-tests-failing` issue on venue drift. Set the `CELO_RPC` repo secret to use
+  a dedicated provider; it falls back to public forno until then.
 
 ## Keeper (automated)
 
