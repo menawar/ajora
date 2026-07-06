@@ -17,6 +17,24 @@ export interface SaverRow {
   total: bigint;
 }
 
+const INDEXER_URL = process.env.NEXT_PUBLIC_INDEXER_URL ?? "";
+
+/** Indexer-first (#60): sybil-filtered board in one query. Throws to trigger fallback. */
+async function fetchFromIndexer(limit: number) {
+  const res = await fetch(`${INDEXER_URL}/leaderboard/savers?limit=${limit}`, {
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!res.ok) throw new Error(`indexer ${res.status}`);
+  const data = (await res.json()) as {
+    excludedFlagged: number;
+    rows: { address: `0x${string}`; amount: string }[];
+  };
+  return {
+    rows: data.rows.map((r) => ({ address: r.address, total: BigInt(r.amount) })),
+    excludedFlagged: data.excludedFlagged,
+  };
+}
+
 /**
  * Today's top savers, aggregated client-side from Contributed logs filtered by
  * the period topic. One-shot fetch with manual refresh — the indexer (#14)
@@ -26,11 +44,27 @@ export function useTopSavers(limit = 10) {
   const [rows, setRows] = useState<SaverRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
+  const [excludedFlagged, setExcludedFlagged] = useState(0);
+  const [source, setSource] = useState<"indexer" | "chain">("chain");
 
   const refetch = useCallback(() => {
     setLoading(true);
     setError(undefined);
     void (async () => {
+      // Prefer the indexer (sybil-filtered, one query); fall back to the log walk
+      // so the board still works if the indexer is unset or down.
+      if (INDEXER_URL) {
+        try {
+          const got = await fetchFromIndexer(limit);
+          setRows(got.rows);
+          setExcludedFlagged(got.excludedFlagged);
+          setSource("indexer");
+          setLoading(false);
+          return;
+        } catch {
+          // fall through to the on-chain path
+        }
+      }
       try {
         const periodId = await publicClient.readContract({
           ...contracts.potVault,
@@ -72,6 +106,8 @@ export function useTopSavers(limit = 10) {
           .sort((a, b) => (b.total > a.total ? 1 : -1))
           .slice(0, limit);
         setRows(sorted);
+        setExcludedFlagged(0);
+        setSource("chain");
         setLoading(false);
       } catch (e) {
         setError(e instanceof Error ? e.message.split("\n")[0] : "Failed to load");
@@ -81,5 +117,5 @@ export function useTopSavers(limit = 10) {
   }, [limit]);
 
   useEffect(refetch, [refetch]);
-  return { rows, loading, error, refetch };
+  return { rows, loading, error, refetch, excludedFlagged, source };
 }

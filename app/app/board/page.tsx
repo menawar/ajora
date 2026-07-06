@@ -12,13 +12,19 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 
 export default function BoardPage() {
   const { address } = useWallet();
-  const { rows, loading, error, refetch } = useTopSavers(10);
+  const { rows, loading, error, refetch, excludedFlagged } = useTopSavers(10);
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
       <header className="text-center">
         <h1 className="text-2xl font-bold">Today&apos;s top savers</h1>
         <p className="mt-1 text-sm text-gray-500">Resets at midnight UTC with the draw.</p>
+        {excludedFlagged > 0 && (
+          <p className="mt-1 text-xs text-gray-400">
+            {excludedFlagged} flagged account{excludedFlagged === 1 ? "" : "s"} hidden
+            (anti-sybil)
+          </p>
+        )}
       </header>
 
       <section className="flex flex-col gap-2">

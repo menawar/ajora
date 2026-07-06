@@ -14,6 +14,13 @@ npm run keeper:tick    # draw keeper (see DEPLOYMENT.md)
 npm run metrics        # nightly rollup collector
 ```
 
+## Backend env (all optional — the app degrades to on-chain reads)
+
+| Var | Effect when set |
+|---|---|
+| `NEXT_PUBLIC_INDEXER_URL` | Boards read the indexer (sybil-filtered, one query) instead of walking logs (#60) |
+| `NEXT_PUBLIC_PUSH_URL` | Shows the notification opt-in bell (#16) |
+
 ## Performance budget (#74)
 
 Spec §11 targets low-end Android on mobile data: **worst-route first-load JS must
