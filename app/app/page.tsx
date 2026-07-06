@@ -32,7 +32,12 @@ export default function Home() {
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
       <header className="text-center">
         <h1 className="text-4xl font-bold">Ajora 🎉</h1>
-        <p className="mt-1 text-gray-500">Save small, keep every cent, chop jara.</p>
+        <p className="mt-1 text-gray-500">
+          Save small, keep every cent, chop jara.{" "}
+          <Link href="/faq" className="underline">
+            How is my money safe?
+          </Link>
+        </p>
       </header>
 
       <Onboarding />
