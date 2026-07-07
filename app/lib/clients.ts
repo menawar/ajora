@@ -29,9 +29,51 @@ export function injectedProvider(): (EIP1193Provider & { isMiniPay?: boolean }) 
   return typeof window === "undefined" ? undefined : window.ethereum;
 }
 
-/** Wallet client over the injected provider; undefined outside a wallet context. */
+// ---- EIP-6963 multi-provider discovery (#113) ----------------------------------
+// With several extensions installed (Phantom + MetaMask…), window.ethereum is
+// whichever proxy won the injection race — Phantom's interceptor errors before
+// MetaMask ever opens. 6963 lets every wallet announce itself; we collect them
+// and route the user's pick.
+
+export interface DiscoveredWallet {
+  info: { uuid: string; name: string; icon: string; rdns: string };
+  provider: EIP1193Provider;
+}
+
+const discovered = new Map<string, DiscoveredWallet>();
+let listening = false;
+
+/** Start (idempotently) listening for wallet announcements and re-request them. */
+export function discoverWallets(): void {
+  if (typeof window === "undefined") return;
+  if (!listening) {
+    listening = true;
+    window.addEventListener("eip6963:announceProvider", (event) => {
+      const detail = (event as CustomEvent<DiscoveredWallet>).detail;
+      if (detail?.info?.rdns) discovered.set(detail.info.rdns, detail);
+    });
+  }
+  window.dispatchEvent(new Event("eip6963:requestProvider"));
+}
+
+export function discoveredWallets(): DiscoveredWallet[] {
+  return [...discovered.values()];
+}
+
+/** The provider the user actually connected with; writes must go through it. */
+let active: EIP1193Provider | undefined;
+
+export function setActiveProvider(provider: EIP1193Provider | undefined): void {
+  active = provider;
+}
+
+export function activeProvider(): (EIP1193Provider & { isMiniPay?: boolean }) | undefined {
+  return active ?? injectedProvider();
+}
+
+/** Wallet client over the selected provider; undefined outside a wallet context. */
 export function walletClient() {
-  const provider = injectedProvider();
+  const provider = activeProvider();
   if (!provider) return undefined;
   return createWalletClient({ chain, transport: custom(provider) });
 }

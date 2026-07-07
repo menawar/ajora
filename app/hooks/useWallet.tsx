@@ -9,7 +9,17 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { injectedProvider, isMiniPay } from "../lib/clients";
+
+
+import {
+  activeProvider,
+  discoverWallets,
+  discoveredWallets,
+  injectedProvider,
+  isMiniPay,
+  setActiveProvider,
+  type DiscoveredWallet,
+} from "../lib/clients";
 import { chain } from "../lib/chain";
 import { captureRef } from "../lib/share";
 
@@ -26,7 +36,9 @@ interface WalletState {
   noProvider: boolean;
   /** Human-readable reason the last connect attempt failed. */
   error?: string;
-  connect: () => Promise<void>;
+  /** Wallets announced via EIP-6963; >1 means the ConnectBar shows a picker. */
+  wallets: DiscoveredWallet[];
+  connect: (rdns?: string) => Promise<void>;
 }
 
 const WalletContext = createContext<WalletState | null>(null);
@@ -73,13 +85,23 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [miniPay, setMiniPay] = useState(false);
   const [noProvider, setNoProvider] = useState(false);
   const [error, setError] = useState<string>();
+  const [wallets, setWallets] = useState<DiscoveredWallet[]>([]);
 
-  const connect = useCallback(async () => {
-    const provider = injectedProvider();
+  const connect = useCallback(async (rdns?: string) => {
+    // Prefer the chosen 6963 wallet; else a sole announced wallet; else the
+    // legacy injected provider (MiniPay webview, single-extension browsers).
+    const announced = discoveredWallets();
+    const picked = rdns
+      ? announced.find((w) => w.info.rdns === rdns)?.provider
+      : announced.length === 1
+        ? announced[0].provider
+        : undefined;
+    const provider = picked ?? (announced.length === 0 ? injectedProvider() : undefined);
     if (!provider) {
-      setNoProvider(true);
-      return;
+      if (announced.length === 0) setNoProvider(true);
+      return; // several wallets, none picked: the picker is on screen
     }
+    setActiveProvider(picked);
     setConnecting(true);
     setError(undefined);
     try {
@@ -110,7 +132,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     const probe = (attempt: number) => {
       if (cancelled) return;
-      if (injectedProvider()) {
+      discoverWallets();
+      setWallets(discoveredWallets());
+      if (discoveredWallets().length > 0 || injectedProvider()) {
         setNoProvider(false);
         attach();
         return;
@@ -134,7 +158,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
     };
     const attach = () => {
-      const provider = injectedProvider();
+      const provider = activeProvider();
       provider?.on?.("accountsChanged", onAccounts);
       provider?.on?.("chainChanged", onChain);
       // Restore an already-authorized session after reload (no popup).
@@ -149,15 +173,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelled = true;
-      const provider = injectedProvider();
+      const provider = activeProvider();
       provider?.removeListener?.("accountsChanged", onAccounts);
       provider?.removeListener?.("chainChanged", onChain);
     };
   }, [connect]);
 
   const value = useMemo(
-    () => ({ address, miniPay, connecting, noProvider, error, connect }),
-    [address, miniPay, connecting, noProvider, error, connect],
+    () => ({ address, miniPay, connecting, noProvider, error, wallets, connect }),
+    [address, miniPay, connecting, noProvider, error, wallets, connect],
   );
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
