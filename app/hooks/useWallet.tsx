@@ -137,6 +137,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       const provider = injectedProvider();
       provider?.on?.("accountsChanged", onAccounts);
       provider?.on?.("chainChanged", onChain);
+      // Restore an already-authorized session after reload (no popup).
+      if (!isMiniPay()) {
+        void provider
+          ?.request({ method: "eth_accounts" })
+          .then((accounts) => onAccounts(accounts))
+          .catch(() => {});
+      }
     };
     probe(0);
 

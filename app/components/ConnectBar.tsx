@@ -8,7 +8,7 @@ function shorten(addr: string): string {
 
 /** Account chip inside MiniPay / injected wallets; guidance everywhere else. */
 export function ConnectBar() {
-  const { address, miniPay, connecting, noProvider, connect } = useWallet();
+  const { address, miniPay, connecting, noProvider, error, connect } = useWallet();
 
   if (address) {
     return (
@@ -29,13 +29,16 @@ export function ConnectBar() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={() => void connect()}
-      disabled={connecting}
-      className="mx-auto rounded-lg border border-celo-green px-4 py-2 text-sm font-medium text-celo-green disabled:opacity-50"
-    >
-      {connecting ? "Connecting…" : "Connect wallet"}
-    </button>
+    <div className="flex flex-col items-center gap-1.5">
+      <button
+        type="button"
+        onClick={() => void connect()}
+        disabled={connecting}
+        className="mx-auto rounded-lg border border-celo-green px-4 py-2 text-sm font-medium text-celo-green disabled:opacity-50"
+      >
+        {connecting ? "Connecting…" : "Connect wallet"}
+      </button>
+      {error && <p className="text-center text-xs text-red-500">{error}</p>}
+    </div>
   );
 }
