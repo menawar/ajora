@@ -4,10 +4,12 @@ import { potVaultAbi } from "./abis/potVaultAbi";
 import { streakSBTAbi } from "./abis/streakSBTAbi";
 import { sprayFaucetAbi } from "./abis/sprayFaucetAbi";
 import { drawManagerAbi } from "./abis/drawManagerAbi";
+import { crewRegistryAbi } from "./abis/crewRegistryAbi";
 
-// v3 core (contracts/deployments/celo-mainnet.json). startBlock is just before the
-// v3 deploy on 2026-07-04. CrewRegistry joins here after the v4 completion run.
-const START_BLOCK = 71_246_000;
+// core_v5 (contracts/deployments/celo-mainnet.json), deployed 2026-07-07.
+// startBlock is the v5 deploy block. CrewRegistry ships wired in this core, so
+// crews index from the same block as the rest of the loop.
+const START_BLOCK = 71_514_774;
 
 export default createConfig({
   chains: {
@@ -20,25 +22,31 @@ export default createConfig({
     PotVault: {
       chain: "celo",
       abi: potVaultAbi,
-      address: "0x6B8617f4B6BfA6752802e883136C18720294497f",
+      address: "0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415",
       startBlock: START_BLOCK,
     },
     StreakSBT: {
       chain: "celo",
       abi: streakSBTAbi,
-      address: "0x2390CD7A18DEc4240617ED421671790f33E4d674",
+      address: "0x9aC488Bc0Ba3cF7F2552c61d6F9BbA949961d974",
       startBlock: START_BLOCK,
     },
     SprayFaucet: {
       chain: "celo",
       abi: sprayFaucetAbi,
-      address: "0xA0076cE2954227f62eE7A9a35dD62c56DE516f00",
+      address: "0x117cEa08fD62220506FD7621C548a627373B2DFc",
       startBlock: START_BLOCK,
     },
     DrawManager: {
       chain: "celo",
       abi: drawManagerAbi,
-      address: "0x18E08293D58Fbf1E434671694879f24ef63e57a8",
+      address: "0xacB78C0DdAA33C660010dE76b842A54b613156B4",
+      startBlock: START_BLOCK,
+    },
+    CrewRegistry: {
+      chain: "celo",
+      abi: crewRegistryAbi,
+      address: "0x73F0770aea05298579252dFf193df0454C0B5A8a",
       startBlock: START_BLOCK,
     },
   },
