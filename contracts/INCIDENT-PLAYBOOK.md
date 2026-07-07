@@ -62,3 +62,25 @@ Run on testnet (or a throwaway mainnet period) so the muscle memory is real:
 3. Comms sends the "paused" template (below) to the test channel.
 4. After the timelock, `unpause()`; confirm deposits resume.
 5. Note the wall-clock from detection → paused. Target: **< 5 minutes.**
+
+## Comms templates
+
+Send on the same channels users onboarded through: WhatsApp broadcast, in-app
+notice, and a `/celo` Farcaster post. Lead with the reassurance (money is safe),
+then the fact, then the next step.
+
+**Paused (S1/S2):**
+> 🔒 We paused new saving on Ajora while we check something. **Your money is
+> safe — you can still withdraw any matured savings anytime.** New saves are off
+> for up to 24h. We'll post here the moment they're back on. Thank you for your
+> patience 🙏
+
+**All-clear / reopened:**
+> ✅ All clear — saving is back on. Nothing was lost; principal was claimable the
+> whole time. Draws resume tonight. Thanks for staying with us 💚
+
+**Faucet paused (S3):**
+> ℹ️ Free welcome/spray tickets are paused briefly while we tune anti-abuse.
+> Saving, picking, and the daily draw are all running normally.
+
+Keep it short, no jargon, no addresses — link to a status page for detail.
