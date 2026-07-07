@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { LanguageProvider } from "../lib/i18n";
 import { WalletProvider } from "../hooks/useWallet";
 import { TabBar } from "../components/TabBar";
 import "./globals.css";
@@ -31,10 +32,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-dvh bg-white pb-16 text-gray-900 antialiased">
-        <WalletProvider>
-          {children}
-          <TabBar />
-        </WalletProvider>
+        <LanguageProvider>
+          <WalletProvider>
+            {children}
+            <TabBar />
+          </WalletProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
