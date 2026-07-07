@@ -33,7 +33,8 @@ is what the caps below bound.
   (`setVerified(user, false)`), rotatable by admin.
 - **Admin**: cap/campaign tuning; cannot mint tickets or touch principal. Vault-side
   guards (pause blocks money-in only, adapter timelock, deposit caps) are in
-  `SECURITY-TRIAGE.md`'s control map.
+  `SECURITY-TRIAGE.md`'s control map. When to actually pull those levers — severity
+  ladder, pause drill, comms templates — is in [`INCIDENT-PLAYBOOK.md`](./INCIDENT-PLAYBOOK.md).
 - **CrewRegistry**: only path to `referralBonus`; set-once wiring.
 
 ## What we deliberately do NOT do
