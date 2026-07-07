@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../lib/clients";
 import { contracts } from "../lib/contracts";
+import { readCache, writeCache } from "../lib/offline";
+import { useOnline } from "./useOnline";
 
 const contributedEvent = parseAbiItem(
   "event Contributed(address indexed user, uint256 indexed periodId, uint256 amount, uint256 ticketsMinted)",
@@ -45,9 +47,12 @@ export function useTopSavers(limit = 10) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
   const [excludedFlagged, setExcludedFlagged] = useState(0);
-  const [source, setSource] = useState<"indexer" | "chain">("chain");
+  const [source, setSource] = useState<"indexer" | "chain" | "cache">("chain");
+  const [cachedAt, setCachedAt] = useState<number>();
+  const online = useOnline();
 
   const refetch = useCallback(() => {
+    const cacheKey = `topSavers:${limit}`;
     setLoading(true);
     setError(undefined);
     void (async () => {
@@ -59,6 +64,8 @@ export function useTopSavers(limit = 10) {
           setRows(got.rows);
           setExcludedFlagged(got.excludedFlagged);
           setSource("indexer");
+          writeCache(cacheKey, got.rows);
+          setCachedAt(Date.now());
           setLoading(false);
           return;
         } catch {
@@ -108,14 +115,43 @@ export function useTopSavers(limit = 10) {
         setRows(sorted);
         setExcludedFlagged(0);
         setSource("chain");
+        writeCache(cacheKey, sorted);
+        setCachedAt(Date.now());
         setLoading(false);
       } catch (e) {
-        setError(e instanceof Error ? e.message.split("\n")[0] : "Failed to load");
+        // Offline / RPC down: fall back to the last cached board instead of erroring.
+        const cached = readCache<SaverRow[]>(cacheKey);
+        if (cached) {
+          setRows(cached.value);
+          setCachedAt(cached.at);
+          setSource("cache");
+        } else {
+          setError(e instanceof Error ? e.message.split("\n")[0] : "Failed to load");
+        }
         setLoading(false);
       }
     })();
   }, [limit]);
 
+  // Seed instantly from cache on mount so the board paints even while the first
+  // fetch is in flight (or never lands, offline).
+  useEffect(() => {
+    const cached = readCache<SaverRow[]>(`topSavers:${limit}`);
+    if (cached) {
+      setRows(cached.value);
+      setCachedAt(cached.at);
+      setSource("cache");
+    }
+  }, [limit]);
+
   useEffect(refetch, [refetch]);
-  return { rows, loading, error, refetch, excludedFlagged, source };
+
+  // Reconcile when connectivity returns.
+  const wasOnline = useRef(online);
+  useEffect(() => {
+    if (online && !wasOnline.current) refetch();
+    wasOnline.current = online;
+  }, [online, refetch]);
+
+  return { rows, loading, error, refetch, excludedFlagged, source, cachedAt };
 }
