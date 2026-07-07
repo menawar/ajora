@@ -106,3 +106,42 @@ export const userDays = onchainTable(
   }),
   (table) => ({ pk: primaryKey({ columns: [table.address, table.day] }) }),
 );
+
+/** One row per crew (CrewRegistry:CrewCreated), AJORA_SPEC.md §12. */
+export const crews = onchainTable("crews", (t) => ({
+  id: t.bigint().primaryKey(), // crewId
+  founder: t.hex().notNull(),
+  code: t.hex().notNull(), // founder's bytes32 referral code
+  memberCount: t.integer().notNull(),
+  totalSaved: t.bigint().notNull(), // lifetime, summed from ContributionRecorded
+  createdAt: t.bigint().notNull(),
+}));
+
+/** Crew membership — founder plus everyone who joined. Exactly one crew per member. */
+export const crewMembers = onchainTable("crew_members", (t) => ({
+  address: t.hex().primaryKey(),
+  crewId: t.bigint().notNull(),
+  referrer: t.hex(), // null for the founder; the inviter for joiners
+  joinedAt: t.bigint().notNull(),
+}));
+
+/** Per-crew, per-day savings — powers the crew leaderboard (spec §12). */
+export const crewSavingsDaily = onchainTable(
+  "crew_savings_daily",
+  (t) => ({
+    crewId: t.bigint().notNull(),
+    periodId: t.bigint().notNull(),
+    amount: t.bigint().notNull(),
+  }),
+  (table) => ({ pk: primaryKey({ columns: [table.crewId, table.periodId] }) }),
+);
+
+/**
+ * Vested referrals (CrewRegistry:ReferralVested) — invites that matured past the
+ * save-day threshold. Distinct from `referrals` (SprayFaucet bonus tickets).
+ */
+export const referralVests = onchainTable("referral_vests", (t) => ({
+  referred: t.hex().primaryKey(), // one vest per referred user
+  referrer: t.hex().notNull(),
+  timestamp: t.bigint().notNull(),
+}));

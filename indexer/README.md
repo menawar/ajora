@@ -1,6 +1,6 @@
 # Ajora indexer
 
-[Ponder](https://ponder.sh) app that turns the v3 core contract events on Celo
+[Ponder](https://ponder.sh) app that turns the core contract events on Celo
 mainnet into the tables and read APIs behind leaderboards, win cards, and the
 growth metrics (issue #14, AJORA_SPEC.md §7/§10/§12).
 
@@ -8,7 +8,7 @@ growth metrics (issue #14, AJORA_SPEC.md §7/§10/§12).
 
 ```bash
 npm install
-npm run dev        # backfills from the v3 deploy block, then follows the chain
+npm run dev        # backfills from the v5 deploy block, then follows the chain
 ```
 
 No configuration is required for development: the RPC defaults to public forno
@@ -18,8 +18,8 @@ and storage defaults to embedded PGlite. For production set `PONDER_RPC_URL_4222
 
 ## What gets indexed
 
-Contract addresses come from `contracts/deployments/celo-mainnet.json` (v3 core,
-deployed 2026-07-04). `CrewRegistry` joins after the v4 completion run.
+Contract addresses come from `contracts/deployments/celo-mainnet.json` (core_v5,
+deployed 2026-07-07), including `CrewRegistry` — live on mainnet since v5.
 
 | Table | Source events | Notes |
 | --- | --- | --- |
@@ -32,6 +32,10 @@ deployed 2026-07-04). `CrewRegistry` joins after the v4 completion run.
 | `payouts` | `PrincipalClaimed` / `WinningsClaimed` | wallet history |
 | `referrals` | `SprayFaucet:ReferralBonus` | converted invites, feeds k-factor |
 | `user_days` | any user-initiated action | one row per (user, day) for DAU/retention |
+| `crews` | `CrewRegistry:CrewCreated` | one per crew: running member count + lifetime savings |
+| `crew_members` | `CrewCreated` / `CrewJoined` | one crew per address, with referrer |
+| `crew_savings_daily` | `CrewRegistry:ContributionRecorded` | crew leaderboard source (spec §12) |
+| `referral_vests` | `CrewRegistry:ReferralVested` | matured invites (distinct from `referrals`) |
 
 Tickets are only counted from `PotVault:TicketsCredited` — the faucet credits
 odds through the vault, so counting `Sprayed`/`WelcomeTicket` too would double
@@ -64,7 +68,7 @@ over HTTP at `/sql/*` (`@ponder/client`).
 ## Backfill & reorgs
 
 Both are handled by the Ponder runtime: on boot it backfills from `startBlock`
-(71,246,000, just before the v3 deploy) and then follows the head. Reorgs are
+(71,514,774, the v5 deploy block) and then follows the head. Reorgs are
 detected against stored block hashes and rolled back automatically; tables stay
 consistent because all writes go through the checkpointed store. Re-syncing
 from scratch is always safe (`ponder dev` uses a fresh dev schema per run).
