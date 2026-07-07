@@ -22,10 +22,13 @@ The name blends **Ajo** (the trusted savings circle) with **jara** (the free bon
 ajora/
 ├── AJORA_SPEC.md        # Full product & technical specification
 ├── contracts/           # Solidity smart contracts (Foundry)
-│   ├── src/             # PotVault, DrawManager, SprayFaucet, ...
+│   ├── src/             # PotVault, DrawManager, SprayFaucet, CrewRegistry, ...
 │   ├── test/            # Foundry tests
 │   └── script/          # Deployment scripts
 ├── app/                 # MiniPay Mini App frontend (Next.js + TypeScript + Tailwind)
+├── indexer/             # Ponder indexer — events → tables + read APIs (leaderboards, metrics)
+├── push/                # Web Push backend — draw results + streak-at-risk nudges
+├── metrics/             # Committed growth-metrics rollups (daily.json, summary.json)
 └── .github/workflows/   # CI (forge build + test, app typecheck)
 ```
 
