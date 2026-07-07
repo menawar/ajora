@@ -12,9 +12,13 @@ import { IStreakSBT } from "../src/interfaces/IStreakSBT.sol";
 import { ICrewRegistry } from "../src/interfaces/ICrewRegistry.sol";
 
 /// @notice Deploys the full Ajora core (PotVault + StreakSBT + SprayFaucet + DrawManager +
-///         CrewRegistry) against a Mento stablecoin and wires everything together.
+///         CrewRegistry) against a Mento stablecoin, wires everything together, and arms
+///         the month-1 blast-radius caps (spec §13, issue #50) in the same broadcast.
 /// @dev Env vars: STABLECOIN (token address), MIN_CONTRIBUTION (default 0.1e18),
 ///      VERIFIER and KEEPER (both default to the deployer until the backend services exist).
+///      Caps (0 disables): USER_PERIOD_CAP (default 50e18 — 50 cUSD/user/day),
+///      MAX_TOTAL_PRINCIPAL (default 5000e18 TVL), FREE_VALUE_CAP (default: the faucet's
+///      built-in 30 tickets; only overridden when set).
 ///      Celo mainnet cUSD: 0x765DE816845861e75A25fCA122bb6898B8B1282a
 ///      Alfajores  cUSD:   0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1
 contract Deploy is Script {
@@ -32,6 +36,9 @@ contract Deploy is Script {
         uint256 minContribution = vm.envOr("MIN_CONTRIBUTION", uint256(0.1e18));
         address verifier = vm.envOr("VERIFIER", msg.sender);
         address keeper = vm.envOr("KEEPER", msg.sender);
+        uint256 userPeriodCap = vm.envOr("USER_PERIOD_CAP", uint256(50e18));
+        uint256 maxTotalPrincipal = vm.envOr("MAX_TOTAL_PRINCIPAL", uint256(5_000e18));
+        uint256 freeValueCap = vm.envOr("FREE_VALUE_CAP", uint256(0)); // 0 = keep faucet default
 
         vm.startBroadcast();
         vault = new PotVault(IERC20(stablecoin), minContribution);
@@ -46,6 +53,10 @@ contract Deploy is Script {
         crew.setVault(address(vault));
         crew.setFaucet(faucet);
         faucet.setCrewRegistry(address(crew));
+        // Month-1 caps armed at birth — no unguarded window between deploy and a
+        // follow-up transaction (#50). Raise later with the documented review.
+        vault.setDepositCaps(userPeriodCap, maxTotalPrincipal);
+        if (freeValueCap != 0) faucet.setFreeValueCap(freeValueCap);
         vm.stopBroadcast();
 
         console2.log("PotVault deployed at:", address(vault));
@@ -57,5 +68,8 @@ contract Deploy is Script {
         console2.log("Keeper:", keeper);
         console2.log("Stablecoin:", stablecoin);
         console2.log("Min contribution:", minContribution);
+        console2.log("User/period cap:", userPeriodCap);
+        console2.log("TVL cap:", maxTotalPrincipal);
+        console2.log("Free-value cap (per human):", faucet.maxFreeValuePerUser());
     }
 }

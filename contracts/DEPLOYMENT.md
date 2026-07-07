@@ -22,6 +22,12 @@ the vault. `setStreakSBT` is updatable (weights only, clamped ≥ 1.0x).
 | `MIN_CONTRIBUTION` | ticket unit, token base units | `0.1e18` |
 | `VERIFIER` | attests phone-verified users | deployer |
 | `KEEPER` | commits/reveals draw seeds | deployer |
+| `USER_PERIOD_CAP` | month-1 per-user-per-day deposit cap (#50) | `50e18` |
+| `MAX_TOTAL_PRINCIPAL` | month-1 TVL cap (#50) | `5000e18` |
+| `FREE_VALUE_CAP` | lifetime free value per human; 0 keeps the faucet's 30-ticket default | `0` |
+
+Caps are **armed inside the deploy broadcast** — there is no unguarded window
+between deployment and a follow-up transaction.
 
 Stablecoin addresses: mainnet cUSD `0x765DE816845861e75A25fCA122bb6898B8B1282a`,
 Alfajores cUSD `0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1`.
@@ -43,6 +49,35 @@ forge script script/Deploy.s.sol:Deploy \
   --rpc-url https://forno.celo.org \
   --broadcast --private-key "$PRIVATE_KEY"
 ```
+
+## Local dress rehearsal (v5, verified 2026-07-07)
+
+The whole v5 lifecycle runs against an anvil fork of mainnet — do this before any
+real deploy; it was last executed end-to-end with these results:
+
+```bash
+anvil --fork-url https://forno.celo.org --port 8546   # terminal 1
+# terminal 2 — anvil test key:
+export PK=<anvil key> RPC=http://localhost:8546
+STABLECOIN=0x765DE816845861e75A25fCA122bb6898B8B1282a \
+  forge script script/Deploy.s.sol:Deploy --rpc-url $RPC --broadcast --private-key $PK --legacy
+VAULT=<addr> DRAW_MANAGER=<addr> \
+  AAVE_POOL=0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402 \
+  A_TOKEN=0xBba98352628B0B0c4b40583F593fFCb630935a45 \
+  forge script script/DeployYield.s.sol:DeployYield --rpc-url $RPC --broadcast --private-key $PK --legacy
+cast rpc evm_increaseTime 86400 --rpc-url $RPC && cast rpc evm_mine --rpc-url $RPC
+cast send $VAULT 'applyYieldAdapter()' --private-key $PK --rpc-url $RPC --legacy
+```
+
+Rehearsal assertions (all held on the last run):
+1. Wiring reads back (`drawManager()`, `sprayFaucet()`, caps = 50 / 5000 cUSD).
+2. A 60 cUSD contribute **reverts** (`UserCapExceeded`); 40 cUSD succeeds.
+3. `deployIdle(30)` respects the 20% buffer; adapter supplies real Aave.
+4. After a 30-day warp, `harvest` moved **real reserve interest** (~0.0625 cUSD on
+   30 cUSD, matching the live rate) into the period's jaraPot.
+5. `claimPrincipal` returned **exactly 40 cUSD**, auto-recalling the shortfall from
+   Aave mid-claim; afterwards `vault balance + adapter.totalDeployed()` equalled
+   liabilities to the wei.
 
 ## Post-deploy checklist
 
