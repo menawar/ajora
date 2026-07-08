@@ -157,3 +157,76 @@ export function useSave() {
   const reset = useCallback(() => setStatus({ step: "idle" }), []);
   return { save, status, reset };
 }
+
+export type SponsorStatus =
+  | { step: "idle" }
+  | { step: "approving" }
+  | { step: "funding" }
+  | { step: "success"; txHash: `0x${string}` }
+  | { step: "error"; message: string };
+
+/**
+ * Sponsor flow: approve cUSD if needed, then fundJara(currentPeriod, amount).
+ * fundJara is permissionless (spec §6) — anyone can top up tonight's pot, and
+ * the full amount is paid out to winners.
+ */
+export function useSponsor() {
+  const { address } = useWallet();
+  const [status, setStatus] = useState<SponsorStatus>({ step: "idle" });
+
+  const sponsor = useCallback(
+    async (amountCusd: string) => {
+      const wallet = walletClient();
+      if (!wallet || !address) {
+        setStatus({ step: "error", message: "Open Ajora inside MiniPay to sponsor." });
+        return;
+      }
+      const amount = parseUnits(amountCusd, 18);
+      const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
+
+      try {
+        const allowance = await publicClient.readContract({
+          ...contracts.cusd,
+          functionName: "allowance",
+          args: [address, contracts.potVault.address],
+        });
+        if (allowance < amount) {
+          setStatus({ step: "approving" });
+          const approveHash = await wallet.writeContract({
+            ...contracts.cusd,
+            functionName: "approve",
+            args: [contracts.potVault.address, amount],
+            account: address,
+            chain,
+            feeCurrency,
+          });
+          await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        }
+
+        setStatus({ step: "funding" });
+        // Read the period at send time — a polled value can straddle midnight UTC
+        // and would credit yesterday's pot instead of tonight's.
+        const periodId = await publicClient.readContract({
+          ...contracts.potVault,
+          functionName: "currentPeriod",
+        });
+        const { request } = await publicClient.simulateContract({
+          ...contracts.potVault,
+          functionName: "fundJara",
+          args: [periodId, amount],
+          account: address,
+        });
+        const txHash = await wallet.writeContract({ ...request, feeCurrency });
+        await publicClient.waitForTransactionReceipt({ hash: txHash });
+        setStatus({ step: "success", txHash });
+      } catch (e) {
+        const message = e instanceof Error ? e.message.split("\n")[0] : "Transaction failed";
+        setStatus({ step: "error", message });
+      }
+    },
+    [address],
+  );
+
+  const reset = useCallback(() => setStatus({ step: "idle" }), []);
+  return { sponsor, status, reset };
+}
