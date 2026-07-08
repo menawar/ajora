@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { formatUnits } from "viem";
+import { useEffect, useMemo, useState } from "react";
+import { formatUnits, parseUnits } from "viem";
 import { ConnectBar } from "../../components/ConnectBar";
 import { ShareButtons } from "../../components/ShareButtons";
 import { useCrew } from "../../hooks/useCrew";
 import { useDraw } from "../../hooks/useDraw";
-import { usePotToday } from "../../hooks/usePotVault";
+import { usePotToday, useSponsor } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
 
@@ -50,6 +50,22 @@ export default function DrawPage() {
   const { last, myPick, loading, claimPrize, claiming, error } = useDraw();
   const { streakDays } = useStreak();
   const { myCode } = useCrew();
+  const { sponsor, status: sponsorStatus, reset: resetSponsor } = useSponsor();
+
+  const [sponsorAmount, setSponsorAmount] = useState("");
+  const sponsorParsed = useMemo(() => {
+    try {
+      return parseUnits(sponsorAmount === "" ? "0" : sponsorAmount, 18);
+    } catch {
+      return 0n;
+    }
+  }, [sponsorAmount]);
+  const sponsoring = sponsorStatus.step === "approving" || sponsorStatus.step === "funding";
+
+  const { refetch } = pot;
+  useEffect(() => {
+    if (sponsorStatus.step === "success") refetch();
+  }, [sponsorStatus.step, refetch]);
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
@@ -130,6 +146,46 @@ export default function DrawPage() {
             ? `You're in with ${myPick.weight.toString()} tickets on ${myPick.number}`
             : "Save + pick to enter"}
         </div>
+      </section>
+
+      {/* ---- sponsor the pot ---- */}
+      <section className="rounded-2xl border border-gray-100 p-5">
+        <div className="text-sm font-medium text-gray-500">Sponsor tonight&apos;s pot</div>
+        <p className="mt-1 text-xs text-gray-400">
+          Anyone can add jara — every cent goes to tonight&apos;s winners.
+        </p>
+        <div className="mt-3 flex gap-2">
+          <input
+            inputMode="decimal"
+            placeholder="cUSD"
+            value={sponsorAmount}
+            onChange={(e) => {
+              setSponsorAmount(e.target.value.replace(/[^0-9.]/g, ""));
+              resetSponsor();
+            }}
+            className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-celo-green"
+          />
+          <button
+            type="button"
+            onClick={() => void sponsor(sponsorAmount)}
+            disabled={sponsoring || !address || sponsorParsed === 0n}
+            className="rounded-xl bg-celo-green px-5 py-3 font-semibold text-white transition active:scale-[0.99] disabled:opacity-50"
+          >
+            {sponsorStatus.step === "approving"
+              ? "Approving…"
+              : sponsorStatus.step === "funding"
+                ? "Adding…"
+                : "Add"}
+          </button>
+        </div>
+        {sponsorStatus.step === "success" && (
+          <p className="mt-2 text-sm text-celo-green">
+            Jara added — tonight&apos;s winners chop your love 🎉
+          </p>
+        )}
+        {sponsorStatus.step === "error" && (
+          <p className="mt-2 text-sm text-red-500">{sponsorStatus.message}</p>
+        )}
       </section>
 
       {error && <p className="text-center text-sm text-red-500">{error}</p>}
