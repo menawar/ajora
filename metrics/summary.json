@@ -1,10 +1,12 @@
 {
-  "firstSeen": {},
+  "firstSeen": {
+    "0x0cf01057391165ecb2bb989b2255cd581f075db7": 20641
+  },
   "verified": [],
-  "totalTx": 0,
-  "totalPrincipalIn": "0",
+  "totalTx": 3,
+  "totalPrincipalIn": "500000000000000000",
   "totalPrizesPaid": "0",
-  "totalUsers": 0,
+  "totalUsers": 1,
   "verifiedUsers": 0,
-  "updatedAt": "2026-07-07T04:37:06.186Z"
+  "updatedAt": "2026-07-08T03:57:51.992Z"
 }
