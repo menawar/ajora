@@ -1,10 +1,22 @@
 {
-  "firstSeen": {},
+  "firstSeen": {
+    "0x0cf01057391165ecb2bb989b2255cd581f075db7": 20641,
+    "0xeb3da7353efcf1f2d3376391b41c23f4c160daf3": 20642,
+    "0xc35a8bebe6cea81a3ca6515b1f2948a56474c36a": 20642,
+    "0xefbc371aae67b0b8d028cd1d797e6a7e732e42aa": 20642,
+    "0x081fb990c6b3f0cc3fdc40113e35448e5809cc1c": 20642,
+    "0x83b215481c5765ec797b6dec191b7fd2ed799d20": 20642,
+    "0x393967239cd66beeb3805da091e35e58f4d55699": 20642,
+    "0xcaea080e4410de6801496e7945a2614c6f3122bb": 20642,
+    "0xe8b9413e35e2ede5f605220daf2d8a70c81b4a15": 20642,
+    "0xff82ebf3a304418ee656e79ef51dbcfeaa7c4f1e": 20642,
+    "0x3a902f8324041aa5db8339a45d5956689705898a": 20642
+  },
   "verified": [],
-  "totalTx": 0,
-  "totalPrincipalIn": "0",
+  "totalTx": 35,
+  "totalPrincipalIn": "1600000000000000000",
   "totalPrizesPaid": "0",
-  "totalUsers": 0,
+  "totalUsers": 11,
   "verifiedUsers": 0,
-  "updatedAt": "2026-07-07T04:37:06.186Z"
+  "updatedAt": "2026-07-09T04:36:33.001Z"
 }

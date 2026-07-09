@@ -5,34 +5,48 @@
   "explorer": "https://celoscan.io",
   "contracts": {
     "PotVault": {
-      "address": "0x6B8617f4B6BfA6752802e883136C18720294497f",
+      "address": "0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415",
       "stablecoin": "0x765DE816845861e75A25fCA122bb6898B8B1282a",
       "stablecoinSymbol": "cUSD",
       "minContribution": "100000000000000000",
       "admin": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
+      "userPeriodCap": "50000000000000000000",
+      "maxTotalPrincipal": "5000000000000000000000",
       "verification": "sourcify:exact_match",
-      "deployedAt": "2026-07-04"
+      "deployedAt": "2026-07-07"
     },
     "StreakSBT": {
-      "address": "0x2390CD7A18DEc4240617ED421671790f33E4d674",
+      "address": "0x9aC488Bc0Ba3cF7F2552c61d6F9BbA949961d974",
       "verification": "sourcify:exact_match",
-      "deployedAt": "2026-07-04"
+      "deployedAt": "2026-07-07"
     },
     "SprayFaucet": {
-      "address": "0xA0076cE2954227f62eE7A9a35dD62c56DE516f00",
+      "address": "0x117cEa08fD62220506FD7621C548a627373B2DFc",
       "verifier": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
       "ticketValue": "100000000000000000",
       "verification": "sourcify:exact_match",
-      "deployedAt": "2026-07-04"
+      "deployedAt": "2026-07-07"
     },
     "DrawManager": {
-      "address": "0x18E08293D58Fbf1E434671694879f24ef63e57a8",
+      "address": "0xacB78C0DdAA33C660010dE76b842A54b613156B4",
       "keeper": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
       "verification": "sourcify:exact_match",
-      "deployedAt": "2026-07-04"
+      "deployedAt": "2026-07-07"
+    },
+    "CrewRegistry": {
+      "address": "0x73F0770aea05298579252dFf193df0454C0B5A8a",
+      "verification": "sourcify:exact_match",
+      "deployedAt": "2026-07-07"
     }
   },
   "deprecated": {
+    "core_v4": {
+      "note": "First fully-wired mainnet core with the recommitSeed liveness fix. Superseded 2026-07-07 by core_v5, a fresh full-core redeploy that also lands CrewRegistry on mainnet for the first time. CrewRegistry was never wired on v4 (vault.crewRegistry == address(0)).",
+      "PotVault": "0x6B8617f4B6BfA6752802e883136C18720294497f",
+      "StreakSBT": "0x2390CD7A18DEc4240617ED421671790f33E4d674",
+      "SprayFaucet": "0xA0076cE2954227f62eE7A9a35dD62c56DE516f00",
+      "DrawManager": "0x18E08293D58Fbf1E434671694879f24ef63e57a8"
+    },
     "core_v2": {
       "note": "DrawManager lacked the recommitSeed liveness bootstrap (#15): a fully missed commit window left the period's jaraPot stuck. Never funded, zero users. Superseded 2026-07-04.",
       "PotVault": "0x0A0354bA400191Ad323fF73581468601c3821C16",

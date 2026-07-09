@@ -10,6 +10,10 @@ import {
   referrals,
   userDays,
   campaignState,
+  crews,
+  crewMembers,
+  crewSavingsDaily,
+  referralVests,
 } from "ponder:schema";
 
 type EventWithLog = { transaction: { hash: `0x${string}` }; log: { logIndex: number } };
@@ -174,6 +178,64 @@ ponder.on("StreakSBT:CheckedIn", async ({ event, context }) => {
     checkInDay: periodOf(event.block.timestamp),
   });
   await touch(context, event.args.user, event.block.timestamp);
+});
+
+// ------------------------------------------------------------------- crews (#63)
+
+ponder.on("CrewRegistry:CrewCreated", async ({ event, context }) => {
+  await context.db.insert(crews).values({
+    id: event.args.crewId,
+    founder: event.args.founder,
+    code: event.args.code,
+    memberCount: 1, // the founder
+    totalSaved: 0n,
+    createdAt: event.block.timestamp,
+  });
+  await context.db.insert(crewMembers).values({
+    address: event.args.founder,
+    crewId: event.args.crewId,
+    referrer: null, // founder has no inviter
+    joinedAt: event.block.timestamp,
+  });
+  await touch(context, event.args.founder, event.block.timestamp);
+});
+
+// The crew row always exists here — you cannot join a crew that was never created.
+ponder.on("CrewRegistry:CrewJoined", async ({ event, context }) => {
+  await context.db.insert(crewMembers).values({
+    address: event.args.member,
+    crewId: event.args.crewId,
+    referrer: event.args.referrer,
+    joinedAt: event.block.timestamp,
+  });
+  await context.db
+    .update(crews, { id: event.args.crewId })
+    .set((row) => ({ memberCount: row.memberCount + 1 }));
+  await touch(context, event.args.member, event.block.timestamp);
+});
+
+// Mirror of PotVault:Contributed for crew members — the vault calls back into the
+// registry, so this fires in the same tx. Feeds the crew leaderboard (spec §12).
+ponder.on("CrewRegistry:ContributionRecorded", async ({ event, context }) => {
+  await context.db
+    .insert(crewSavingsDaily)
+    .values({
+      crewId: event.args.crewId,
+      periodId: event.args.periodId,
+      amount: event.args.amount,
+    })
+    .onConflictDoUpdate((row) => ({ amount: row.amount + event.args.amount }));
+  await context.db
+    .update(crews, { id: event.args.crewId })
+    .set((row) => ({ totalSaved: row.totalSaved + event.args.amount }));
+});
+
+ponder.on("CrewRegistry:ReferralVested", async ({ event, context }) => {
+  await context.db.insert(referralVests).values({
+    referred: event.args.referred,
+    referrer: event.args.referrer,
+    timestamp: event.block.timestamp,
+  });
 });
 
 /** Upsert the aggregate user row: counters accumulate, statuses overwrite. */

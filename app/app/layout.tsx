@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { LanguageProvider } from "../lib/i18n";
 import { WalletProvider } from "../hooks/useWallet";
 import { TabBar } from "../components/TabBar";
+import { OfflineBanner } from "../components/OfflineBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,10 +33,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-dvh bg-white pb-16 text-gray-900 antialiased">
-        <WalletProvider>
-          {children}
-          <TabBar />
-        </WalletProvider>
+        <LanguageProvider>
+          <WalletProvider>
+            <OfflineBanner />
+            {children}
+            <TabBar />
+          </WalletProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

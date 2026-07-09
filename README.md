@@ -22,12 +22,13 @@ The name blends **Ajo** (the trusted savings circle) with **jara** (the free bon
 ajora/
 ├── AJORA_SPEC.md        # Full product & technical specification
 ├── contracts/           # Solidity smart contracts (Foundry)
-│   ├── src/             # PotVault, DrawManager, SprayFaucet, ...
+│   ├── src/             # PotVault, DrawManager, SprayFaucet, CrewRegistry, ...
 │   ├── test/            # Foundry tests
 │   └── script/          # Deployment scripts
 ├── app/                 # MiniPay Mini App frontend (Next.js + TypeScript + Tailwind)
-├── indexer/             # Ponder read API for boards, metrics, notifications
-├── push/                # Web Push service for draw and streak notifications
+├── indexer/             # Ponder indexer — events → tables + read APIs (leaderboards, metrics)
+├── push/                # Web Push backend — draw results + streak-at-risk nudges
+├── metrics/             # Committed growth-metrics rollups (daily.json, summary.json)
 └── .github/workflows/   # CI (forge build + test, app typecheck)
 ```
 
@@ -81,14 +82,17 @@ See [`AJORA_SPEC.md` §15](./AJORA_SPEC.md#15-4-week-build-plan) for the detaile
 
 ### Celo mainnet (chain 42220) — wired core, sources verified (Sourcify exact match)
 
+Live core: **core_v5**, deployed 2026-07-07.
+
 | Contract | Address |
 |----------|---------|
-| `PotVault` | [`0x6B8617f4B6BfA6752802e883136C18720294497f`](https://celoscan.io/address/0x0A0354bA400191Ad323fF73581468601c3821C16) |
-| `StreakSBT` | [`0x2390CD7A18DEc4240617ED421671790f33E4d674`](https://celoscan.io/address/0x8442Df756f1f3c55B2e9CCbA53FD85Ea17ef13DF) |
-| `SprayFaucet` | [`0xA0076cE2954227f62eE7A9a35dD62c56DE516f00`](https://celoscan.io/address/0xc602Db6844855E487ff6fCBe8126d715dB1B3650) |
-| `DrawManager` | [`0x18E08293D58Fbf1E434671694879f24ef63e57a8`](https://celoscan.io/address/0x405795B9F0Fc0701D62B83fE53062435BF357A23) |
+| `PotVault` | [`0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415`](https://celoscan.io/address/0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415) |
+| `StreakSBT` | [`0x9aC488Bc0Ba3cF7F2552c61d6F9BbA949961d974`](https://celoscan.io/address/0x9aC488Bc0Ba3cF7F2552c61d6F9BbA949961d974) |
+| `SprayFaucet` | [`0x117cEa08fD62220506FD7621C548a627373B2DFc`](https://celoscan.io/address/0x117cEa08fD62220506FD7621C548a627373B2DFc) |
+| `DrawManager` | [`0xacB78C0DdAA33C660010dE76b842A54b613156B4`](https://celoscan.io/address/0xacB78C0DdAA33C660010dE76b842A54b613156B4) |
+| `CrewRegistry` | [`0x73F0770aea05298579252dFf193df0454C0B5A8a`](https://celoscan.io/address/0x73F0770aea05298579252dFf193df0454C0B5A8a) |
 
-Stablecoin: cUSD · min contribution / ticket value: 0.10 cUSD · full details + deprecated v0 vault:
+Stablecoin: cUSD · min contribution / ticket value: 0.10 cUSD · full details + superseded cores:
 [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json) ·
 runbook: [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md)
 

@@ -64,5 +64,39 @@
     "resolved": null,
     "push": null,
     "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
+  },
+  {
+    "periodId": 20641,
+    "date": "2026-07-07",
+    "txCount": 3,
+    "activeUsers": 1,
+    "newUsers": 1,
+    "contributions": 1,
+    "principalIn": "500000000000000000",
+    "prizesPaid": "0",
+    "sprays": 0,
+    "welcomes": 0,
+    "picks": 2,
+    "checkIns": 0,
+    "resolved": null,
+    "push": null,
+    "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
+  },
+  {
+    "periodId": 20642,
+    "date": "2026-07-08",
+    "txCount": 32,
+    "activeUsers": 11,
+    "newUsers": 10,
+    "contributions": 11,
+    "principalIn": "1100000000000000000",
+    "prizesPaid": "0",
+    "sprays": 0,
+    "welcomes": 0,
+    "picks": 20,
+    "checkIns": 1,
+    "resolved": null,
+    "push": null,
+    "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
   }
 ]
