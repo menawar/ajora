@@ -28,7 +28,11 @@ export interface LastDraw {
   prize: bigint;
   /** True once the claim window has elapsed and the leftover pot can be recycled. */
   canRecycle: boolean;
+  /** Public winner list from the indexer when available. */
+  winners: Array<{ address: Address; share: bigint; claimed: boolean }>;
 }
+
+const INDEXER_URL = process.env.NEXT_PUBLIC_INDEXER_URL ?? "";
 
 /** Current-period pick state + last night's draw, polled from the public RPC. */
 export function useDraw() {
@@ -125,7 +129,35 @@ export function useDraw() {
             draw.resolved &&
             draw.totalWinningWeight > 0n &&
             BigInt(Math.floor(Date.now() / 1000)) >= draw.resolvedAt + claimWindow,
+          winners: [],
         });
+
+        if (INDEXER_URL && draw.resolved && draw.totalWinningWeight > 0n) {
+          try {
+            const res = await fetch(`${INDEXER_URL}/periods/${lastPeriod.toString()}`, {
+              signal: AbortSignal.timeout(8_000),
+            });
+            if (res.ok) {
+              const data = (await res.json()) as {
+                winners?: Array<{ address: Address; share: string; claimed: boolean }>;
+              };
+              setLast((curr) =>
+                curr
+                  ? {
+                      ...curr,
+                      winners: (data.winners ?? []).map((w) => ({
+                        address: w.address,
+                        share: BigInt(w.share),
+                        claimed: w.claimed,
+                      })),
+                    }
+                  : curr,
+              );
+            }
+          } catch {
+            // Keep the on-chain state even if the indexer is unavailable.
+          }
+        }
         setLoading(false);
       } catch {
         setLoading(false);

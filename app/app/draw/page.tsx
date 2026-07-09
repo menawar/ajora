@@ -137,6 +137,24 @@ export default function DrawPage() {
               </p>
             ) : (
               <div className="mt-4 flex flex-col gap-3">
+                {last.winners.length > 0 && (
+                  <div className="rounded-xl border border-gray-100 bg-gray-50 p-3 text-left">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                      Winning wallet
+                    </p>
+                    <p className="mt-1 font-mono text-sm text-gray-900">
+                      {last.winners.length === 1
+                        ? last.winners[0].address
+                        : `${last.winners.length} winners`}
+                    </p>
+                    {last.winners.length === 1 && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        Share: {cusd(last.winners[0].share)} cUSD
+                        {last.winners[0].claimed ? " · claimed" : " · unclaimed"}
+                      </p>
+                    )}
+                  </div>
+                )}
                 {last.won ? (
                   <>
                     <p className="font-semibold text-celo-green">
