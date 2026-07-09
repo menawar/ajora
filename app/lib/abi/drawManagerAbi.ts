@@ -32,6 +32,19 @@ export const drawManagerAbi = [
   },
   {
     "type": "function",
+    "name": "CLAIM_WINDOW",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "COMMIT_WINDOW",
     "inputs": [],
     "outputs": [
@@ -142,6 +155,11 @@ export const drawManagerAbi = [
             "name": "winningNumber",
             "type": "uint8",
             "internalType": "uint8"
+          },
+          {
+            "name": "resolvedAt",
+            "type": "uint64",
+            "internalType": "uint64"
           },
           {
             "name": "seed",
@@ -258,6 +276,25 @@ export const drawManagerAbi = [
       }
     ],
     "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "recycleUnclaimed",
+    "inputs": [
+      {
+        "name": "periodId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable"
   },
   {

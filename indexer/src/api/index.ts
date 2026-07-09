@@ -95,6 +95,47 @@ async function computeFlagsUncached(): Promise<Map<string, string[]>> {
   return flags;
 }
 
+// ------------------------------------------------------------------- crews (#63)
+
+/** Crew detail: metadata, members, and daily savings history. */
+app.get("/crews/:id", async (c) => {
+  const crewId = BigInt(c.req.param("id"));
+  const [crew] = await db.select().from(schema.crews).where(eq(schema.crews.id, crewId));
+  if (!crew) return c.notFound();
+
+  const members = await db
+    .select()
+    .from(schema.crewMembers)
+    .where(eq(schema.crewMembers.crewId, crewId))
+    .orderBy(schema.crewMembers.joinedAt);
+
+  const savings = await db
+    .select()
+    .from(schema.crewSavingsDaily)
+    .where(eq(schema.crewSavingsDaily.crewId, crewId))
+    .orderBy(desc(schema.crewSavingsDaily.periodId))
+    .limit(30);
+
+  return json(c, { ...crew, members, savings });
+});
+
+/** Crew leaderboard, default sort by totalSaved descending. */
+app.get("/leaderboard/crews", async (c) => {
+  const by = c.req.query("by") ?? "saved";
+  const order =
+    by === "members"
+      ? desc(schema.crews.memberCount)
+      : desc(schema.crews.totalSaved);
+  const rows = await db
+    .select()
+    .from(schema.crews)
+    .orderBy(order)
+    .limit(clampLimit(c, 20))
+    .offset(clampOffset(c));
+  c.header("Cache-Control", CACHE_HEADER);
+  return json(c, { by, offset: clampOffset(c), rows });
+});
+
 /** Flagged accounts + reasons, for the sybil-adjusted metrics view. */
 app.get("/flags", async (c) => {
   const flags = await computeFlags();
