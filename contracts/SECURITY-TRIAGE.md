@@ -64,7 +64,61 @@ findings should be triaged below.
 
 ## External review packet (issue #73)
 
-Still open on #19.
+### Scope
+
+| Contract | Lines | Source | Test coverage |
+|---|---|---|---|
+| PotVault | ~300 | `src/PotVault.sol` | `test/PotVault.t.sol`, `test/PotVaultGuards.t.sol`, `test/PotVaultStreak.integration.t.sol`, `test/PotVaultYield.integration.t.sol`, `test/Invariant.t.sol` |
+| StreakSBT | ~180 | `src/StreakSBT.sol` | `test/StreakSBT.t.sol` |
+| SprayFaucet | ~260 | `src/SprayFaucet.sol` | `test/SprayFaucet.t.sol`, `test/SprayFaucetCaps.t.sol` |
+| DrawManager | ~210 | `src/DrawManager.sol` | `test/DrawManager.t.sol`, `test/DrawRandomness.t.sol`, `test/DrawRecycle.t.sol` |
+| CrewRegistry | ~140 | `src/CrewRegistry.sol` | `test/CrewRegistry.t.sol` |
+| YieldAdapter | ~100 | `src/YieldAdapter.sol` | `test/YieldAdapter.t.sol`, `test/YieldAdapter.fork.t.sol` |
+| Treasury | ~100 | `src/Treasury.sol` | `test/Treasury.t.sol` |
+| CoreLoop integration | — | `script/Deploy.s.sol` | `test/CoreLoop.integration.t.sol`, `test/Onboarding.integration.t.sol` |
+
+~1300 Solidity source lines across 7 contracts, 20 test files (~3200 test lines).
+
+### Known-accepted risks
+
+See [THREAT-MODEL.md](./THREAT-MODEL.md) for the full adversary model. Key
+accepted risks:
+- **Single-admin bootstrap**: admin and keeper are the same EOA today
+- **No oracle**: sponsor budgets are manually topped up
+- **Yield reliance on Aave**: venue change requires a new adapter deployment
+- **Sybil detection is visibility-only**: flags never freeze or confiscate funds
+
+### How to run the test suites
+
+```bash
+# Unit tests (fast, every PR)
+cd contracts && forge test -vvv
+
+# Fuzz (256 runs per test)
+forge test --match-test testFuzz -vvv
+
+# Invariant (256 runs × 500 calls)
+forge test --match-contract Invariant -vvv
+
+# Fork tests (Aave on Celo — needs RPC)
+CELO_RPC=https://forno.celo.org forge test --match-contract Fork -vvv
+
+# Full e2e via anvil
+cd contracts && anvil --fork-url https://forno.celo.org &
+forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+```
+
+### Static analysis
+
+- **Slither**: per-PR gate in CI, findings in [SECURITY-TRIAGE.md](./SECURITY-TRIAGE.md)
+- **Mythril**: weekly schedule in CI; report artifact uploaded each run
+
+### Review budget estimate
+
+~1300 source lines → ~2–3 reviewer days for a first pass, including the
+commit-reveal randomness scheme and the yield adapter wiring. Priority paths:
+`contribute` → `settleWinnings` → `claimPrincipal` (money in/out) and the
+`commitSeed` → `revealAndResolve` cycle (draw correctness).
 
 ## Deliberate zero-allowed setters
 
