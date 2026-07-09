@@ -26,6 +26,11 @@ jobs:
       - name: Test
         run: forge test -vvv
 
+      - name: Gas snapshot check (#78)
+        run: |
+          forge snapshot
+          git diff --exit-code .gas-snapshot
+
       - name: Format check
         run: forge fmt --check
 
