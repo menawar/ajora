@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { encodeAbiParameters, isHex, keccak256 } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
 const POLL_MS = 12_000;
+type Address = `0x${string}`;
 
 export interface MyPick {
   number: number; // 0 = no pick
@@ -16,6 +18,7 @@ export interface LastDraw {
   periodId: bigint;
   resolved: boolean;
   winningNumber: number;
+  resolvedAt: bigint;
   pot: bigint;
   totalWinningWeight: bigint;
   /** Connected user's state for that draw. */
@@ -23,6 +26,8 @@ export interface LastDraw {
   claimed: boolean;
   /** Pro-rata prize when won (claimed or not; 0 otherwise). */
   prize: bigint;
+  /** True once the claim window has elapsed and the leftover pot can be recycled. */
+  canRecycle: boolean;
 }
 
 /** Current-period pick state + last night's draw, polled from the public RPC. */
@@ -30,9 +35,13 @@ export function useDraw() {
   const { address } = useWallet();
   const [myPick, setMyPick] = useState<MyPick>({ number: 0, weight: 0n });
   const [last, setLast] = useState<LastDraw>();
+  const [keeper, setKeeper] = useState<Address>();
+  const [admin, setAdmin] = useState<Address>();
   const [loading, setLoading] = useState(true);
   const [picking, setPicking] = useState(false);
   const [claiming, setClaiming] = useState(false);
+  const [recycling, setRecycling] = useState(false);
+  const [recovering, setRecovering] = useState<"idle" | "recommitting" | "revealing">("idle");
   const [error, setError] = useState<string>();
 
   const refetch = useCallback(() => {
@@ -44,7 +53,15 @@ export function useDraw() {
         });
         const lastPeriod = period - 1n;
 
-        const [pick, draw] = await Promise.all([
+        const [keeperAddress, adminAddress, currentPick, draw] = await Promise.all([
+          publicClient.readContract({
+            ...contracts.drawManager,
+            functionName: "keeper",
+          }),
+          publicClient.readContract({
+            ...contracts.drawManager,
+            functionName: "admin",
+          }),
           address
             ? publicClient.readContract({
                 ...contracts.drawManager,
@@ -58,6 +75,12 @@ export function useDraw() {
             args: [lastPeriod],
           }),
         ]);
+        const claimWindow = await publicClient.readContract({
+          ...contracts.drawManager,
+          functionName: "CLAIM_WINDOW",
+        });
+        setKeeper(keeperAddress as Address);
+        setAdmin(adminAddress as Address);
 
         let won = false;
         let claimed = false;
@@ -87,16 +110,21 @@ export function useDraw() {
           }
         }
 
-        setMyPick({ number: Number(pick[0]), weight: pick[1] });
+        setMyPick({ number: Number(currentPick[0]), weight: currentPick[1] });
         setLast({
           periodId: lastPeriod,
           resolved: draw.resolved,
           winningNumber: Number(draw.winningNumber),
+          resolvedAt: draw.resolvedAt,
           pot: draw.pot,
           totalWinningWeight: draw.totalWinningWeight,
           won,
           claimed,
           prize,
+          canRecycle:
+            draw.resolved &&
+            draw.totalWinningWeight > 0n &&
+            BigInt(Math.floor(Date.now() / 1000)) >= draw.resolvedAt + claimWindow,
         });
         setLoading(false);
       } catch {
@@ -112,6 +140,17 @@ export function useDraw() {
   }, [refetch]);
 
   const feeCurrency = () => (isMiniPay() ? contracts.cusd.address : undefined);
+
+  const assertBytes32Hex = (secret: string): `0x${string}` => {
+    if (!isHex(secret, { strict: true }) || secret.length !== 66) {
+      throw new Error("Paste the keeper secret as a 32-byte 0x-prefixed hex value.");
+    }
+    return secret as `0x${string}`;
+  };
+
+  const commitmentFromSecret = (secret: string): `0x${string}` => {
+    return keccak256(encodeAbiParameters([{ type: "bytes32" }], [assertBytes32Hex(secret)]));
+  };
 
   const pick = useCallback(
     async (number: number) => {
@@ -171,5 +210,96 @@ export function useDraw() {
     }
   }, [address, last, refetch]);
 
-  return { myPick, last, loading, pick, picking, claimPrize, claiming, error, refetch };
+  const recycleUnclaimed = useCallback(async () => {
+    const wallet = walletClient();
+    if (!wallet || !address || !last || !last.canRecycle) return;
+    setRecycling(true);
+    setError(undefined);
+    try {
+      const { request } = await publicClient.simulateContract({
+        ...contracts.drawManager,
+        functionName: "recycleUnclaimed",
+        args: [last.periodId],
+        account: address,
+      });
+      const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+      await publicClient.waitForTransactionReceipt({ hash });
+      refetch();
+    } catch (e) {
+      setError(e instanceof Error ? e.message.split("\n")[0] : "Rollover failed");
+    } finally {
+      setRecycling(false);
+    }
+  }, [address, last, refetch]);
+
+  const recommitMissedDraw = useCallback(
+    async (periodId: bigint, secret: string) => {
+      const wallet = walletClient();
+      if (!wallet || !address) return;
+      setRecovering("recommitting");
+      setError(undefined);
+      try {
+        const commitment = commitmentFromSecret(secret);
+        const { request } = await publicClient.simulateContract({
+          ...contracts.drawManager,
+          functionName: "recommitSeed",
+          args: [periodId, commitment],
+          account: address,
+        });
+        const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+        await publicClient.waitForTransactionReceipt({ hash });
+        refetch();
+      } catch (e) {
+        setError(e instanceof Error ? e.message.split("\n")[0] : "Recommit failed");
+      } finally {
+        setRecovering("idle");
+      }
+    },
+    [address, refetch],
+  );
+
+  const revealMissedDraw = useCallback(
+    async (periodId: bigint, secret: string) => {
+      const wallet = walletClient();
+      if (!wallet || !address) return;
+      setRecovering("revealing");
+      setError(undefined);
+      try {
+        const keeperSecret = assertBytes32Hex(secret);
+        const { request } = await publicClient.simulateContract({
+          ...contracts.drawManager,
+          functionName: "revealAndResolve",
+          args: [periodId, keeperSecret],
+          account: address,
+        });
+        const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+        await publicClient.waitForTransactionReceipt({ hash });
+        refetch();
+      } catch (e) {
+        setError(e instanceof Error ? e.message.split("\n")[0] : "Reveal failed");
+      } finally {
+        setRecovering("idle");
+      }
+    },
+    [address, refetch],
+  );
+
+  return {
+    myPick,
+    last,
+    keeper,
+    admin,
+    loading,
+    pick,
+    picking,
+    claimPrize,
+    claiming,
+    recycleUnclaimed,
+    recycling,
+    recommitMissedDraw,
+    revealMissedDraw,
+    recovering,
+    error,
+    refetch,
+  };
 }
