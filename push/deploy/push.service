@@ -1,0 +1,27 @@
+[Unit]
+Description=Ajora push notification service
+Documentation=https://github.com/menawar/ajora/tree/main/push
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ajora
+Group=ajora
+WorkingDirectory=/opt/ajora/push
+EnvironmentFile=/opt/ajora/push/.env
+ExecStart=/usr/bin/node src/server.ts
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/opt/ajora/push
+
+[Install]
+WantedBy=multi-user.target
