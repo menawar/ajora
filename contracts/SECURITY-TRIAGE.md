@@ -43,8 +43,28 @@ accepted set — any other finding fails the build.
 | Harvest can't strand yield | `YieldAdapter.harvest` rejects past periods; only exit is `fundJara` | `test_RevertWhenHarvestIntoResolvedPastPeriod` |
 | Money conservation under fuzzing | `Invariant.t.sol` — 2 invariants over randomized contribute/claim/settle/deploy/recall/accrue/harvest | CI |
 
-Still open on #19: Mythril in CI (deliberately deferred — the Slither gate is live and
-Mythril's runtime cost wants its own scheduled workflow) and the external-review packet.
+## Mythril (CI-run, issue #44)
+
+Mythril symbolic execution runs weekly (Monday 04:17 UTC) via
+`.github/workflows/mythril.yml`. The analysis targets the six money-bearing
+contracts: PotVault, DrawManager, SprayFaucet, YieldAdapter, Treasury,
+CrewRegistry. Flattened sources and the report artifact are uploaded to each
+run — trigger with `workflow_dispatch` to re-run between schedules.
+
+### First run (2026-07-09, #72)
+
+The pipeline was validated end-to-end: `forge flatten` produces correct
+single-file inputs, Mythril container pulls and executes. Report artifact is
+archived with the run. No findings to triage on the first pass — the pipeline
+was brought up, exercised, and confirmed working. Future runs with actual
+findings should be triaged below.
+
+| Finding | Fix / Rationale |
+|---|---|
+
+## External review packet (issue #73)
+
+Still open on #19.
 
 ## Deliberate zero-allowed setters
 
