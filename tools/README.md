@@ -2,9 +2,22 @@
 
 Small, dependency-light helpers that run the repeatable steps after a mainnet
 (or testnet) core deploy, so nothing is hand-edited and nothing is forgotten.
-The order below is the post-deploy checklist.
 
-## 1. Verify sources on Sourcify
+## Single command (recommended)
+
+```bash
+tools/post-deploy.sh                              # default: celo-mainnet
+tools/post-deploy.sh --network alfajores
+tools/post-deploy.sh --broadcast <run-latest.json> # right after forge script --broadcast
+tools/post-deploy.sh --check                       # CI: verify everything is in sync
+```
+
+Runs verification, prints KarmaGAP list, syncs frontend env, and prints indexer
+addresses — in one shot.
+
+## Individual scripts
+
+### 1. Verify sources on Sourcify
 
 ```bash
 tools/verify-sourcify.sh            # default network: celo-mainnet
@@ -18,7 +31,7 @@ are skipped. Needs `forge`/`cast` on PATH; no API key. After it succeeds, set
 each contract's `"verification"` field in the deployment record to
 `sourcify:exact_match`.
 
-## 2. Sync the frontend env
+### 2. Sync the frontend env
 
 ```bash
 node tools/sync-env.mjs           # write app/.env.local
@@ -32,7 +45,7 @@ in. The **indexer** (`indexer/ponder.config.ts`) and **simulator**
 (`ajora-sim/.env`) consume the same addresses; the script prints them so you can
 paste them across.
 
-## 3. KarmaGAP + submission checklist (manual)
+## Manual KarmaGAP + submission steps
 
 On-chain metrics only accrue once the addresses are registered with the scorer,
 so do this the same hour as the deploy:
@@ -42,9 +55,8 @@ so do this the same hour as the deploy:
 - [ ] **KarmaGAP** project profile → update the contract addresses to the new
       core (PotVault, StreakSBT, SprayFaucet, DrawManager, CrewRegistry).
 - [ ] Update the addresses in the root `README.md` deployment table.
-- [ ] Run `tools/verify-sourcify.sh`, then flip the `verification` fields.
-- [ ] Run `node tools/sync-env.mjs`; redeploy the frontend so the live app
-      points at the new core.
+- [ ] Run `tools/post-deploy.sh` (or the individual scripts below).
+- [ ] Redeploy the frontend so the live app points at the new core.
 - [ ] Post a `/celo` Farcaster update linked to the deploy PR (score booster).
 
 > These scripts read only the committed deployment record — they never hold a

@@ -79,18 +79,37 @@ Rehearsal assertions (all held on the last run):
    Aave mid-claim; afterwards `vault balance + adapter.totalDeployed()` equalled
    liabilities to the wei.
 
-## Post-deploy checklist
+## Post-deploy checklist (automated — #94)
 
-1. Sanity-read on-chain: `token()`, `minContribution()`, `drawManager()`, `sprayFaucet()`,
-   `streakSBT()` on the vault; `vault()`/`keeper()` on the DrawManager.
-2. Record all addresses in `contracts/deployments/<network>.json` and the README table.
-3. Verify sources (Sourcify works on Celo without an API key):
-   `forge verify-contract --verifier sourcify --chain-id 42220 <addr> src/<C>.sol:<C>`
-4. **Register the contract addresses in the KarmaGAP project profile immediately** —
+Run the single post-deploy command right after `forge script --broadcast` succeeds:
+
+```bash
+# After a fresh deploy — reads the broadcast artifact
+tools/post-deploy.sh --broadcast contracts/broadcast/Deploy.s.sol/42220/run-latest.json
+
+# Or from an existing deployment record (re-verify, re-sync)
+tools/post-deploy.sh
+tools/post-deploy.sh --network alfajores
+tools/post-deploy.sh --check   # CI: verify env is in sync with the record
+```
+
+The script automates:
+
+1. **Verify on Sourcify** — runs `tools/verify-sourcify.sh` for every contract.
+2. **Print KarmaGAP registration list** — all 5 contract addresses ready to paste.
+3. **Sync the frontend env** — runs `tools/sync-env.mjs` to write `app/.env.local`.
+4. **Emit indexer env diff** — prints addresses for `indexer/ponder.config.ts`.
+
+### Manual steps after automation
+
+These require a wallet and are NOT automated:
+
+1. **Register the contract addresses in the KarmaGAP project profile** immediately —
    Proof of Ship transaction/user tracking only counts registered addresses.
-5. Fund a sponsor campaign so welcome tickets work:
+2. Fund a sponsor campaign so welcome tickets work:
    `cusd.approve(faucet, X)` then `faucet.fundSponsorPool(X, "launch")`.
-6. Update the app env (`NEXT_PUBLIC_*` addresses).
+3. Update the root `README.md` deployment table.
+4. Post a `/celo` Farcaster update linked to the deploy PR (score booster).
 
 ## Yield + Treasury layer (issue #7)
 
