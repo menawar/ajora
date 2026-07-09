@@ -32,16 +32,6 @@ ajora/
 └── .github/workflows/   # CI (forge build + test, app typecheck)
 ```
 
-## Architecture map
-
-| Part | Role | Talks to | Start here |
-|------|------|----------|------------|
-| `contracts/` | On-chain savings, draw, spray, streak, treasury, and yield logic | Celo, keepers, app reads/writes, indexer event reads | [`contracts/README.md`](./contracts/README.md), [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md), [`contracts/THREAT-MODEL.md`](./contracts/THREAT-MODEL.md) |
-| `indexer/` | Ponder service that turns contract events into leaderboards, win cards, metrics, flags, and notification digests | Celo logs, app API reads, push notification jobs | [`indexer/README.md`](./indexer/README.md) |
-| `push/` | Web Push backend for draw results and streak-at-risk nudges | Indexer notification endpoints, browser push subscriptions, cron/manual ticks | [`push/README.md`](./push/README.md) |
-| `app/` | MiniPay Mini App frontend for saving, picking, crews, notifications, share cards, and wallet views | Wallet, contracts, optional indexer and push service URLs | [`app/README.md`](./app/README.md) |
-| Keepers | Scheduled jobs that advance draws, harvest yield, sweep reserves, vest referrals, and collect metrics | Contracts, app scripts, GitHub Actions workflows | [`app/README.md`](./app/README.md), [`.github/workflows/keeper.yml`](./.github/workflows/keeper.yml), [`.github/workflows/metrics.yml`](./.github/workflows/metrics.yml) |
-
 ## Quickstart
 
 ### Contracts (Foundry)
@@ -95,16 +85,6 @@ Live core: **core_v5**, deployed 2026-07-07.
 Stablecoin: cUSD · min contribution / ticket value: 0.10 cUSD · full details + superseded cores:
 [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json) ·
 runbook: [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md)
-
-## More docs
-
-- [`AJORA_SPEC.md`](./AJORA_SPEC.md) — product and technical specification
-- [`contracts/README.md`](./contracts/README.md) — Foundry contract workspace
-- [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md) — deployment runbook and wiring order
-- [`contracts/THREAT-MODEL.md`](./contracts/THREAT-MODEL.md) — anti-sybil threat model
-- [`app/README.md`](./app/README.md) — MiniPay frontend commands and environment
-- [`indexer/README.md`](./indexer/README.md) — Ponder read API and indexed tables
-- [`push/README.md`](./push/README.md) — Web Push service, policy, API, and tests
 
 ## License
 
