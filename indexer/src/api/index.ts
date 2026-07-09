@@ -53,6 +53,8 @@ const CACHE_HEADER = "public, max-age=30, stale-while-revalidate=60";
  * Flags exclude accounts from leaderboards/reward views — they never touch funds.
  * - reciprocal-spray: A sprayed B and B sprayed A (2-cycles are the cheapest wash loop).
  * - repeat-pair: the same sender sprayed the same recipient 5+ times (drip farming).
+ * - shared-funder: >= 5 addresses whose first spray all came from the same funder and
+ *   who never spray each other but share a gas/cUSD source (#85).
  */
 /** Flag computation does two joins; amortize it across requests (#64). */
 const FLAGS_TTL_MS = 60_000;
@@ -78,6 +80,32 @@ async function computeFlagsUncached(): Promise<Map<string, string[]>> {
     .groupBy(schema.sprays.from, schema.sprays.to)
     .having(sql`count(*) >= 5`);
 
+  // shared-funder: addresses whose first spray-in came from the same funder,
+  // clustered at >= SHARED_FUNDER_THRESHOLD members. Rings avoid reciprocal
+  // sprays but share a gas/cUSD source -> cluster them.
+  const SHARED_FUNDER_THRESHOLD = 5;
+  const sLater = alias(schema.sprays, "s_later");
+  const sEarlier = alias(schema.sprays, "s_earlier");
+  const firstFunders = await db
+    .selectDistinct({
+      addr: sLater.to,
+      funder: sLater.from,
+    })
+    .from(sLater)
+    .leftJoin(
+      sEarlier,
+      and(eq(sEarlier.to, sLater.to), sql`${sLater.id} > ${sEarlier.id}`),
+    )
+    .where(sql`${sEarlier.id} IS NULL`);
+
+  const funderCounts = new Map<string, { count: number; addrs: string[] }>();
+  for (const { addr, funder } of firstFunders) {
+    const entry = funderCounts.get(funder) ?? { count: 0, addrs: [] };
+    entry.count++;
+    entry.addrs.push(addr);
+    funderCounts.set(funder, entry);
+  }
+
   const flags = new Map<string, string[]>();
   const add = (addr: string, reason: string) => {
     const list = flags.get(addr) ?? [];
@@ -91,6 +119,13 @@ async function computeFlagsUncached(): Promise<Map<string, string[]>> {
   for (const { a, b } of repeat) {
     add(a, "repeat-pair");
     add(b, "repeat-pair");
+  }
+  for (const [, entry] of funderCounts) {
+    if (entry.count >= SHARED_FUNDER_THRESHOLD) {
+      for (const addr of entry.addrs) {
+        add(addr, "shared-funder");
+      }
+    }
   }
   return flags;
 }
