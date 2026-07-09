@@ -26,10 +26,54 @@ ajora/
 │   ├── test/            # Foundry tests
 │   └── script/          # Deployment scripts
 ├── app/                 # MiniPay Mini App frontend (Next.js + TypeScript + Tailwind)
-├── indexer/             # Ponder indexer — events → tables + read APIs (leaderboards, metrics)
+├── indexer/             # Ponder indexer — events → tables + read APIs
 ├── push/                # Web Push backend — draw results + streak-at-risk nudges
-├── metrics/             # Committed growth-metrics rollups (daily.json, summary.json)
-└── .github/workflows/   # CI (forge build + test, app typecheck)
+├── metrics/             # Committed growth-metrics rollups
+├── tools/               # Post-deploy automation helpers
+└── .github/workflows/   # CI/CD, keepers, static analysis
+```
+
+## Architecture
+
+```
+┌──────────┐    contribute/pick/spray/claim    ┌────────────┐
+│  MiniPay │ ──────────────────────────────→   │ Contracts  │
+│  browser │ ←──────────────────────────────   │ (on-chain) │
+└──────────+    tx receipts + events           └─────┬──────┘
+      │                                               │ events
+      │                                               ▼
+      │                                       ┌──────────────┐
+      │  NEXT_PUBLIC_* addresses              │   Indexer    │
+      │  (app/.env.local)                     │  (Ponder)     │
+      │                                       │  port 42069   │
+      │                                       │               │
+      │                                       │  /leaderboard │
+      │                                       │  /users/:addr │
+      │                                       │  /periods/:id │
+      │                                       │  /crews/:id   │
+      │                                       │  /flags       │
+      │                                       │  /notify/*    │
+      │                                       │  /metrics/    │
+      │                                       └──┬───────────┘
+      │                                          │
+      │  /notify/draw/:id                         │  /notify/at-risk
+      │  /notify/unclaimed                        │  /notify/unclaimed
+      │                                          ▼
+      │                                  ┌──────────────┐
+      │  PushSubscription                │  Push service │
+      │  ──────────────────────────→     │  (Web Push)   │
+      │                                  │  port 42070   │
+      │  ── Push notification (won/lost) │               │
+      │                                  └──────────────┘
+      │
+      │                              ┌──────────┐
+      │  ── Keeper cron (GH Actions) │ Keepers   │
+      │     commit/reveal draws      │           │
+      │     harvest yield            │  tick.mjs │
+      │     sweep unclaimed          │  extras   │
+      │     vest referrals           │           │
+      │     watchdog (dead-man's sw) │           │
+      │                              └──────────┘
 ```
 
 ## Quickstart
@@ -54,8 +98,42 @@ git submodule update --init --recursive
 ```bash
 cd app
 npm install
-npm run dev
+npm run dev     # expects contracts/.env with NEXT_PUBLIC_* variables
 ```
+
+See [`app/README.md`](./app/README.md) for the full setup.
+
+### Indexer
+
+```bash
+cd indexer
+npm install
+npm run dev     # starts on port 42069; requires an RPC URL for Celo
+```
+
+See [`indexer/README.md`](./indexer/README.md).
+
+### Push service
+
+```bash
+cd push
+npm install
+npm run vapid   # generate VAPID keys once, add to .env
+npm start       # starts on port 42070
+```
+
+See [`push/README.md`](./push/README.md).
+
+## Key docs
+
+| Doc | What it covers |
+|-----|---------------|
+| [`AJORA_SPEC.md`](./AJORA_SPEC.md) | Full product & technical specification, §1–§18 |
+| [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md) | Deploy runbook, env vars, post-deploy checklist |
+| [`contracts/RANDOMNESS.md`](./contracts/RANDOMNESS.md) | Draw commit-reveal scheme + how to verify any draw |
+| [`contracts/THREAT-MODEL.md`](./contracts/THREAT-MODEL.md) | Adversary model, attack trees, accepted risks |
+| [`contracts/SECURITY-TRIAGE.md`](./contracts/SECURITY-TRIAGE.md) | Slither/Mythril findings triage, hardening controls |
+| [`contracts/INCIDENT-PLAYBOOK.md`](./contracts/INCIDENT-PLAYBOOK.md) | Pause drill, severity levels, comms templates |
 
 ## Roadmap (Proof of Ship, 4 weeks)
 
