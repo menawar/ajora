@@ -47,12 +47,28 @@ function RevealNumber({ value }: { value: number }) {
 export default function DrawPage() {
   const { address } = useWallet();
   const pot = usePotToday();
-  const { last, myPick, loading, claimPrize, claiming, error } = useDraw();
+  const {
+    last,
+    myPick,
+    loading,
+    claimPrize,
+    claiming,
+    recycleUnclaimed,
+    recycling,
+    recommitMissedDraw,
+    revealMissedDraw,
+    recovering,
+    keeper,
+    admin,
+    error,
+  } = useDraw();
   const { streakDays } = useStreak();
   const { myCode } = useCrew();
   const { sponsor, status: sponsorStatus, reset: resetSponsor } = useSponsor();
 
   const [sponsorAmount, setSponsorAmount] = useState("");
+  const [recoveryPeriod, setRecoveryPeriod] = useState("");
+  const [recoverySecret, setRecoverySecret] = useState("");
   const sponsorParsed = useMemo(() => {
     try {
       return parseUnits(sponsorAmount === "" ? "0" : sponsorAmount, 18);
@@ -60,12 +76,30 @@ export default function DrawPage() {
       return 0n;
     }
   }, [sponsorAmount]);
+  const recoveryPeriodId = useMemo(() => {
+    const value = recoveryPeriod.trim();
+    if (value === "") return null;
+    try {
+      return BigInt(value);
+    } catch {
+      return null;
+    }
+  }, [recoveryPeriod]);
   const sponsoring = sponsorStatus.step === "approving" || sponsorStatus.step === "funding";
+  const operatorConnected =
+    Boolean(address) &&
+    Boolean(keeper || admin) &&
+    (address?.toLowerCase() === keeper?.toLowerCase() || address?.toLowerCase() === admin?.toLowerCase());
 
   const { refetch } = pot;
   useEffect(() => {
     if (sponsorStatus.step === "success") refetch();
   }, [sponsorStatus.step, refetch]);
+  useEffect(() => {
+    if (last && recoveryPeriod.trim() === "") {
+      setRecoveryPeriod(last.periodId.toString());
+    }
+  }, [last?.periodId]);
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
@@ -101,37 +135,60 @@ export default function DrawPage() {
               <p className="mt-4 text-sm text-gray-500">
                 Nobody hit {last.winningNumber} — the whole pot rolled into today&apos;s draw 🔄
               </p>
-            ) : last.won ? (
-              <div className="mt-4 flex flex-col gap-3">
-                <p className="font-semibold text-celo-green">
-                  You won{last.claimed ? "!" : ` ${cusd(last.prize)} cUSD!`} 🎉
-                </p>
-                {!last.claimed ? (
-                  <button
-                    type="button"
-                    onClick={() => void claimPrize()}
-                    disabled={claiming}
-                    className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white disabled:opacity-50"
-                  >
-                    {claiming ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
-                  </button>
-                ) : (
-                  <p className="text-sm text-gray-500">Prize claimed — it&apos;s in your wallet.</p>
-                )}
-                <ShareButtons
-                  card={{
-                    kind: "win",
-                    amountCusd: cusd(last.prize),
-                    streakDays: Number(streakDays),
-                  }}
-                  text={`I just chopped ${cusd(last.prize)} cUSD in Ajora's daily draw — no-loss savings, real winnings 💸`}
-                  refCode={myCode || undefined}
-                />
-              </div>
             ) : (
-              <p className="mt-4 text-sm text-gray-500">
-                {address ? "Not your night — your savings are safe. Tomorrow! 💪" : ""}
-              </p>
+              <div className="mt-4 flex flex-col gap-3">
+                {last.won ? (
+                  <>
+                    <p className="font-semibold text-celo-green">
+                      You won{last.claimed ? "!" : ` ${cusd(last.prize)} cUSD!`} 🎉
+                    </p>
+                    {!last.claimed ? (
+                      <button
+                        type="button"
+                        onClick={() => void claimPrize()}
+                        disabled={claiming}
+                        className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white disabled:opacity-50"
+                      >
+                        {claiming ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
+                      </button>
+                    ) : (
+                      <p className="text-sm text-gray-500">
+                        Prize claimed — it&apos;s in your wallet.
+                      </p>
+                    )}
+                    <ShareButtons
+                      card={{
+                        kind: "win",
+                        amountCusd: cusd(last.prize),
+                        streakDays: Number(streakDays),
+                      }}
+                      text={`I just chopped ${cusd(last.prize)} cUSD in Ajora's daily draw — no-loss savings, real winnings 💸`}
+                      refCode={myCode || undefined}
+                    />
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    {address ? "Not your night — your savings are safe. Tomorrow! 💪" : ""}
+                  </p>
+                )}
+
+                {last.canRecycle && (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-left">
+                    <p className="text-sm font-medium text-amber-900">Missed claim window</p>
+                    <p className="mt-1 text-sm text-amber-800">
+                      Roll the leftover pot into the current draw now.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void recycleUnclaimed()}
+                      disabled={recycling || !address}
+                      className="mt-3 rounded-xl bg-amber-500 px-4 py-3 font-semibold text-white disabled:opacity-50"
+                    >
+                      {recycling ? "Rolling over…" : "Roll over unclaimed pot"}
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </>
         )}
@@ -187,6 +244,78 @@ export default function DrawPage() {
           <p className="mt-2 text-sm text-red-500">{sponsorStatus.message}</p>
         )}
       </section>
+
+      {operatorConnected && (
+        <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <div className="text-sm font-medium text-amber-900">Missed draw recovery</div>
+          <p className="mt-1 text-xs text-amber-800">
+            Keeper/admin only. Use this when a period missed resolution and needs a recommit,
+            then a later reveal.
+          </p>
+
+          <div className="mt-3 grid gap-2">
+            <label className="grid gap-1 text-xs font-medium text-amber-900">
+              Period ID
+              <input
+                inputMode="numeric"
+                value={recoveryPeriod}
+                onChange={(e) => setRecoveryPeriod(e.target.value.replace(/[^0-9]/g, ""))}
+                className="rounded-xl border border-amber-200 bg-white px-4 py-3 outline-amber-500"
+                placeholder="e.g. 1234"
+              />
+            </label>
+
+            <label className="grid gap-1 text-xs font-medium text-amber-900">
+              Keeper secret
+              <input
+                value={recoverySecret}
+                onChange={(e) => setRecoverySecret(e.target.value.trim())}
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                className="rounded-xl border border-amber-200 bg-white px-4 py-3 font-mono text-sm outline-amber-500"
+                placeholder="0x..."
+              />
+            </label>
+          </div>
+
+          <div className="mt-3 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                if (!recoveryPeriodId) return;
+                void recommitMissedDraw(recoveryPeriodId, recoverySecret);
+              }}
+              disabled={!recoveryPeriodId || !recoverySecret || recovering !== "idle"}
+              className="rounded-xl bg-amber-600 px-4 py-3 font-semibold text-white disabled:opacity-50"
+            >
+              {recovering === "recommitting" ? "Recommitting…" : "Recommit missed draw"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!recoveryPeriodId) return;
+                void revealMissedDraw(recoveryPeriodId, recoverySecret);
+              }}
+              disabled={!recoveryPeriodId || !recoverySecret || recovering !== "idle"}
+              className="rounded-xl border border-amber-300 bg-white px-4 py-3 font-semibold text-amber-900 disabled:opacity-50"
+            >
+              {recovering === "revealing" ? "Revealing…" : "Reveal and resolve"}
+            </button>
+          </div>
+
+          <p className="mt-3 text-xs text-amber-800">
+            <code>recommit</code> derives the commitment locally from the keeper secret.{" "}
+            <code>reveal</code> uses the same secret after the anchor block is ready.
+          </p>
+          {(keeper || admin) && (
+            <p className="mt-2 text-[11px] text-amber-700">
+              keeper {keeper ? `${keeper.slice(0, 6)}…${keeper.slice(-4)}` : "unset"} · admin{" "}
+              {admin ? `${admin.slice(0, 6)}…${admin.slice(-4)}` : "unset"}
+            </p>
+          )}
+        </section>
+      )}
 
       {error && <p className="text-center text-sm text-red-500">{error}</p>}
 
