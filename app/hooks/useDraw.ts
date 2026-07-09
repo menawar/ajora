@@ -1,13 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { encodeAbiParameters, isHex, keccak256 } from "viem";
+import { encodeAbiParameters, isHex, keccak256, parseAbiItem } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
 const POLL_MS = 12_000;
 type Address = `0x${string}`;
+const numberPickedEvent = parseAbiItem(
+  "event NumberPicked(address indexed user, uint256 indexed periodId, uint8 number, uint256 weight)",
+);
 
 export interface MyPick {
   number: number; // 0 = no pick
@@ -33,6 +36,31 @@ export interface LastDraw {
 }
 
 const INDEXER_URL = process.env.NEXT_PUBLIC_INDEXER_URL ?? "";
+
+async function fetchWinnersFromChain(periodId: bigint, winningNumber: number) {
+  const latest = await publicClient.getBlockNumber();
+  const fromBlock = latest > 120_000n ? latest - 120_000n : 0n;
+  const chunk = 5_000n;
+  const winners = new Map<Address, { address: Address; share: bigint; claimed: boolean }>();
+
+  for (let start = fromBlock; start <= latest; start += chunk) {
+    const end = start + chunk - 1n < latest ? start + chunk - 1n : latest;
+    const logs = await publicClient.getLogs({
+      ...contracts.drawManager,
+      event: numberPickedEvent,
+      args: { periodId },
+      fromBlock: start,
+      toBlock: end,
+    });
+    for (const log of logs) {
+      if (log.args.number !== winningNumber || !log.args.user || !log.args.weight) continue;
+      const address = log.args.user as Address;
+      winners.set(address, { address, share: log.args.weight, claimed: false });
+    }
+  }
+
+  return [...winners.values()];
+}
 
 /** Current-period pick state + last night's draw, polled from the public RPC. */
 export function useDraw() {
@@ -132,27 +160,31 @@ export function useDraw() {
           winners: [],
         });
 
-        if (INDEXER_URL && draw.resolved && draw.totalWinningWeight > 0n) {
+        if (draw.resolved && draw.totalWinningWeight > 0n) {
           try {
-            const res = await fetch(`${INDEXER_URL}/periods/${lastPeriod.toString()}`, {
-              signal: AbortSignal.timeout(8_000),
-            });
-            if (res.ok) {
-              const data = (await res.json()) as {
-                winners?: Array<{ address: Address; share: string; claimed: boolean }>;
-              };
-              setLast((curr) =>
-                curr
-                  ? {
-                      ...curr,
-                      winners: (data.winners ?? []).map((w) => ({
-                        address: w.address,
-                        share: BigInt(w.share),
-                        claimed: w.claimed,
-                      })),
-                    }
-                  : curr,
-              );
+            let winners: Array<{ address: Address; share: bigint; claimed: boolean }> = [];
+            if (INDEXER_URL) {
+              const res = await fetch(`${INDEXER_URL}/periods/${lastPeriod.toString()}`, {
+                signal: AbortSignal.timeout(8_000),
+              });
+              if (res.ok) {
+                const data = (await res.json()) as {
+                  winners?: Array<{ address: Address; share: string; claimed: boolean }>;
+                };
+                winners = (data.winners ?? []).map((w) => ({
+                  address: w.address,
+                  share: BigInt(w.share),
+                  claimed: w.claimed,
+                }));
+              }
+            }
+
+            if (winners.length === 0) {
+              winners = await fetchWinnersFromChain(lastPeriod, Number(draw.winningNumber));
+            }
+
+            if (winners.length > 0) {
+              setLast((curr) => (curr ? { ...curr, winners } : curr));
             }
           } catch {
             // Keep the on-chain state even if the indexer is unavailable.
