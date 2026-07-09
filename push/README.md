@@ -32,6 +32,43 @@ set -a; . ./.env; set +a
 npm start              # listens on :42070
 ```
 
+## Deploy (#66)
+
+### systemd service
+
+```bash
+sudo useradd -r -s /usr/sbin/nologin ajora
+sudo mkdir -p /opt/ajora/push
+sudo cp -r . /opt/ajora/push
+sudo cp deploy/push.service /etc/systemd/system/ajora-push.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now ajora-push
+```
+
+### Nightly backup
+
+A cron entry or systemd timer runs `deploy/backup.sh` daily:
+
+```bash
+# /etc/cron.d/ajora-push-backup
+15 3 * * * ajora /opt/ajora/push/deploy/backup.sh
+```
+
+Backups go to `/opt/ajora/backups/push/` by default. The script prunes files
+older than 30 days.
+
+### Restore
+
+```bash
+systemctl stop ajora-push
+cp /opt/ajora/backups/push/push-20260708T031500Z.db /opt/ajora/push/push.db
+systemctl start ajora-push
+```
+
+Verify the restore: `journalctl -u ajora-push -n 20 --no-pager`. Database
+integrity is checked at backup time (no automatic check on restore — run
+`sqlite3 push.db "PRAGMA integrity_check;"` to verify manually).
+
 ## API
 
 - `GET /health` · `GET /vapid-public-key` · `GET /metrics` (delivery counts by kind)
