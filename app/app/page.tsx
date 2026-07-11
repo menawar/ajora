@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { formatUnits } from "viem";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { ConnectBar } from "../components/ConnectBar";
 import { Onboarding } from "../components/Onboarding";
 import { StreakChip } from "../components/StreakChip";
@@ -12,7 +12,7 @@ import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -20,7 +20,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 15 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
