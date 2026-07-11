@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useCachedState } from "./useCachedState";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
@@ -19,7 +20,7 @@ export interface StreakState {
 /** Live streak + multiplier for the connected account, with the daily check-in write. */
 export function useStreak() {
   const { address } = useWallet();
-  const [state, setState] = useState<StreakState>({
+  const [state, setState] = useCachedState<StreakState>("ajora:streak", {
     streakDays: 0n,
     multiplierX10: 10n,
     checkedInToday: false,

@@ -1,7 +1,8 @@
 "use client";
 
 import { useWallet } from "../hooks/useWallet";
-import { Wallet } from "lucide-react";
+import { useOnline } from "../hooks/useOnline";
+import { Wallet, WifiOff } from "lucide-react";
 import { motion } from "framer-motion";
 
 function shorten(addr: string): string {
@@ -11,13 +12,21 @@ function shorten(addr: string): string {
 /** Account chip inside MiniPay / injected wallets; guidance everywhere else. */
 export function ConnectBar() {
   const { address, miniPay, connecting, noProvider, error, wallets, connect } = useWallet();
+  const online = useOnline();
 
   if (address) {
     return (
-      <div className="flex items-center justify-center gap-2 text-sm text-gray-700 glass-panel px-4 py-2 rounded-full mx-auto w-fit">
-        <span className="h-2 w-2 rounded-full bg-celo-green shadow-[0_0_8px_rgba(53,208,127,0.8)] animate-pulse" />
-        <span className="font-medium">{shorten(address)}</span>
-        {miniPay && <span className="rounded-md bg-celo-green/20 px-2 py-0.5 text-[10px] font-bold text-celo-green uppercase tracking-wider">MiniPay</span>}
+      <div className="flex flex-col items-center gap-1.5">
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-700 glass-panel px-4 py-2 rounded-full mx-auto w-fit">
+          <span className="h-2 w-2 rounded-full bg-celo-green shadow-[0_0_8px_rgba(53,208,127,0.8)] animate-pulse" />
+          <span className="font-medium">{shorten(address)}</span>
+          {miniPay && <span className="rounded-md bg-celo-green/20 px-2 py-0.5 text-[10px] font-bold text-celo-green uppercase tracking-wider">MiniPay</span>}
+        </div>
+        {!online && (
+          <span className="flex items-center gap-1 text-[10px] font-medium text-amber-500 uppercase tracking-wide">
+            <WifiOff className="h-3 w-3" /> Offline (Cached Data)
+          </span>
+        )}
       </div>
     );
   }

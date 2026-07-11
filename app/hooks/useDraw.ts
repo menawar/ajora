@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useCachedState } from "./useCachedState";
 import { encodeAbiParameters, isHex, keccak256, parseAbiItem } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
@@ -65,8 +66,8 @@ async function fetchWinnersFromChain(periodId: bigint, winningNumber: number) {
 /** Current-period pick state + last night's draw, polled from the public RPC. */
 export function useDraw() {
   const { address } = useWallet();
-  const [myPick, setMyPick] = useState<MyPick>({ number: 0, weight: 0n });
-  const [last, setLast] = useState<LastDraw>();
+  const [myPick, setMyPick] = useCachedState<MyPick>("ajora:draw:pick", { number: 0, weight: 0n });
+  const [last, setLast] = useCachedState<LastDraw | undefined>("ajora:draw:last", undefined);
   const [keeper, setKeeper] = useState<Address>();
   const [admin, setAdmin] = useState<Address>();
   const [loading, setLoading] = useState(true);
