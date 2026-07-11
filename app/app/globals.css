@@ -5,6 +5,7 @@
   --color-celo-green: #35d07f;
   --color-celo-gold: #fbcc5c;
   --color-celo-dark: #1a1a2e;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
