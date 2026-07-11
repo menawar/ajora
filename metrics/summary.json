@@ -25,13 +25,21 @@
     "0xc63db53e7d69b52287f0f856f0c2000cb4c9ebc2": 20643,
     "0xbebdc897ac604ca0d7d776ceafad7a2e2105479a": 20643,
     "0x2300789e29eb1e46fbac76f0f43fbd91b012f24a": 20643,
-    "0x1fd4a05a057611e9630d53e7d0df0b17ea3846d3": 20643
+    "0x1fd4a05a057611e9630d53e7d0df0b17ea3846d3": 20643,
+    "0x7b239041b24db0b6cdeea8cfd01129ea0d693810": 20644,
+    "0x30abf660fa8625a2b3ce058181349ad98d3a984e": 20644,
+    "0x9581a94ee25d02aa487583c380bf2a19319371a9": 20644,
+    "0x6e8728bc1738c0c86c84f180bf20bbe60d5a2987": 20644,
+    "0xa8be06fb740bb08d7560e0ee790ef427823b76f3": 20644,
+    "0x9b1a31e74e4590fdc294cc7d7912d234cc840e3d": 20644,
+    "0x6b028ff1df6e38e7fec4922a81e1ae7dc4458ea4": 20644,
+    "0x8d95d431686c9babc34881ccb254323a35cc1269": 20644
   },
   "verified": [],
-  "totalTx": 78,
-  "totalPrincipalIn": "3210000000000000000",
+  "totalTx": 101,
+  "totalPrincipalIn": "4250000000000000000",
   "totalPrizesPaid": "0",
-  "totalUsers": 26,
+  "totalUsers": 34,
   "verifiedUsers": 0,
-  "updatedAt": "2026-07-10T04:38:18.410Z"
+  "updatedAt": "2026-07-11T03:56:06.671Z"
 }
