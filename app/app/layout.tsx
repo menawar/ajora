@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Outfit } from "next/font/google";
 import { LanguageProvider } from "../lib/i18n";
 import { WalletProvider } from "../hooks/useWallet";
 import { TabBar } from "../components/TabBar";
 import { OfflineBanner } from "../components/OfflineBanner";
 import "./globals.css";
+
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ajora-4ewr.vercel.app"),
@@ -31,8 +34,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="min-h-dvh bg-white pb-16 text-gray-900 antialiased">
+    <html lang="en" className={outfit.variable}>
+      <body className="min-h-dvh bg-white pb-16 font-sans text-gray-900 antialiased">
         <LanguageProvider>
           <WalletProvider>
             <OfflineBanner />
