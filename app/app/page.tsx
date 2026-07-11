@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { formatUnits } from "viem";
 import { motion, type Variants } from "framer-motion";
 import { useTranslation } from "../lib/i18n";
@@ -38,11 +39,11 @@ function cusd(value: bigint): string {
 export default function Home() {
   const { address } = useWallet();
   const pot = usePotToday();
-  const { save, status, reset } = useSave();
   const { myPick } = useDraw();
   const { t } = useTranslation();
 
-  const busy = status.step === "approving" || status.step === "saving";
+  // If already picked, reuse the same number; otherwise pick a random number 1-9.
+  const comboNumber = useMemo(() => myPick.number !== 0 ? myPick.number : Math.floor(Math.random() * 9) + 1, [myPick.number]);
 
   return (
     <motion.main 
@@ -83,30 +84,12 @@ export default function Home() {
       </motion.section>
 
       <motion.section variants={itemVariants} className="flex flex-col gap-3">
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          type="button"
-          onClick={() => {
-            reset();
-            void save("0.1");
-          }}
-          disabled={busy || !address}
-          className="rounded-xl bg-celo-green px-4 py-4 text-lg font-semibold text-white transition-opacity disabled:opacity-50 hover:bg-[#2ebf73] hover:shadow-lg hover:shadow-celo-green/20"
-        >
-          {status.step === "approving"
-            ? "Approving cUSD…"
-            : status.step === "saving"
-              ? "Saving…"
-              : "Save 0.10 cUSD"}
-        </motion.button>
-
-        {status.step === "success" && (
-          <p className="text-center text-sm text-celo-green">
-            Saved! +{status.tickets.toString()} tickets for tonight&apos;s draw 🎉
-          </p>
-        )}
-        {status.step === "error" && (
-          <p className="text-center text-sm text-red-500">{status.message}</p>
+        {address ? (
+          <ComboFlow amountCusd="0.1" pickNumber={comboNumber} />
+        ) : (
+          <div className="rounded-xl bg-celo-green px-4 py-4 text-center text-lg font-semibold text-white opacity-50">
+            Connect to Play
+          </div>
         )}
 
         {address && !pot.loading && (
