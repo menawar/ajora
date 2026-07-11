@@ -78,7 +78,7 @@ export default function Home() {
             {pot.totalTickets.toString()} tickets in →
           </Link>
         </div>
-      </section>
+      </motion.section>
 
       <motion.section variants={itemVariants} className="flex flex-col gap-3">
         <motion.button
@@ -122,7 +122,7 @@ export default function Home() {
             Your tickets need a number — pick now 🎯
           </Link>
         )}
-      </section>
+      </motion.section>
 
       <motion.footer variants={itemVariants} className="mt-auto text-center text-xs text-gray-400">
         No-loss: your savings are always yours. Only the bonus is at stake.
