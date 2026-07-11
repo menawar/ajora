@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useCachedState } from "./useCachedState";
 import { parseUnits } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
@@ -26,7 +27,7 @@ export interface PotToday {
 /** Live view of today's pot, polled from the public RPC (works with no wallet). */
 export function usePotToday(): PotToday & { refetch: () => void } {
   const { address } = useWallet();
-  const [state, setState] = useState<PotToday>({
+  const [state, setState] = useCachedState<PotToday>("ajora:pot", {
     periodId: 0n,
     jaraPot: 0n,
     totalTickets: 0n,
