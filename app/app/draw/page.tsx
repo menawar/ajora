@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
+import { motion } from "framer-motion";
 import { ConnectBar } from "../../components/ConnectBar";
 import { ShareButtons } from "../../components/ShareButtons";
 import { useCrew } from "../../hooks/useCrew";
@@ -14,32 +15,43 @@ function cusd(value: bigint): string {
   return Number(formatUnits(value, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
 }
 
-/** Cycles 1-9 for a beat, then settles on the real number. */
+/** Hardware-accelerated slot-machine number roll */
 function RevealNumber({ value }: { value: number }) {
-  const [shown, setShown] = useState(1);
   const [settled, setSettled] = useState(false);
 
   useEffect(() => {
-    let ticks = 0;
-    const spin = setInterval(() => {
-      ticks += 1;
-      setShown((s) => (s % 9) + 1);
-      if (ticks > 14) {
-        clearInterval(spin);
-        setShown(value);
-        setSettled(true);
-      }
-    }, 90);
-    return () => clearInterval(spin);
+    // Slight delay to ensure the DOM has rendered at translateY(0) before transitioning
+    const t = setTimeout(() => setSettled(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  const digits = useMemo(() => {
+    const seq = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+    // Repeat sequence a few times for a long spin, ending with the target value
+    return [...seq, ...seq, ...seq, value];
   }, [value]);
 
+  // Each digit is 112px tall (h-28 = 7rem = 112px)
+  const stripHeight = digits.length * 112;
+  const targetY = -(stripHeight - 112); // scroll so the last element is visible
+
   return (
-    <div
-      className={`mx-auto flex h-28 w-28 items-center justify-center rounded-3xl text-6xl font-black text-white transition-transform ${
-        settled ? "scale-110 bg-celo-green" : "bg-celo-dark"
-      }`}
-    >
-      {shown}
+    <div className="mx-auto h-28 w-28 overflow-hidden rounded-3xl bg-celo-dark">
+      <div
+        className="flex flex-col transition-transform duration-[2500ms] ease-[cubic-bezier(0.15,0.85,0.2,1)]"
+        style={{ transform: settled ? `translateY(${targetY}px)` : "translateY(0)" }}
+      >
+        {digits.map((d, i) => (
+          <div
+            key={i}
+            className={`flex h-28 w-28 shrink-0 items-center justify-center text-6xl font-black text-white transition-colors duration-500 ${
+              settled && i === digits.length - 1 ? "bg-celo-green" : ""
+            }`}
+          >
+            {d}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -156,21 +168,27 @@ export default function DrawPage() {
                   </div>
                 )}
                 {last.won ? (
-                  <>
-                    <p className="font-semibold text-celo-green">
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", bounce: 0.5, delay: 2.5 }}
+                    className="flex flex-col gap-3"
+                  >
+                    <p className="font-semibold text-celo-green text-lg text-center">
                       You won{last.claimed ? "!" : ` ${cusd(last.prize)} cUSD!`} 🎉
                     </p>
                     {!last.claimed ? (
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
                         type="button"
                         onClick={() => void claimPrize()}
                         disabled={claiming}
-                        className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white disabled:opacity-50"
+                        className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
                       >
                         {claiming ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
-                      </button>
+                      </motion.button>
                     ) : (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 text-center">
                         Prize claimed — it&apos;s in your wallet.
                       </p>
                     )}
@@ -183,11 +201,16 @@ export default function DrawPage() {
                       text={`I just chopped ${cusd(last.prize)} cUSD in Ajora's daily draw — no-loss savings, real winnings 💸`}
                       refCode={myCode || undefined}
                     />
-                  </>
+                  </motion.div>
                 ) : (
-                  <p className="text-sm text-gray-500">
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 2.5 }}
+                    className="text-sm text-gray-500 text-center mt-2"
+                  >
                     {address ? "Not your night — your savings are safe. Tomorrow! 💪" : ""}
-                  </p>
+                  </motion.p>
                 )}
 
                 {last.canRecycle && (
