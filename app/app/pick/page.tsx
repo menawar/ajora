@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ConnectBar } from "../../components/ConnectBar";
+import { useTranslation } from "../../lib/i18n";
 import { useDraw } from "../../hooks/useDraw";
 import { usePotToday } from "../../hooks/usePotVault";
 import { useWallet } from "../../hooks/useWallet";
@@ -13,6 +14,7 @@ export default function PickPage() {
   const { address } = useWallet();
   const pot = usePotToday();
   const { myPick, pick, picking, error } = useDraw();
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<number>();
 
   const hasTickets = pot.myTickets > 0n;
@@ -21,14 +23,12 @@ export default function PickPage() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
       <header className="text-center">
-        <h1 className="text-2xl font-bold">Pick your number</h1>
+        <h1 className="text-2xl font-bold">{t("pick.title")}</h1>
         <p className="mt-1 text-sm text-gray-500">
           {hasTickets ? (
-            <>
-              Your <strong>{pot.myTickets.toString()}</strong> tickets ride on one number.
-            </>
+            <span dangerouslySetInnerHTML={{ __html: t("pick.subtitle.tickets", { tickets: pot.myTickets.toString() }) }} />
           ) : (
-            "Save first to earn tickets for tonight's draw."
+            t("pick.subtitle.empty")
           )}
         </p>
       </header>
@@ -55,9 +55,8 @@ export default function PickPage() {
 
       {myPick.number !== 0 && (
         <p className="text-center text-sm text-gray-500">
-          Current pick: <strong>{myPick.number}</strong> with{" "}
-          <strong>{myPick.weight.toString()}</strong> tickets
-          {selected && selected !== myPick.number && " — picking again replaces it"}
+          <span dangerouslySetInnerHTML={{ __html: t("pick.current", { number: myPick.number.toString(), weight: myPick.weight.toString() }) }} />
+          {selected && selected !== myPick.number && t("pick.current.replaces")}
         </p>
       )}
 
@@ -69,29 +68,29 @@ export default function PickPage() {
           className="rounded-xl bg-celo-green px-4 py-4 text-lg font-semibold text-white transition active:scale-[0.99] disabled:opacity-50"
         >
           {picking
-            ? "Locking in…"
+            ? t("pick.locking")
             : myPick.number !== 0
-              ? "Update pick"
-              : "Lock it in 🎯"}
+              ? t("pick.update")
+              : t("pick.submit")}
         </button>
       ) : (
         <Link
           href="/save"
           className="rounded-xl bg-celo-green px-4 py-4 text-center text-lg font-semibold text-white"
         >
-          Save to get tickets
+          {t("pick.cta.save")}
         </Link>
       )}
 
       {error && <p className="text-center text-sm text-red-500">{error}</p>}
       {!error && myPick.number !== 0 && !selected && (
         <p className="text-center text-sm text-celo-green">
-          You&apos;re in tonight&apos;s draw. Come back after midnight UTC 🌙
+          {t("pick.success")}
         </p>
       )}
 
       <footer className="mt-auto text-center text-xs text-gray-400">
-        Re-picking before the day closes moves all your tickets to the new number.
+        {t("pick.footer")}
       </footer>
     </main>
   );

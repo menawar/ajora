@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
 import { motion, type Variants } from "framer-motion";
 import { Coins, Loader2 } from "lucide-react";
+import { useTranslation } from "../../lib/i18n";
 import { ConnectBar } from "../../components/ConnectBar";
 import { publicClient } from "../../lib/clients";
 import { contracts } from "../../lib/contracts";
@@ -31,6 +32,7 @@ export default function SavePage() {
   const { address } = useWallet();
   const { save, status, reset } = useSave();
   const { multiplierX10 } = useStreak();
+  const { t } = useTranslation();
 
   const [amount, setAmount] = useState<string>("0.1");
   const [custom, setCustom] = useState(false);
@@ -65,9 +67,9 @@ export default function SavePage() {
       animate="show"
     >
       <motion.header variants={itemVariants} className="text-center">
-        <h1 className="text-2xl font-bold">Save</h1>
+        <h1 className="text-2xl font-bold">{t("nav.save")}</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Keep every cent — savings are always withdrawable.
+          {t("save.subtitle")}
         </p>
       </motion.header>
 
@@ -123,7 +125,7 @@ export default function SavePage() {
             <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
             <input
               inputMode="decimal"
-              placeholder="Amount in cUSD (min 0.10)"
+              placeholder={t("save.amountPlaceholder")}
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
               className="w-full rounded-xl border border-gray-200 glass-panel pl-12 pr-4 py-3 text-lg outline-celo-green transition-all focus:shadow-[0_0_12px_rgba(53,208,127,0.3)]"
@@ -134,19 +136,14 @@ export default function SavePage() {
         <div className="flex justify-between text-sm text-gray-500 px-1">
           <span>
             {balance !== undefined &&
-              `Balance: ${Number(formatUnits(balance, 18)).toFixed(2)} cUSD`}
+              t("save.balance", { balance: Number(formatUnits(balance, 18)).toFixed(2) })}
           </span>
           <motion.span 
             key={tickets.toString()}
             initial={{ scale: 1.1, color: "#35d07f" }}
             animate={{ scale: 1, color: "#6b7280" }}
           >
-            {parsed >= MIN && (
-              <>
-                → <strong>{tickets.toString()}</strong> tickets
-                {multiplierX10 > 10n && " (streak boost!)"}
-              </>
-            )}
+            {parsed >= MIN && t("save.tickets", { tickets: tickets.toString() })}
           </motion.span>
         </div>
 
@@ -160,17 +157,19 @@ export default function SavePage() {
           disabled={busy || !address || parsed < MIN || insufficient}
           className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-celo-green to-[#2ebf73] px-4 py-4 text-lg font-bold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
         >
-          {busy && <Loader2 className="h-5 w-5 animate-spin" />}
-          {status.step === "approving"
-            ? "Approving cUSD…"
-            : status.step === "saving"
-              ? "Saving…"
-              : `Save ${amount || "…"} cUSD`}
+          {busy ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              {status.step === "approving" ? t("save.approving") : t("save.saving")}
+            </>
+          ) : (
+            t("save.submit", { amount: amount || "…" })
+          )}
         </motion.button>
 
-        {tooSmall && <p className="text-center text-sm text-amber-600">Minimum is 0.10 cUSD.</p>}
+        {tooSmall && <p className="text-center text-sm text-amber-600">{t("save.tooSmall")}</p>}
         {insufficient && (
-          <p className="text-center text-sm text-amber-600">Not enough cUSD in your wallet.</p>
+          <p className="text-center text-sm text-amber-600">{t("save.insufficient")}</p>
         )}
         {status.step === "success" && (
           <p className="text-center text-sm text-celo-green">
