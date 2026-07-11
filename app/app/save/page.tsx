@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
+import { motion, type Variants } from "framer-motion";
+import { Coins, Loader2 } from "lucide-react";
 import { ConnectBar } from "../../components/ConnectBar";
 import { publicClient } from "../../lib/clients";
 import { contracts } from "../../lib/contracts";
@@ -11,6 +13,19 @@ import { useWallet } from "../../hooks/useWallet";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
 const MIN = parseUnits("0.1", 18);
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 export default function SavePage() {
   const { address } = useWallet();
@@ -43,20 +58,28 @@ export default function SavePage() {
   const busy = status.step === "approving" || status.step === "saving";
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
-      <header className="text-center">
+    <motion.main 
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.header variants={itemVariants} className="text-center">
         <h1 className="text-2xl font-bold">Save</h1>
         <p className="mt-1 text-sm text-gray-500">
           Keep every cent — savings are always withdrawable.
         </p>
-      </header>
+      </motion.header>
 
-      <ConnectBar />
+      <motion.div variants={itemVariants}>
+        <ConnectBar />
+      </motion.div>
 
-      <section className="flex flex-col gap-3">
+      <motion.section variants={itemVariants} className="flex flex-col gap-4">
         <div className="grid grid-cols-4 gap-2">
           {PRESETS.map((p) => (
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               key={p}
               type="button"
               onClick={() => {
@@ -64,72 +87,86 @@ export default function SavePage() {
                 setAmount(p);
                 reset();
               }}
-              className={`rounded-xl border py-3 font-semibold ${
+              className={`rounded-xl py-3 font-semibold transition-all shadow-sm ${
                 !custom && amount === p
-                  ? "border-celo-green bg-celo-green/10 text-celo-green"
-                  : "border-gray-200 text-gray-600"
+                  ? "bg-celo-green text-white shadow-celo-green/30"
+                  : "glass-panel text-gray-700 hover:bg-white/80 border border-gray-200/50"
               }`}
             >
               {p}
-            </button>
+            </motion.button>
           ))}
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => {
               setCustom(true);
               setAmount("");
               reset();
             }}
-            className={`rounded-xl border py-3 font-semibold ${
+            className={`rounded-xl py-3 font-semibold transition-all shadow-sm ${
               custom
-                ? "border-celo-green bg-celo-green/10 text-celo-green"
-                : "border-gray-200 text-gray-600"
+                ? "bg-celo-green text-white shadow-celo-green/30"
+                : "glass-panel text-gray-700 hover:bg-white/80 border border-gray-200/50"
             }`}
           >
             …
-          </button>
+          </motion.button>
         </div>
 
         {custom && (
-          <input
-            inputMode="decimal"
-            placeholder="Amount in cUSD (min 0.10)"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-            className="rounded-xl border border-gray-200 px-4 py-3 text-lg outline-celo-green"
-          />
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }} 
+            animate={{ height: "auto", opacity: 1 }}
+            className="relative overflow-hidden"
+          >
+            <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              inputMode="decimal"
+              placeholder="Amount in cUSD (min 0.10)"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+              className="w-full rounded-xl border border-gray-200 glass-panel pl-12 pr-4 py-3 text-lg outline-celo-green transition-all focus:shadow-[0_0_12px_rgba(53,208,127,0.3)]"
+            />
+          </motion.div>
         )}
 
-        <div className="flex justify-between text-sm text-gray-500">
+        <div className="flex justify-between text-sm text-gray-500 px-1">
           <span>
             {balance !== undefined &&
               `Balance: ${Number(formatUnits(balance, 18)).toFixed(2)} cUSD`}
           </span>
-          <span>
+          <motion.span 
+            key={tickets.toString()}
+            initial={{ scale: 1.1, color: "#35d07f" }}
+            animate={{ scale: 1, color: "#6b7280" }}
+          >
             {parsed >= MIN && (
               <>
                 → <strong>{tickets.toString()}</strong> tickets
                 {multiplierX10 > 10n && " (streak boost!)"}
               </>
             )}
-          </span>
+          </motion.span>
         </div>
 
-        <button
+        <motion.button
+          whileTap={{ scale: 0.98 }}
           type="button"
           onClick={() => {
             reset();
             void save(amount);
           }}
           disabled={busy || !address || parsed < MIN || insufficient}
-          className="rounded-xl bg-celo-green px-4 py-4 text-lg font-semibold text-white transition active:scale-[0.99] disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-celo-green to-[#2ebf73] px-4 py-4 text-lg font-bold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
         >
+          {busy && <Loader2 className="h-5 w-5 animate-spin" />}
           {status.step === "approving"
             ? "Approving cUSD…"
             : status.step === "saving"
               ? "Saving…"
               : `Save ${amount || "…"} cUSD`}
-        </button>
+        </motion.button>
 
         {tooSmall && <p className="text-center text-sm text-amber-600">Minimum is 0.10 cUSD.</p>}
         {insufficient && (
@@ -148,11 +185,11 @@ export default function SavePage() {
             </button>
           </div>
         )}
-      </section>
+      </motion.section>
 
-      <footer className="mt-auto text-center text-xs text-gray-400">
+      <motion.footer variants={itemVariants} className="mt-auto text-center text-xs text-gray-400">
         More saved = more tickets. Streaks multiply your tickets up to 3x.
-      </footer>
-    </main>
+      </motion.footer>
+    </motion.main>
   );
 }
