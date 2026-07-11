@@ -39,7 +39,7 @@ function detectLocale(): Locale {
 interface I18nContextValue {
   locale: Locale;
   setLocale: (l: Locale) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey, values?: Record<string, string | number>) => string;
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null);
@@ -67,7 +67,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<I18nContextValue>(() => {
     const dict = dictionaries[locale] ?? en;
-    return { locale, setLocale, t: (key) => dict[key] ?? en[key] ?? key };
+    return { 
+      locale, 
+      setLocale, 
+      t: (key, values) => {
+        let text = dict[key] ?? en[key] ?? key;
+        if (values) {
+          Object.entries(values).forEach(([k, v]) => {
+            text = text.replace(new RegExp(`\\{\\{${k}\\}\\}`, "g"), String(v));
+          });
+        }
+        return text;
+      } 
+    };
   }, [locale, setLocale]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
