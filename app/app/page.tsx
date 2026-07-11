@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { formatUnits } from "viem";
 import { motion, type Variants } from "framer-motion";
+import { useTranslation } from "../lib/i18n";
 import { ConnectBar } from "../components/ConnectBar";
 import { Onboarding } from "../components/Onboarding";
 import { StreakChip } from "../components/StreakChip";
@@ -39,6 +40,7 @@ export default function Home() {
   const pot = usePotToday();
   const { save, status, reset } = useSave();
   const { myPick } = useDraw();
+  const { t } = useTranslation();
 
   const busy = status.step === "approving" || status.step === "saving";
 
@@ -52,9 +54,9 @@ export default function Home() {
       <motion.header variants={itemVariants} className="text-center">
         <h1 className="text-4xl font-bold">Ajora 🎉</h1>
         <p className="mt-1 text-gray-500">
-          Save small, keep every cent, chop jara.{" "}
+          {t("home.tagline")}{" "}
           <Link href="/faq" className="underline">
-            How is my money safe?
+            {t("home.faqLink")}
           </Link>
         </p>
       </motion.header>
@@ -108,10 +110,10 @@ export default function Home() {
         )}
 
         {address && !pot.loading && (
-          <p className="text-center text-sm text-gray-500">
-            You have <strong>{pot.myTickets.toString()}</strong> tickets ·{" "}
-            <strong>{cusd(pot.myPrincipal)} cUSD</strong> saved today (always withdrawable)
-          </p>
+          <p 
+            className="text-center text-sm text-gray-500"
+            dangerouslySetInnerHTML={{ __html: t("home.status", { tickets: pot.myTickets.toString(), balance: cusd(pot.myPrincipal) }) }}
+          />
         )}
 
         {address && pot.myTickets > 0n && myPick.number === 0 && (
@@ -119,13 +121,13 @@ export default function Home() {
             href="/pick"
             className="rounded-xl border border-celo-gold bg-celo-gold/10 px-4 py-3 text-center font-semibold text-amber-700"
           >
-            Your tickets need a number — pick now 🎯
+            {t("home.pickPrompt")}
           </Link>
         )}
       </motion.section>
 
       <motion.footer variants={itemVariants} className="mt-auto text-center text-xs text-gray-400">
-        No-loss: your savings are always yours. Only the bonus is at stake.
+        {t("home.footer")}
       </motion.footer>
     </motion.main>
   );
