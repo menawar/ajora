@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { storedRef } from "../lib/share";
 import { useWelcome } from "../hooks/useWelcome";
 import { useWallet } from "../hooks/useWallet";
@@ -26,7 +27,7 @@ export function Onboarding() {
     }
   }, []);
 
-  if (!open) return null;
+  // if (!open) return null;
 
   const dismiss = () => {
     localStorage.setItem(SEEN_KEY, "1");
@@ -38,8 +39,21 @@ export function Onboarding() {
   const showPending = address && !loading && !welcomed && !verified;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center">
-      <div className="mx-auto w-full max-w-md rounded-t-3xl bg-white p-6 sm:rounded-3xl">
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center"
+        >
+          <motion.div
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "100%", opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="mx-auto w-full max-w-md rounded-t-3xl bg-white p-6 sm:rounded-3xl"
+          >
         <h2 className="text-center text-2xl font-bold">Welcome to Ajora 🎉</h2>
         {ref && (
           <p className="mt-1 text-center text-sm text-celo-green">
@@ -111,7 +125,9 @@ export function Onboarding() {
             Maybe later
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

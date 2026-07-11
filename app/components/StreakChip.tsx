@@ -4,6 +4,8 @@ import { ShareButtons } from "./ShareButtons";
 import { useCrew } from "../hooks/useCrew";
 import { useStreak } from "../hooks/useStreak";
 import { useWallet } from "../hooks/useWallet";
+import { Flame } from "lucide-react";
+import { motion } from "framer-motion";
 
 const MILESTONES = [7, 30, 90];
 
@@ -23,21 +25,27 @@ export function StreakChip() {
   const hitMilestone = MILESTONES.includes(days);
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="flex items-center justify-center gap-3 text-sm">
-        <span className="text-gray-600">
-          🔥 <strong>{streakDays.toString()}</strong>-day streak ·{" "}
+    <motion.div 
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="flex flex-col items-center gap-2 glass-panel rounded-2xl p-3 shadow-sm"
+    >
+      <div className="flex items-center justify-center gap-2 text-sm">
+        <Flame className="h-5 w-5 text-orange-500 animate-pulse" />
+        <span className="text-gray-800">
+          <strong>{streakDays.toString()}</strong>-day streak ·{" "}
           <strong>{multiplierLabel(multiplierX10)}</strong> tickets
         </span>
         {!checkedInToday && (
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             type="button"
             onClick={() => void checkIn()}
             disabled={checkingIn}
-            className="rounded-full bg-celo-gold/20 px-3 py-1 font-medium text-amber-700 disabled:opacity-50"
+            className="ml-2 rounded-full bg-celo-gold/30 px-3 py-1 text-xs font-semibold text-amber-800 disabled:opacity-50"
           >
             {checkingIn ? "Checking in…" : "Check in ✓"}
-          </button>
+          </motion.button>
         )}
       </div>
       {hitMilestone && (
@@ -47,6 +55,6 @@ export function StreakChip() {
           refCode={myCode || undefined}
         />
       )}
-    </div>
+    </motion.div>
   );
 }
