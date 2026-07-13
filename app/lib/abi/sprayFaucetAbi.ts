@@ -19,6 +19,19 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
+    "name": "MAX_FREE_RECEIVED_PER_DAY",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "MAX_SPRAYS_PER_DAY",
     "inputs": [],
     "outputs": [
@@ -90,7 +103,45 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
+    "name": "dailyFreeLeft",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "dailySpraysLeft",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "freeValueOf",
     "inputs": [
       {
         "name": "user",
@@ -146,6 +197,19 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "function",
+    "name": "maxFreeValuePerUser",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "referralBonus",
     "inputs": [
       {
@@ -178,6 +242,19 @@ export const sprayFaucetAbi = [
         "name": "_crewRegistry",
         "type": "address",
         "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setFreeValueCap",
+    "inputs": [
+      {
+        "name": "cap",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [],
@@ -307,6 +384,19 @@ export const sprayFaucetAbi = [
         "type": "bytes32",
         "indexed": true,
         "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FreeValueCapSet",
+    "inputs": [
+      {
+        "name": "cap",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -448,7 +538,17 @@ export const sprayFaucetAbi = [
   },
   {
     "type": "error",
+    "name": "DailyFreeLimitReached",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InsufficientCampaignBudget",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "LifetimeFreeCapReached",
     "inputs": []
   },
   {
@@ -479,6 +579,11 @@ export const sprayFaucetAbi = [
   {
     "type": "error",
     "name": "SprayLimitReached",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
     "inputs": []
   }
 ] as const;
