@@ -10,6 +10,7 @@ import { useWallet } from "./useWallet";
 export function useSpray() {
   const { address } = useWallet();
   const [spraysLeft, setSpraysLeft] = useState<bigint>(0n);
+  const [dailyFreeLeft, setDailyFreeLeft] = useState<bigint>(0n);
   const [verified, setVerified] = useState(false);
   const [spraying, setSpraying] = useState(false);
   const [done, setDone] = useState(false);
@@ -19,10 +20,15 @@ export function useSpray() {
     if (!address) return;
     void (async () => {
       try {
-        const [left, v] = await Promise.all([
+        const [left, freeLeft, v] = await Promise.all([
           publicClient.readContract({
             ...contracts.sprayFaucet,
             functionName: "dailySpraysLeft",
+            args: [address],
+          }),
+          publicClient.readContract({
+            ...contracts.sprayFaucet,
+            functionName: "dailyFreeLeft",
             args: [address],
           }),
           publicClient.readContract({
@@ -32,6 +38,7 @@ export function useSpray() {
           }),
         ]);
         setSpraysLeft(left);
+        setDailyFreeLeft(freeLeft);
         setVerified(v);
       } catch {
         /* keep previous values */
@@ -80,5 +87,5 @@ export function useSpray() {
     [address, refetch],
   );
 
-  return { spraysLeft, verified, spray, spraying, done, error };
+  return { spraysLeft, dailyFreeLeft, verified, spray, spraying, done, error };
 }

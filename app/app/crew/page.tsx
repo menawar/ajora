@@ -14,7 +14,7 @@ function cusd(v: bigint): string {
 
 function SpraySection() {
   const { address } = useWallet();
-  const { spraysLeft, spray, spraying, done, error } = useSpray();
+  const { spraysLeft, dailyFreeLeft, spray, spraying, done, error } = useSpray();
   const [friend, setFriend] = useState("");
 
   if (!address) return null;
@@ -24,8 +24,13 @@ function SpraySection() {
       <h2 className="font-semibold">Spray a friend 🎉</h2>
       <p className="mt-1 text-sm text-gray-500">
         Gift a free ticket — costs you nothing, the sponsor pays.{" "}
-        <strong>{spraysLeft.toString()}</strong> sprays left today.
+        <strong>{spraysLeft.toString()}</strong> sprays left to send today.
       </p>
+      {dailyFreeLeft === 0n && (
+        <p className="mt-2 text-xs font-semibold text-amber-600 bg-amber-50 p-2 rounded-lg">
+          ⚠️ You have reached your daily limit of free tickets. Friends cannot spray you until tomorrow.
+        </p>
+      )}
       <div className="mt-3 flex gap-2">
         <input
           placeholder="Friend's wallet address 0x…"
