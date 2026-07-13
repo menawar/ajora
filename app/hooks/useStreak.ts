@@ -14,6 +14,8 @@ export interface StreakState {
   multiplierX10: bigint;
   /** True once the user has checked in during the current day window. */
   checkedInToday: boolean;
+  /** Milestone badges (7, 30, 90) currently owned by the user. */
+  badges: number[];
   loading: boolean;
 }
 
@@ -24,6 +26,7 @@ export function useStreak() {
     streakDays: 0n,
     multiplierX10: 10n,
     checkedInToday: false,
+    badges: [],
     loading: true,
   });
   const [checkingIn, setCheckingIn] = useState(false);
@@ -36,7 +39,7 @@ export function useStreak() {
     }
     void (async () => {
       try {
-        const [streakDays, multiplierX10] = await Promise.all([
+        const [streakDays, multiplierX10, b7, b30, b90] = await Promise.all([
           publicClient.readContract({
             ...contracts.streakSBT,
             functionName: "streakOf",
@@ -46,6 +49,21 @@ export function useStreak() {
             ...contracts.streakSBT,
             functionName: "multiplierOf",
             args: [address],
+          }),
+          publicClient.readContract({
+            ...contracts.streakSBT,
+            functionName: "hasBadge",
+            args: [address, 7n],
+          }),
+          publicClient.readContract({
+            ...contracts.streakSBT,
+            functionName: "hasBadge",
+            args: [address, 30n],
+          }),
+          publicClient.readContract({
+            ...contracts.streakSBT,
+            functionName: "hasBadge",
+            args: [address, 90n],
           }),
         ]);
         // Checked in today iff a same-day checkIn would revert AlreadyCheckedIn.
@@ -59,7 +77,13 @@ export function useStreak() {
         } catch {
           checkedInToday = true;
         }
-        setState({ streakDays, multiplierX10, checkedInToday, loading: false });
+
+        const badges = [];
+        if (b7) badges.push(7);
+        if (b30) badges.push(30);
+        if (b90) badges.push(90);
+
+        setState({ streakDays, multiplierX10, checkedInToday, badges, loading: false });
       } catch {
         setState((s) => ({ ...s, loading: false }));
       }

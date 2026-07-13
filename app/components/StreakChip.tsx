@@ -4,7 +4,7 @@ import { ShareButtons } from "./ShareButtons";
 import { useCrew } from "../hooks/useCrew";
 import { useStreak } from "../hooks/useStreak";
 import { useWallet } from "../hooks/useWallet";
-import { Flame } from "lucide-react";
+import { Flame, Award } from "lucide-react";
 import { motion } from "framer-motion";
 
 const MILESTONES = [7, 30, 90];
@@ -16,7 +16,7 @@ function multiplierLabel(x10: bigint): string {
 /** Streak flame + multiplier, with the one-tap daily check-in. */
 export function StreakChip() {
   const { address } = useWallet();
-  const { streakDays, multiplierX10, checkedInToday, checkIn, checkingIn, loading } = useStreak();
+  const { streakDays, multiplierX10, checkedInToday, checkIn, checkingIn, loading, badges } = useStreak();
   const { myCode } = useCrew();
 
   if (!address || loading) return null;
@@ -48,6 +48,22 @@ export function StreakChip() {
           </motion.button>
         )}
       </div>
+
+      {badges && badges.length > 0 && (
+        <div className="flex items-center gap-2 mt-1">
+          {badges.map((b) => (
+            <div
+              key={b}
+              className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-800 shadow-sm ring-1 ring-orange-200"
+              title={`${b}-Day Milestone Badge`}
+            >
+              <Award className="h-3 w-3 text-orange-600" />
+              <span>{b}d</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {hitMilestone && (
         <ShareButtons
           card={{ kind: "milestone", streakDays: days, multiplier: multiplierLabel(multiplierX10) }}
