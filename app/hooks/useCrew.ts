@@ -12,12 +12,20 @@ const POLL_MS = 20_000;
 export const toCode = (s: string) => stringToHex(s.trim().toLowerCase().slice(0, 31), { size: 32 });
 export const fromCode = (b: `0x${string}`) => hexToString(b, { size: 32 }).replace(/\0+$/, "");
 
+const INDEXER_URL = process.env.NEXT_PUBLIC_INDEXER_URL ?? "";
+
+export interface CrewMember {
+  address: string;
+  joinedAt: number;
+}
+
 export interface CrewState {
   enabled: boolean;
   crewId: bigint;
   myCode: string; // "" when not in a crew
   memberCount: bigint;
   savingsToday: bigint;
+  members: CrewMember[];
   loading: boolean;
 }
 
@@ -29,6 +37,7 @@ export function useCrew() {
     myCode: "",
     memberCount: 0n,
     savingsToday: 0n,
+    members: [],
     loading: crewsEnabled,
   });
   const [busy, setBusy] = useState(false);
@@ -56,6 +65,8 @@ export function useCrew() {
         ]);
         let memberCount = 0n;
         let savingsToday = 0n;
+        let members: CrewMember[] = [];
+
         if (crewId !== 0n) {
           [memberCount, savingsToday] = await Promise.all([
             publicClient.readContract({
@@ -69,6 +80,25 @@ export function useCrew() {
               args: [crewId, period],
             }),
           ]);
+
+          if (INDEXER_URL) {
+            try {
+              const res = await fetch(`${INDEXER_URL}/crews/${crewId.toString()}`, {
+                signal: AbortSignal.timeout(8_000),
+              });
+              if (res.ok) {
+                const data = await res.json();
+                if (data.members) {
+                  members = data.members.map((m: any) => ({
+                    address: m.address,
+                    joinedAt: Number(m.joinedAt),
+                  }));
+                }
+              }
+            } catch {
+              // Ignore indexer errors, just keep members empty
+            }
+          }
         }
         setState({
           enabled: true,
@@ -76,6 +106,7 @@ export function useCrew() {
           myCode: crewId !== 0n ? fromCode(codeB32) : "",
           memberCount,
           savingsToday,
+          members,
           loading: false,
         });
       } catch {

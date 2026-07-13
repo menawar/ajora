@@ -149,6 +149,20 @@ export default function CrewPage() {
         </section>
       )}
 
+      {crew.members && crew.members.length > 0 && (
+        <section className="rounded-2xl border border-gray-100 p-5">
+          <h2 className="font-semibold mb-3">Crew Members</h2>
+          <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+            {crew.members.map((m) => (
+              <div key={m.address} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg text-sm">
+                <span className="font-mono text-gray-700">{m.address.slice(0, 8)}…{m.address.slice(-6)}</span>
+                <span className="text-gray-400 text-xs">{new Date(m.joinedAt * 1000).toLocaleDateString()}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <SpraySection />
 
       <footer className="mt-auto text-center text-xs text-gray-400">
