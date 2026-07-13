@@ -1,0 +1,20 @@
+app = "ajora-push"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "42070"
+
+[http_service]
+  internal_port = 42070
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[mounts]
+  source = "push_data"
+  destination = "/app/data"
