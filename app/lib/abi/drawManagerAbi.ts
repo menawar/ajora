@@ -594,6 +594,11 @@ export const drawManagerAbi = [
   },
   {
     "type": "error",
+    "name": "ClaimWindowClosed",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "CommitWindowClosed",
     "inputs": []
   },
@@ -634,7 +639,22 @@ export const drawManagerAbi = [
   },
   {
     "type": "error",
+    "name": "NothingToRecycle",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "PeriodNotOver",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "WindowStillOpen",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
     "inputs": []
   }
 ] as const;

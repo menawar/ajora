@@ -487,5 +487,10 @@ export const crewRegistryAbi = [
     "type": "error",
     "name": "UnknownCode",
     "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
+    "inputs": []
   }
 ] as const;
