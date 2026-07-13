@@ -103,7 +103,7 @@ export default function StatsPage() {
             <BarChart3 className="w-8 h-8 text-gray-200" />
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
-            <div className="bg-celo-green h-2 rounded-full" style={{ width: \`\${retentionD1}%\` }}></div>
+            <div className="bg-celo-green h-2 rounded-full" style={{ width: `${retentionD1}%` }}></div>
           </div>
           <div className="text-xs text-gray-400">Industry avg: 20% D1 / 5% D7</div>
         </motion.div>

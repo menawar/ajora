@@ -13,6 +13,7 @@ import { Countdown, localCloseTime } from "../components/Countdown";
 import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
+import { ComboFlow } from "../components/ComboFlow";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
