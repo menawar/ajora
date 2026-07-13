@@ -82,6 +82,14 @@ export default function StatsPage() {
           <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Txns</div>
           <div className="text-xl font-black text-gray-900">{summary.totalTx}</div>
         </div>
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Deployed to Aave</div>
+          <div className="text-xl font-black text-gray-900">${cusd((summary as any).totalDeployed ?? "0")}</div>
+        </div>
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Protocol Rake</div>
+          <div className="text-xl font-black text-gray-900">${cusd((summary as any).totalRake ?? "0")}</div>
+        </div>
       </section>
 
       {/* Retention & K-Factor (Demo Day Polish) */}
