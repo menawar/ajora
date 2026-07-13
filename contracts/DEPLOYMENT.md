@@ -29,6 +29,11 @@ the vault. `setStreakSBT` is updatable (weights only, clamped ≥ 1.0x).
 Caps are **armed inside the deploy broadcast** — there is no unguarded window
 between deployment and a follow-up transaction.
 
+### Caps Rationale & Review Date
+- **Per-User Cap (50 cUSD)**: High enough to allow meaningful daily savings for the target demographic (Africa retail), but low enough to prevent a single whale from dominating the yield pool and warping the prize odds early on.
+- **TVL Cap (5000 cUSD)**: A conservative month-1 boundary. If the protocol is compromised, the maximum aggregate loss is capped at $5,000, which can be made whole from the team's operational treasury.
+- **Review Date**: **August 15, 2026**. After 30 days of mainnet stability and organic growth, the team will review metrics and consider raising the TVL cap to $50,000 and the per-user cap to $500.
+
 Stablecoin addresses: mainnet cUSD `0x765DE816845861e75A25fCA122bb6898B8B1282a`,
 Alfajores cUSD `0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1`.
 
