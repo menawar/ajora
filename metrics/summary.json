@@ -36,15 +36,20 @@
     "0x8d95d431686c9babc34881ccb254323a35cc1269": 20644,
     "0x66dc7906b6cb124920c2d74ea3bf2fd315dec937": 20645,
     "0x682f1c40b23aaccc70c06497fd7b281873ae8ff4": 20645,
-    "0x4992e4737054cf097f2a109f6d03cf8b3a6cf0e5": 20645
+    "0x4992e4737054cf097f2a109f6d03cf8b3a6cf0e5": 20645,
+    "0x4a06bbaba5084590a960c257f6787788ba2cee8f": 20647,
+    "0x3e270ed54b43919f9b14c01a9dae4f54a87d2f90": 20647,
+    "0xb6f183d1c81147c254e08153ac278029794a96cc": 20647,
+    "0x50a5344a3972c5b652254ce2cbd8c29aa2b2dfbd": 20647,
+    "0x275d60d15b5bb0c9ce305110d1883845bd775185": 20647
   },
   "verified": [],
-  "totalTx": 118,
-  "totalPrincipalIn": "5150000000000000000",
+  "totalTx": 134,
+  "totalPrincipalIn": "5870000000000000000",
   "totalPrizesPaid": "0",
-  "totalUsers": 37,
+  "totalUsers": 42,
   "verifiedUsers": 0,
   "totalRake": "0",
   "totalDeployed": "0",
-  "updatedAt": "2026-07-13T04:21:54.992Z"
+  "updatedAt": "2026-07-14T03:47:14.976Z"
 }
