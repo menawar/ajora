@@ -44,12 +44,12 @@
     "0x275d60d15b5bb0c9ce305110d1883845bd775185": 20647
   },
   "verified": [],
-  "totalTx": 134,
-  "totalPrincipalIn": "5870000000000000000",
+  "totalTx": 148,
+  "totalPrincipalIn": "6570000000000000000",
   "totalPrizesPaid": "0",
   "totalUsers": 42,
   "verifiedUsers": 0,
   "totalRake": "0",
   "totalDeployed": "0",
-  "updatedAt": "2026-07-14T03:47:14.976Z"
+  "updatedAt": "2026-07-15T03:47:39.978Z"
 }
