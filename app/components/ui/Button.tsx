@@ -1,9 +1,11 @@
 import { ButtonHTMLAttributes, forwardRef } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
   variant?: "primary" | "secondary" | "outline" | "danger";
   size?: "sm" | "md" | "lg";
+  isLoading?: boolean;
 }
 
 const variantStyles = {
@@ -20,16 +22,18 @@ const sizeStyles = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = "", variant = "primary", size = "md", children, disabled, ...props }, ref) => {
+  ({ className = "", variant = "primary", size = "md", isLoading = false, children, disabled, ...props }, ref) => {
+    const isDisabled = disabled || isLoading;
     return (
       <motion.button
         ref={ref}
-        whileHover={disabled ? {} : { scale: 1.02 }}
-        whileTap={disabled ? {} : { scale: 0.98 }}
-        className={`rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${variantStyles[variant]} ${sizeStyles[size]} ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
-        disabled={disabled}
+        whileHover={isDisabled ? {} : { scale: 1.02 }}
+        whileTap={isDisabled ? {} : { scale: 0.98 }}
+        className={`rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+        disabled={isDisabled}
         {...props}
       >
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {children}
       </motion.button>
     );
