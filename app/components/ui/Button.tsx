@@ -4,6 +4,8 @@ import { motion, HTMLMotionProps } from "framer-motion";
 export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
   variant?: "primary" | "secondary" | "outline" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
 }
 
 const variantStyles = {
@@ -21,7 +23,7 @@ const sizeStyles = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = "", variant = "primary", size = "md", children, disabled, ...props }, ref) => {
+  ({ className = "", variant = "primary", size = "md", icon, iconPosition = "left", children, disabled, ...props }, ref) => {
     return (
       <motion.button
         ref={ref}
@@ -31,7 +33,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         {...props}
       >
+        {icon && iconPosition === "left" && icon}
         {children}
+        {icon && iconPosition === "right" && icon}
       </motion.button>
     );
   }
