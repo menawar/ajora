@@ -29,7 +29,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         whileHover={isDisabled ? {} : { scale: 1.02 }}
         whileTap={isDisabled ? {} : { scale: 0.98 }}
-        className={`rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+        className={`rounded-xl font-semibold transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-offset-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
         disabled={isDisabled}
         {...props}
       >
