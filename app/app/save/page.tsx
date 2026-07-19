@@ -12,6 +12,7 @@ import { contracts } from "../../lib/contracts";
 import { useSave } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
+import { ErrorAlert } from "../../components/ui/ErrorAlert";
 import { useToast } from "../../hooks/useToast";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
@@ -189,9 +190,9 @@ export default function SavePage() {
           <p className="text-center text-sm text-amber-600">{t("save.insufficient")}</p>
         )}
         {status.step === "error" && (
-          <div className="text-center text-sm">
-            <p className="text-red-500">{status.message}</p>
-            <button type="button" onClick={() => void save(amount)} className="mt-1 underline">
+          <div className="flex flex-col items-center gap-2">
+            <ErrorAlert message={status.message} />
+            <button type="button" onClick={() => void save(amount)} className="text-sm underline text-gray-500 hover:text-gray-700">
               Retry
             </button>
           </div>

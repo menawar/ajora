@@ -13,6 +13,8 @@ import { useDraw } from "../../hooks/useDraw";
 import { usePotToday, useSponsor } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
+import { Confetti } from "../../components/Confetti";
+import { ErrorAlert } from "../../components/ui/ErrorAlert";
 
 function cusd(value: bigint): string {
   return Number(formatUnits(value, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -181,15 +183,28 @@ export default function DrawPage() {
                       You won{last.claimed ? "!" : ` ${cusd(last.prize)} cUSD!`} 🎉
                     </p>
                     {!last.claimed ? (
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        type="button"
-                        onClick={() => void claimPrize()}
-                        disabled={claiming}
-                        className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
-                      >
-                        {claiming ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
-                      </motion.button>
+                      <>
+                        {claimState.step === "error" && (
+                          <div className="flex flex-col items-center gap-2">
+                            <ErrorAlert message={claimState.message} />
+                            <button
+                              type="button"
+                              onClick={() => void claimPrize()}
+                              className="text-sm underline text-gray-500 hover:text-gray-700"
+                            >
+                              Retry
+                            </button>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => void claimPrize()}
+                          disabled={claimState.step === "claiming"}
+                          className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
+                        >
+                          {claimState.step === "claiming" ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
+                        </button>
+                      </>
                     ) : (
                       <p className="text-sm text-gray-500 text-center">
                         Prize claimed — it&apos;s in your wallet.
