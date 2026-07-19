@@ -53,7 +53,7 @@ export function ConnectBar() {
               variant="secondary"
               size="sm"
               onClick={() => void connect(w.info.rdns)}
-              disabled={connecting}
+              isLoading={connecting}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={w.info.icon} alt="" className="h-5 w-5 rounded-md" />
@@ -72,9 +72,9 @@ export function ConnectBar() {
         variant="primary"
         size="sm"
         onClick={() => void connect()}
-        disabled={connecting}
+        isLoading={connecting}
       >
-        <Wallet className="h-4 w-4" />
+        {!connecting && <Wallet className="h-4 w-4" />}
         {connecting ? "Connecting…" : "Connect wallet"}
       </Button>
       {error && <p className="text-center text-xs text-red-500">{error}</p>}
