@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { renderCard, type CardData } from "../lib/winCard";
 import { shareCard, shareToFarcaster } from "../lib/share";
 
@@ -33,21 +34,25 @@ export function ShareButtons({
 
   return (
     <div className="flex items-center justify-center gap-2">
-      <button
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         type="button"
         onClick={() => void onShare()}
         disabled={busy}
         className="rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
       >
         {busy ? "Preparing…" : "Share on WhatsApp 💬"}
-      </button>
-      <button
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         type="button"
         onClick={() => shareToFarcaster(text, refCode)}
         className="rounded-xl bg-[#7c65c1] px-4 py-2.5 text-sm font-semibold text-white"
       >
         Cast
-      </button>
+      </motion.button>
     </div>
   );
 }

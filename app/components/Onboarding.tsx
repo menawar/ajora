@@ -89,7 +89,9 @@ export function Onboarding() {
               </Link>
             </>
           ) : showClaim ? (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
               disabled={claiming}
               onClick={() =>
@@ -100,7 +102,7 @@ export function Onboarding() {
               className="rounded-xl bg-celo-green px-4 py-3.5 font-semibold text-white disabled:opacity-50"
             >
               {claiming ? "Claiming…" : "Claim your FREE ticket 🎟️"}
-            </button>
+            </motion.button>
           ) : showPending ? (
             <>
               <p className="text-center text-xs text-gray-500">
