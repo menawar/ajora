@@ -12,6 +12,7 @@ import { contracts } from "../../lib/contracts";
 import { useSave } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
+import { useToast } from "../../hooks/useToast";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
 const MIN = parseUnits("0.1", 18);
@@ -34,10 +35,19 @@ export default function SavePage() {
   const { save, status, reset } = useSave();
   const { multiplierX10 } = useStreak();
   const { t } = useTranslation();
+  const { toast } = useToast();
 
   const [amount, setAmount] = useState<string>("0.1");
   const [custom, setCustom] = useState(false);
   const [balance, setBalance] = useState<bigint>();
+
+  useEffect(() => {
+    if (status.step === "success") {
+      toast(`Saved! +${status.tickets.toString()} tickets. Now pick your lucky number 🎯`, "success");
+      // Reset status after a delay so it doesn't stay in success state indefinitely
+      setTimeout(() => reset(), 4000);
+    }
+  }, [status, toast, reset]);
 
   useEffect(() => {
     if (!address) return;
@@ -177,11 +187,6 @@ export default function SavePage() {
         {tooSmall && <p className="text-center text-sm text-amber-600">{t("save.tooSmall")}</p>}
         {insufficient && (
           <p className="text-center text-sm text-amber-600">{t("save.insufficient")}</p>
-        )}
-        {status.step === "success" && (
-          <p className="text-center text-sm text-celo-green">
-            Saved! +{status.tickets.toString()} tickets. Now pick your lucky number 🎯
-          </p>
         )}
         {status.step === "error" && (
           <div className="text-center text-sm">
