@@ -1,10 +1,31 @@
 @import "tailwindcss";
 
+:root {
+  --color-celo-green-base: #35d07f;
+  --color-celo-gold-base: #fbcc5c;
+  --color-celo-dark-base: #1a1a2e;
+  --color-bg-primary: #ffffff;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+}
+
+.dark {
+  --color-celo-green-base: #35d07f; /* Green remains bright */
+  --color-celo-gold-base: #fbcc5c;
+  --color-celo-dark-base: #ffffff; /* Dark becomes white for contrast in dark mode */
+  --color-bg-primary: #111827;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #9ca3af;
+}
+
 /* Ajora brand tokens — Celo palette. Generates utilities like bg-celo-green, from-celo-gold. */
 @theme {
-  --color-celo-green: #35d07f;
-  --color-celo-gold: #fbcc5c;
-  --color-celo-dark: #1a1a2e;
+  --color-celo-green: var(--color-celo-green-base);
+  --color-celo-gold: var(--color-celo-gold-base);
+  --color-celo-dark: var(--color-celo-dark-base);
+  --color-bg-primary: var(--color-bg-primary);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
 import { LanguageProvider } from "../lib/i18n";
 import { WalletProvider } from "../hooks/useWallet";
+import { ThemeProvider } from "../hooks/useTheme";
 import { TabBar } from "../components/TabBar";
 import { OfflineBanner } from "../components/OfflineBanner";
 import { PageTransition } from "../components/PageTransition";
@@ -16,6 +17,14 @@ export const metadata: Metadata = {
     "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
   manifest: "/manifest.json",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Ajora",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "Ajora — Save small, chop jara",
     description: "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
@@ -48,14 +57,18 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={outfit.variable}>
-      <body className="min-h-dvh bg-white pb-16 font-sans text-gray-900 antialiased">
-        <LanguageProvider>
-          <WalletProvider>
-            <OfflineBanner />
-            <PageTransition>{children}</PageTransition>
-            <TabBar />
-          </WalletProvider>
-        </LanguageProvider>
+      <body className="min-h-dvh bg-bg-primary pb-16 font-sans text-text-primary antialiased transition-colors duration-300">
+        <ThemeProvider>
+          <LanguageProvider>
+            <WalletProvider>
+              <OfflineBanner />
+              <PageTransition>
+                {children}
+              </PageTransition>
+              <TabBar />
+            </WalletProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

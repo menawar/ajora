@@ -6,9 +6,9 @@ export interface CardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
 }
 
 const variantStyles = {
-  default: "bg-white shadow-md border border-gray-100",
-  glass: "glass-panel shadow-sm border border-white/20",
-  bordered: "border-2 border-gray-200 bg-transparent",
+  default: "bg-bg-primary shadow-md border border-gray-100 dark:border-gray-800",
+  glass: "glass-panel shadow-sm border border-white/20 dark:border-white/10",
+  bordered: "border-2 border-gray-200 dark:border-gray-800 bg-transparent",
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
