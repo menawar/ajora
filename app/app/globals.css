@@ -6,6 +6,12 @@
   --color-celo-dark-base: #1a1a2e;
 }
 
+.dark {
+  --color-celo-green-base: #35d07f; /* Green remains bright */
+  --color-celo-gold-base: #fbcc5c;
+  --color-celo-dark-base: #ffffff; /* Dark becomes white for contrast in dark mode */
+}
+
 
 /* Ajora brand tokens — Celo palette. Generates utilities like bg-celo-green, from-celo-gold. */
 @theme {
