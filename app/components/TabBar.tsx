@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "../lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import type { TranslationKey } from "../lib/i18n/dictionaries";
 import { Home, PiggyBank, Target, Dices, Users, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
@@ -23,9 +24,10 @@ export function TabBar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   return (
-    <nav className="fixed inset-x-0 bottom-0 border-t border-gray-100 bg-white/95 backdrop-blur pb-safe">
+    <nav className="fixed inset-x-0 bottom-0 border-t border-gray-200 bg-bg-primary/95 backdrop-blur pb-safe z-50">
       <div className="mx-auto flex max-w-md flex-col">
-        <div className="flex justify-center pt-2">
+        <div className="flex justify-center items-center gap-4 pt-2">
+          <ThemeToggle />
           <LanguageSwitcher />
         </div>
         <div className="flex w-full">
