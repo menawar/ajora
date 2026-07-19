@@ -1,0 +1,1 @@
+export function Alert({msg}: {msg: string}) { return <div className="p-4 bg-red-100 text-red-700 rounded-lg">{msg}</div>; }
