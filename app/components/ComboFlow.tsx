@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { useCombo, type ComboStep } from "../hooks/useCombo";
 
+import { useEffect } from "react";
+import { triggerWinConfetti } from "../lib/confetti";
+
 interface ComboFlowProps {
   amountCusd: string;
   pickNumber: number;
@@ -15,6 +18,12 @@ interface ComboFlowProps {
 export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
   const { execute, step, progress, error, reset } = useCombo();
   
+  useEffect(() => {
+    if (step === "success") {
+      triggerWinConfetti();
+    }
+  }, [step]);
+
   const stepMessages: Record<ComboStep, string> = {
     idle: "",
     approving: "Approving cUSD...",
