@@ -6,6 +6,7 @@ import { Wallet, WifiOff } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { Button } from "./ui/Button";
+import { Avatar } from "./ui/Avatar";
 
 function shorten(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -20,7 +21,7 @@ export function ConnectBar() {
     return (
       <div className="flex flex-col items-center gap-1.5">
         <div className="flex items-center justify-center gap-2 text-sm text-gray-700 glass-panel px-4 py-2 rounded-full mx-auto w-fit">
-          <span className="h-2 w-2 rounded-full bg-celo-green shadow-[0_0_8px_rgba(53,208,127,0.8)] animate-pulse" />
+          <Avatar size="sm" />
           <span className="font-medium">{shorten(address)}</span>
           {miniPay && <span className="rounded-md bg-celo-green/20 px-2 py-0.5 text-[10px] font-bold text-celo-green uppercase tracking-wider">MiniPay</span>}
         </div>
