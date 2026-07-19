@@ -4,6 +4,8 @@
   "description": "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
+  "dir": "ltr",
   "background_color": "#ffffff",
   "theme_color": "#35d07f",
   "icons": [
