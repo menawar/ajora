@@ -78,12 +78,13 @@ export default function SavePage() {
       </motion.div>
 
       <motion.section variants={itemVariants} className="flex flex-col gap-4">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2" role="group" aria-label="Amount presets">
           {PRESETS.map((p) => (
             <motion.button
               whileTap={{ scale: 0.95 }}
               key={p}
               type="button"
+              aria-pressed={!custom && amount === p}
               onClick={() => {
                 setCustom(false);
                 setAmount(p);
@@ -101,6 +102,7 @@ export default function SavePage() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             type="button"
+            aria-pressed={custom}
             onClick={() => {
               setCustom(true);
               setAmount("");
@@ -111,6 +113,7 @@ export default function SavePage() {
                 ? "bg-celo-green text-white shadow-celo-green/30"
                 : "glass-panel text-gray-700 hover:bg-white/80 border border-gray-200/50"
             }`}
+            aria-label="Custom amount"
           >
             …
           </motion.button>
@@ -122,8 +125,10 @@ export default function SavePage() {
             animate={{ height: "auto", opacity: 1 }}
             className="relative overflow-hidden"
           >
-            <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
             <input
+              id="custom-amount-input"
+              aria-label="Custom amount in cUSD"
               inputMode="decimal"
               placeholder={t("save.amountPlaceholder")}
               value={amount}
