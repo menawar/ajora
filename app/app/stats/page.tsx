@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Users, Activity, TrendingUp, BarChart3, Fingerprint } from "lucide-react";
+import { Tooltip } from "../../components/ui/Tooltip";
+import { EmptyState } from "../../components/ui/EmptyState";
 import dailyJson from "../../../metrics/daily.json";
 import summary from "../../../metrics/summary.json";
 import { DailyRow } from "./types";
@@ -47,9 +49,11 @@ export default function StatsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="text-4xl font-black text-gray-900">{summary.verifiedUsers ?? 0}</div>
-            <div className="text-sm font-semibold text-celo-green mt-1 flex items-center gap-1">
-              <Users className="w-4 h-4" /> Sybil-adjusted
-            </div>
+            <Tooltip content="Adjusted using on-chain graph analysis to remove bots">
+              <div className="text-sm font-semibold text-celo-green mt-1 flex items-center gap-1 cursor-help">
+                <Users className="w-4 h-4" /> Sybil-adjusted
+              </div>
+            </Tooltip>
           </div>
           <div className="text-right">
             <div className="text-xl font-bold text-gray-400 line-through">{summary.totalUsers ?? 0}</div>
@@ -125,9 +129,16 @@ export default function StatsPage() {
 
       <section className="flex flex-col gap-3 mt-4">
         <h2 className="text-sm font-bold uppercase tracking-wide text-gray-400">Daily Log</h2>
-        {rows.slice(0, 7).map((d) => (
-          <DailyLogItem key={d.periodId} d={d} />
-        ))}
+        {rows.length === 0 ? (
+          <EmptyState 
+            title="No Data Yet"
+            description="Daily metrics have not been recorded yet. Check back tomorrow."
+          />
+        ) : (
+          rows.slice(0, 7).map((d) => (
+            <DailyLogItem key={d.periodId} d={d} />
+          ))
+        )}
       </section>
 
       <div className="mt-4 p-4 bg-amber-50 rounded-2xl border border-amber-100 text-sm text-amber-800">
