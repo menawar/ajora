@@ -5,6 +5,8 @@ import { useOnline } from "../hooks/useOnline";
 import { Wallet, WifiOff } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { Button } from "./ui/Button";
+
 function shorten(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
@@ -46,18 +48,17 @@ export function ConnectBar() {
       <div className="flex flex-col items-center gap-1.5">
         <div className="flex flex-wrap justify-center gap-2">
           {wallets.map((w) => (
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <Button
               key={w.info.rdns}
-              type="button"
+              variant="secondary"
+              size="sm"
               onClick={() => void connect(w.info.rdns)}
               disabled={connecting}
-              className="flex items-center gap-2 rounded-xl glass-panel px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-white/80 disabled:opacity-50"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={w.info.icon} alt="" className="h-5 w-5 rounded-md" />
               {w.info.name}
-            </motion.button>
+            </Button>
           ))}
         </div>
         {error && <p className="text-center text-xs text-red-500">{error}</p>}
@@ -67,16 +68,15 @@ export function ConnectBar() {
 
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <motion.button
-        whileTap={{ scale: 0.95 }}
-        type="button"
+      <Button
+        variant="primary"
+        size="sm"
         onClick={() => void connect()}
         disabled={connecting}
-        className="mx-auto flex items-center gap-2 rounded-xl bg-gradient-to-r from-celo-green to-[#2ebf73] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
       >
         <Wallet className="h-4 w-4" />
         {connecting ? "Connecting…" : "Connect wallet"}
-      </motion.button>
+      </Button>
       {error && <p className="text-center text-xs text-red-500">{error}</p>}
     </div>
   );

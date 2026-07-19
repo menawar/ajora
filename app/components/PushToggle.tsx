@@ -1,6 +1,7 @@
 "use client";
 
 import { usePush } from "../hooks/usePush";
+import { Button } from "./ui/Button";
 
 const hourLabel = (h: number) =>
   new Date(2026, 0, 1, h).toLocaleTimeString([], { hour: "numeric" });
@@ -17,17 +18,16 @@ export function PushToggle() {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-2">
-        <button
-          type="button"
+        <Button
+          variant={enabled ? "outline" : "secondary"}
+          size="sm"
           disabled={busy}
           onClick={() => void (enabled ? disable() : enable())}
-          className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
-            enabled ? "bg-celo-green/10 text-celo-green" : "bg-gray-100 text-gray-600"
-          } ${busy ? "opacity-50" : ""}`}
+          className={`rounded-full ${enabled ? "border-transparent bg-celo-green/10" : ""}`}
           aria-pressed={enabled}
         >
           {enabled ? "🔔 Draw alerts on" : "🔕 Get draw alerts"}
-        </button>
+        </Button>
         {error && <span className="text-xs text-red-500">{error}</span>}
       </div>
 
