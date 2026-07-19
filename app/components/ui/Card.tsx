@@ -12,11 +12,14 @@ const variantStyles = {
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className = "", variant = "default", children, ...props }, ref) => {
+  ({ className = "", variant = "default", interactive = false, children, ...props }, ref) => {
     return (
       <motion.div
         ref={ref}
-        className={`rounded-2xl p-4 sm:p-5 ${variantStyles[variant]} ${className}`}
+        whileHover={interactive ? { y: -2, scale: 1.01 } : undefined}
+        whileTap={interactive ? { scale: 0.98 } : undefined}
+        className={`rounded-2xl p-4 sm:p-5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-offset-2 ${interactive ? "cursor-pointer hover:shadow-lg" : ""} ${variantStyles[variant]} ${className}`}
+        tabIndex={interactive ? 0 : undefined}
         {...props}
       >
         {children}
