@@ -3,8 +3,10 @@ import { motion, HTMLMotionProps } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
 export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
-  variant?: "primary" | "secondary" | "outline" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
   isLoading?: boolean;
 }
 
@@ -13,6 +15,7 @@ const variantStyles = {
   secondary: "bg-gray-100 text-gray-800 hover:bg-gray-200",
   outline: "border-2 border-celo-green text-celo-green hover:bg-celo-green/10",
   danger: "bg-red-500 text-white hover:bg-red-600",
+  ghost: "bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900",
 };
 
 const sizeStyles = {
@@ -22,7 +25,7 @@ const sizeStyles = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = "", variant = "primary", size = "md", isLoading = false, children, disabled, ...props }, ref) => {
+  ({ className = "", variant = "primary", size = "md", icon, iconPosition = "left", isLoading = false, children, disabled, ...props }, ref) => {
     const isDisabled = disabled || isLoading;
     return (
       <motion.button
@@ -34,7 +37,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+        {icon && !isLoading && iconPosition === "left" && icon}
         {children}
+        {icon && iconPosition === "right" && icon}
       </motion.button>
     );
   }
