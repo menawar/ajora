@@ -3,9 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { ConnectBar } from "../../components/ConnectBar";
-import { ShareButtons } from "../../components/ShareButtons";
 import { useCrew } from "../../hooks/useCrew";
+
+const ShareButtons = dynamic(() => import("../../components/ShareButtons").then((mod) => mod.ShareButtons));
 import { useDraw } from "../../hooks/useDraw";
 import { usePotToday, useSponsor } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";

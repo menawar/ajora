@@ -1,11 +1,15 @@
 "use client";
 
-import { ShareButtons } from "./ShareButtons";
+import dynamic from "next/dynamic";
 import { useCrew } from "../hooks/useCrew";
 import { useStreak } from "../hooks/useStreak";
 import { useWallet } from "../hooks/useWallet";
-import { Flame, Award } from "lucide-react";
+import { Flame, Award, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+
+const ShareButtons = dynamic(() => import("./ShareButtons").then((mod) => mod.ShareButtons), {
+  loading: () => <Loader2 className="h-4 w-4 animate-spin text-gray-400" />,
+});
 
 const MILESTONES = [7, 30, 90];
 
