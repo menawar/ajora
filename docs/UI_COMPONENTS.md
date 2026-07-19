@@ -18,3 +18,9 @@ When interactive, it scales on hover and tap, and receives keyboard focus rings.
 ## EmptyState
 Used for zero-data states (e.g. no stats yet).
 Features an icon, title, description, and an optional action component (like a link or button).
+
+## Tooltip
+Wraps any element and shows a hover-triggered tooltip. Supports custom positions (top, bottom, left, right).
+
+## Modal
+A full-screen accessible modal using React Portal. Includes a backdrop, close button, escape key listener, and click-outside handler.
