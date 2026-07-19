@@ -10,3 +10,7 @@ Ajora uses a custom component library built with Tailwind CSS and Framer Motion 
 ## Button
 The `Button` component supports variants (default, outline, ghost) and sizes.
 It includes built-in hover and tap animations using framer-motion.
+
+## Card
+The `Card` component supports `variant` (default, glass, border) and an `interactive` flag.
+When interactive, it scales on hover and tap, and receives keyboard focus rings.
