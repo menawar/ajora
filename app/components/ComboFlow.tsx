@@ -27,13 +27,15 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
 
   if (step === "idle") {
     return (
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         type="button"
         onClick={() => void execute(amountCusd, pickNumber)}
         className="w-full flex justify-center items-center gap-2 rounded-xl bg-gradient-to-r from-celo-green to-[#2ebf73] px-4 py-4 text-lg font-bold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30"
       >
         <span>Play Today (Save + Pick)</span>
-      </button>
+      </motion.button>
     );
   }
 
@@ -44,7 +46,13 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
           {step === "error" && error ? error : stepMessages[step]}
         </span>
         {step === "success" ? (
-          <CheckCircle2 className="h-5 w-5 text-celo-green" />
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", bounce: 0.5 }}
+          >
+            <CheckCircle2 className="h-5 w-5 text-celo-green" />
+          </motion.div>
         ) : step === "error" ? (
           <button onClick={reset} className="text-gray-400 underline hover:text-gray-600">Try again</button>
         ) : (
