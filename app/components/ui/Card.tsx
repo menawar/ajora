@@ -3,6 +3,7 @@ import { motion, HTMLMotionProps } from "framer-motion";
 
 export interface CardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
   variant?: "default" | "glass" | "bordered";
+  interactive?: boolean;
 }
 
 const variantStyles = {
