@@ -7,9 +7,8 @@ import { useWallet } from "../hooks/useWallet";
 import { Flame, Award, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const ShareButtons = dynamic(() => import("./ShareButtons").then((mod) => mod.ShareButtons), {
-  loading: () => <Loader2 className="h-4 w-4 animate-spin text-gray-400" />,
-});
+import { Card } from "./ui/Card";
+import { Button } from "./ui/Button";
 
 const MILESTONES = [7, 30, 90];
 
@@ -29,10 +28,11 @@ export function StreakChip() {
   const hitMilestone = MILESTONES.includes(days);
 
   return (
-    <motion.div 
+    <Card 
+      variant="glass"
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      className="flex flex-col items-center gap-2 glass-panel rounded-2xl p-3 shadow-sm"
+      className="flex flex-col items-center gap-2"
     >
       <div className="flex items-center justify-center gap-2 text-sm">
         <Flame className="h-5 w-5 text-orange-500 animate-pulse" />
@@ -41,15 +41,15 @@ export function StreakChip() {
           <strong>{multiplierLabel(multiplierX10)}</strong> tickets
         </span>
         {!checkedInToday && (
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => void checkIn()}
             disabled={checkingIn}
-            className="ml-2 rounded-full bg-celo-gold/30 px-3 py-1 text-xs font-semibold text-amber-800 disabled:opacity-50"
+            className="ml-2 rounded-full border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100"
           >
             {checkingIn ? "Checking in…" : "Check in ✓"}
-          </motion.button>
+          </Button>
         )}
       </div>
 
@@ -75,6 +75,6 @@ export function StreakChip() {
           refCode={myCode || undefined}
         />
       )}
-    </motion.div>
+    </Card>
   );
 }

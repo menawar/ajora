@@ -35,17 +35,23 @@ export default function PickPage() {
 
       <ConnectBar />
 
-      <section className="grid grid-cols-3 gap-3">
+      <section
+        className="grid grid-cols-3 gap-3"
+        role="group"
+        aria-label={t("pick.number_pad", { defaultValue: "Number pad" })}
+      >
         {NUMBERS.map((n) => (
           <button
             key={n}
             type="button"
             disabled={!hasTickets || picking}
             onClick={() => setSelected(n)}
-            className={`aspect-square rounded-2xl border text-3xl font-bold transition active:scale-95 ${
+            aria-label={`Pick number ${n}`}
+            aria-pressed={active === n}
+            className={`aspect-square rounded-2xl border text-3xl font-bold transition-all focus:outline-none focus:ring-4 focus:ring-celo-green/50 active:scale-95 ${
               active === n
                 ? "border-celo-green bg-celo-green text-white"
-                : "border-gray-200 text-gray-700 disabled:opacity-40"
+                : "border-gray-200 text-gray-700 hover:bg-gray-50 disabled:opacity-40"
             }`}
           >
             {n}
