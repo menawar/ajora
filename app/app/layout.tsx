@@ -4,6 +4,7 @@ import { LanguageProvider } from "../lib/i18n";
 import { WalletProvider } from "../hooks/useWallet";
 import { TabBar } from "../components/TabBar";
 import { OfflineBanner } from "../components/OfflineBanner";
+import { PageTransition } from "../components/PageTransition";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -39,7 +40,7 @@ export default function RootLayout({
         <LanguageProvider>
           <WalletProvider>
             <OfflineBanner />
-            {children}
+            <PageTransition>{children}</PageTransition>
             <TabBar />
           </WalletProvider>
         </LanguageProvider>
