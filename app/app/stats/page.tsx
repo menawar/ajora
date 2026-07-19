@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Users, Activity, TrendingUp, BarChart3, Fingerprint } from "lucide-react";
 import { Tooltip } from "../../components/ui/Tooltip";
+import { EmptyState } from "../../components/ui/EmptyState";
 import dailyJson from "../../../metrics/daily.json";
 import summary from "../../../metrics/summary.json";
 
@@ -142,18 +143,25 @@ export default function StatsPage() {
 
       <section className="flex flex-col gap-3 mt-4">
         <h2 className="text-sm font-bold uppercase tracking-wide text-gray-400">Daily Log</h2>
-        {rows.slice(0, 7).map((d) => (
-          <div key={d.periodId} className="bg-white rounded-2xl border border-gray-100 p-4 text-sm shadow-sm flex items-center justify-between">
-            <div>
-              <div className="font-bold text-gray-900">{d.date}</div>
-              <div className="text-xs text-gray-500 mt-1">{d.txCount} txs · {d.activeUsers} active</div>
+        {rows.length === 0 ? (
+          <EmptyState 
+            title="No Data Yet"
+            description="Daily metrics have not been recorded yet. Check back tomorrow."
+          />
+        ) : (
+          rows.slice(0, 7).map((d) => (
+            <div key={d.periodId} className="bg-white rounded-2xl border border-gray-100 p-4 text-sm shadow-sm flex items-center justify-between">
+              <div>
+                <div className="font-bold text-gray-900">{d.date}</div>
+                <div className="text-xs text-gray-500 mt-1">{d.txCount} txs · {d.activeUsers} active</div>
+              </div>
+              <div className="text-right">
+                <div className="font-bold text-celo-green">+{d.newUsers} new</div>
+                <div className="text-xs text-gray-400 mt-1">{d.contributions} saves</div>
+              </div>
             </div>
-            <div className="text-right">
-              <div className="font-bold text-celo-green">+{d.newUsers} new</div>
-              <div className="text-xs text-gray-400 mt-1">{d.contributions} saves</div>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </section>
 
       <div className="mt-4 p-4 bg-amber-50 rounded-2xl border border-amber-100 text-sm text-amber-800">

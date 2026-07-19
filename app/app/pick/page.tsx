@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ConnectBar } from "../../components/ConnectBar";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { useTranslation } from "../../lib/i18n";
 import { useDraw } from "../../hooks/useDraw";
 import { usePotToday } from "../../hooks/usePotVault";
 import { useWallet } from "../../hooks/useWallet";
+import { useToast } from "../../hooks/useToast";
 
 const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
@@ -16,13 +17,22 @@ export default function PickPage() {
   const pot = usePotToday();
   const { myPick, pick, picking, error } = useDraw();
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [selected, setSelected] = useState<number>();
+
+  // Show a toast when the user successfully picks a number
+  useEffect(() => {
+    if (myPick.number !== 0 && selected) {
+      toast(t("pick.success"), "success");
+      setSelected(undefined); // Clear selection after successful pick
+    }
+  }, [myPick.number, selected, t, toast]);
 
   const hasTickets = pot.myTickets > 0n;
   const active = selected ?? myPick.number;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24">
       <header className="text-center">
         <h1 className="text-2xl font-bold">{t("pick.title")}</h1>
         <p className="mt-1 text-sm text-gray-500 flex justify-center items-center min-h-[20px]">
@@ -92,11 +102,6 @@ export default function PickPage() {
       )}
 
       {error && <p className="text-center text-sm text-red-500">{error}</p>}
-      {!error && myPick.number !== 0 && !selected && (
-        <p className="text-center text-sm text-celo-green">
-          {t("pick.success")}
-        </p>
-      )}
 
       <footer className="mt-auto text-center text-xs text-gray-400">
         {t("pick.footer")}

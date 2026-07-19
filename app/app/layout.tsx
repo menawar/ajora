@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import { LanguageProvider } from "../lib/i18n";
 import { WalletProvider } from "../hooks/useWallet";
 import { ThemeProvider } from "../hooks/useTheme";
+import { ToastProvider } from "../hooks/useToast";
 import { TabBar } from "../components/TabBar";
 import { OfflineBanner } from "../components/OfflineBanner";
 import { PageTransition } from "../components/PageTransition";
@@ -61,11 +62,13 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <WalletProvider>
-              <OfflineBanner />
-              <PageTransition>
-                {children}
-              </PageTransition>
-              <TabBar />
+              <ToastProvider>
+                <OfflineBanner />
+                <PageTransition>
+                  {children}
+                </PageTransition>
+                <TabBar />
+              </ToastProvider>
             </WalletProvider>
           </LanguageProvider>
         </ThemeProvider>
