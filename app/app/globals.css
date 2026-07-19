@@ -15,9 +15,9 @@
 
 /* Ajora brand tokens — Celo palette. Generates utilities like bg-celo-green, from-celo-gold. */
 @theme {
-  --color-celo-green: #35d07f;
-  --color-celo-gold: #fbcc5c;
-  --color-celo-dark: #1a1a2e;
+  --color-celo-green: var(--color-celo-green-base);
+  --color-celo-gold: var(--color-celo-gold-base);
+  --color-celo-dark: var(--color-celo-dark-base);
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
