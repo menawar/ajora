@@ -1,0 +1,1 @@
+export function Popover({children}: {children: React.ReactNode}) { return <div className="absolute z-10 bg-white shadow-lg rounded-xl p-4">{children}</div>; }
