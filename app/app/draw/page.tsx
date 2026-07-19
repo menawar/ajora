@@ -5,6 +5,7 @@ import { formatUnits, parseUnits } from "viem";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ConnectBar } from "../../components/ConnectBar";
+import { Skeleton } from "../../components/ui/Skeleton";
 import { useCrew } from "../../hooks/useCrew";
 
 const ShareButtons = dynamic(() => import("../../components/ShareButtons").then((mod) => mod.ShareButtons));
@@ -128,7 +129,7 @@ export default function DrawPage() {
       <section className="rounded-2xl border border-gray-100 p-6 text-center">
         <div className="mb-4 text-sm font-medium text-gray-500">Last night&apos;s number</div>
 
-        {loading && <div className="mx-auto h-28 w-28 animate-pulse rounded-3xl bg-gray-100" />}
+        {loading && <Skeleton variant="rectangular" className="mx-auto h-28 w-28 rounded-3xl" />}
 
         {!loading && last && !last.resolved && (
           <>
