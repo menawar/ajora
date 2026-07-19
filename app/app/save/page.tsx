@@ -72,7 +72,7 @@ export default function SavePage() {
 
   return (
     <motion.main 
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6"
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24"
       variants={containerVariants}
       initial="hidden"
       animate="show"
