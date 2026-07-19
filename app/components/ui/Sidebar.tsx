@@ -1,0 +1,1 @@
+export function Sidebar({children}: {children: React.ReactNode}) { return <aside className="w-64 min-h-screen bg-white border-r">{children}</aside>; }
