@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Users, Activity, TrendingUp, BarChart3, Fingerprint } from "lucide-react";
+import { Tooltip } from "../../components/ui/Tooltip";
 import { EmptyState } from "../../components/ui/EmptyState";
 import dailyJson from "../../../metrics/daily.json";
 import summary from "../../../metrics/summary.json";
@@ -62,9 +63,11 @@ export default function StatsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="text-4xl font-black text-gray-900">{summary.verifiedUsers ?? 0}</div>
-            <div className="text-sm font-semibold text-celo-green mt-1 flex items-center gap-1">
-              <Users className="w-4 h-4" /> Sybil-adjusted
-            </div>
+            <Tooltip content="Adjusted using on-chain graph analysis to remove bots">
+              <div className="text-sm font-semibold text-celo-green mt-1 flex items-center gap-1 cursor-help">
+                <Users className="w-4 h-4" /> Sybil-adjusted
+              </div>
+            </Tooltip>
           </div>
           <div className="text-right">
             <div className="text-xl font-bold text-gray-400 line-through">{summary.totalUsers ?? 0}</div>
