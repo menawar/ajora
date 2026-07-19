@@ -36,11 +36,13 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={outfit.variable}>
-      <body className="min-h-dvh bg-white pb-16 font-sans text-gray-900 antialiased">
+      <body className="min-h-dvh bg-bg-primary pb-16 font-sans text-text-primary antialiased transition-colors duration-300">
         <LanguageProvider>
           <WalletProvider>
             <OfflineBanner />
-            <PageTransition>{children}</PageTransition>
+            <PageTransition>
+              {children}
+            </PageTransition>
             <TabBar />
           </WalletProvider>
         </LanguageProvider>
