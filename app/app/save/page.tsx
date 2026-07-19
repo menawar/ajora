@@ -5,6 +5,7 @@ import { formatUnits, parseUnits } from "viem";
 import { motion, type Variants } from "framer-motion";
 import { Coins, Loader2 } from "lucide-react";
 import { useTranslation } from "../../lib/i18n";
+import { Skeleton } from "../../components/ui/Skeleton";
 import { ConnectBar } from "../../components/ConnectBar";
 import { publicClient } from "../../lib/clients";
 import { contracts } from "../../lib/contracts";
@@ -138,8 +139,9 @@ export default function SavePage() {
           </motion.div>
         )}
 
-        <div className="flex justify-between text-sm text-gray-500 px-1">
+        <div className="flex justify-between text-sm text-gray-500 px-1 items-center h-5">
           <span>
+            {address && balance === undefined && <Skeleton variant="text" className="w-24 h-4" />}
             {balance !== undefined &&
               t("save.balance", { balance: Number(formatUnits(balance, 18)).toFixed(2) })}
           </span>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ConnectBar } from "../../components/ConnectBar";
+import { Skeleton } from "../../components/ui/Skeleton";
 import { useTranslation } from "../../lib/i18n";
 import { useDraw } from "../../hooks/useDraw";
 import { usePotToday } from "../../hooks/usePotVault";
@@ -24,8 +25,10 @@ export default function PickPage() {
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
       <header className="text-center">
         <h1 className="text-2xl font-bold">{t("pick.title")}</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {hasTickets ? (
+        <p className="mt-1 text-sm text-gray-500 flex justify-center items-center min-h-[20px]">
+          {pot.loading ? (
+            <Skeleton variant="text" className="w-48 h-4" />
+          ) : hasTickets ? (
             <span dangerouslySetInnerHTML={{ __html: t("pick.subtitle.tickets", { tickets: pot.myTickets.toString() }) }} />
           ) : (
             t("pick.subtitle.empty")
