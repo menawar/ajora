@@ -17,6 +17,14 @@ export const metadata: Metadata = {
     "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
   manifest: "/manifest.json",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Ajora",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "Ajora — Save small, chop jara",
     description: "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
