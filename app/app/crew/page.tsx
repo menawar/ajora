@@ -7,6 +7,8 @@ import { useCrew } from "../../hooks/useCrew";
 import { useSpray } from "../../hooks/useSpray";
 import { useWallet } from "../../hooks/useWallet";
 import { shareUrl, storedRef } from "../../lib/share";
+import { EmptyState } from "../../components/ui/EmptyState";
+import { Users2 } from "lucide-react";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -76,12 +78,11 @@ export default function CrewPage() {
       <ConnectBar />
 
       {!crew.enabled ? (
-        <section className="rounded-2xl border border-dashed border-celo-gold bg-celo-gold/5 p-5 text-center">
-          <p className="font-semibold">Crews launch with the next contract drop 🚀</p>
-          <p className="mt-1 text-sm text-gray-500">
-            Your invite link and crew pots are on the way. Spraying already works below.
-          </p>
-        </section>
+        <EmptyState
+          title="Coming Soon 🚀"
+          description="Your invite link and crew pots are on the way. Spraying already works below."
+          icon={<Users2 className="h-6 w-6" />}
+        />
       ) : crew.loading ? (
         <div className="h-32 animate-pulse rounded-2xl bg-gray-100" />
       ) : crew.crewId === 0n ? (
