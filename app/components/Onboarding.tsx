@@ -9,6 +9,8 @@ import { useWallet } from "../hooks/useWallet";
 
 const SEEN_KEY = "ajora.onboarded";
 
+import { ErrorAlert } from "./ui/ErrorAlert";
+
 /**
  * First-run zero-deposit onboarding (AJORA_SPEC.md §11): explain no-loss in one
  * screen, hand over the sponsored welcome ticket, route to Pick. Unverified
@@ -122,8 +124,8 @@ export function Onboarding() {
               {miniPay || address ? "Loading your account…" : "Open Ajora inside MiniPay to get your free ticket."}
             </p>
           )}
-          {error && <p className="text-center text-xs text-red-500">{error}</p>}
-          <button type="button" onClick={dismiss} className="py-2 text-sm text-gray-400">
+          {error && <div className="mt-2"><ErrorAlert message={error} /></div>}
+          <button type="button" onClick={dismiss} className="py-2 text-sm text-gray-400 mt-1">
             Maybe later
           </button>
         </div>
