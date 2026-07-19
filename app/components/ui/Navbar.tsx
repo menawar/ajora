@@ -1,0 +1,1 @@
+export function Navbar({children}: {children: React.ReactNode}) { return <nav className="bg-white shadow-sm h-16 flex items-center">{children}</nav>; }
