@@ -11,6 +11,7 @@ import { triggerSmallConfetti } from "../lib/confetti";
 
 import { Card } from "./ui/Card";
 import { Button } from "./ui/Button";
+import { ShareButtons } from "./ShareButtons";
 
 const ShareButtons = dynamic(() => import("./ShareButtons").then((mod) => mod.ShareButtons));
 const MILESTONES = [7, 30, 90];

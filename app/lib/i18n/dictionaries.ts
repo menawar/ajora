@@ -47,6 +47,7 @@ export const en = {
   "pick.cta.save": "Save to get tickets",
   "pick.success": "You're in tonight's draw. Come back after midnight UTC 🌙",
   "pick.footer": "Re-picking before the day closes moves all your tickets to the new number.",
+  "pick.number_pad": "Number pad",
   "language.label": "Language",
 } as const;
 
@@ -88,6 +89,7 @@ export const pcm: Dictionary = {
   "pick.cta.save": "[PCM] Save to get tickets",
   "pick.success": "[PCM] You're in tonight's draw. Come back after midnight UTC 🌙",
   "pick.footer": "[PCM] Re-picking before the day closes moves all your tickets to the new number.",
+  "pick.number_pad": "[PCM] Number pad",
   "language.label": "Language",
 };
 
@@ -125,6 +127,7 @@ export const sw: Dictionary = {
   "pick.cta.save": "[SW] Save to get tickets",
   "pick.success": "[SW] You're in tonight's draw. Come back after midnight UTC 🌙",
   "pick.footer": "[SW] Re-picking before the day closes moves all your tickets to the new number.",
+  "pick.number_pad": "[SW] Number pad",
   "language.label": "Lugha",
 };
 
