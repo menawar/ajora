@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+:root {
+  --color-celo-green-base: #35d07f;
+  --color-celo-gold-base: #fbcc5c;
+  --color-celo-dark-base: #1a1a2e;
+}
+
+
 /* Ajora brand tokens — Celo palette. Generates utilities like bg-celo-green, from-celo-gold. */
 @theme {
   --color-celo-green: #35d07f;
