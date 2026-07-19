@@ -1,10 +1,10 @@
 "use client";
 
-import { ShareButtons } from "./ShareButtons";
+import dynamic from "next/dynamic";
 import { useCrew } from "../hooks/useCrew";
 import { useStreak } from "../hooks/useStreak";
 import { useWallet } from "../hooks/useWallet";
-import { Flame, Award } from "lucide-react";
+import { Flame, Award, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { Card } from "./ui/Card";

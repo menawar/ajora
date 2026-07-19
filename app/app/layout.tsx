@@ -16,6 +16,18 @@ export const metadata: Metadata = {
     "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
   manifest: "/manifest.json",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
+  openGraph: {
+    title: "Ajora — Save small, chop jara",
+    description: "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
+    url: "https://ajora-4ewr.vercel.app",
+    siteName: "Ajora",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ajora — Save small, chop jara",
+    description: "No-loss prize-linked savings game on Celo.",
+  },
   // Talent Protocol (Proof of Ship) project-ownership verification tag.
   other: {
     "talentapp:project_verification":
