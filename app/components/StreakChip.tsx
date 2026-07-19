@@ -1,15 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useRef } from "react";
 import { useCrew } from "../hooks/useCrew";
 import { useStreak } from "../hooks/useStreak";
 import { useWallet } from "../hooks/useWallet";
 import { Flame, Award, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { triggerSmallConfetti } from "../lib/confetti";
 
 import { Card } from "./ui/Card";
 import { Button } from "./ui/Button";
 
+const ShareButtons = dynamic(() => import("./ShareButtons").then((mod) => mod.ShareButtons));
 const MILESTONES = [7, 30, 90];
 
 function multiplierLabel(x10: bigint): string {
@@ -21,6 +24,14 @@ export function StreakChip() {
   const { address } = useWallet();
   const { streakDays, multiplierX10, checkedInToday, checkIn, checkingIn, loading, badges } = useStreak();
   const { myCode } = useCrew();
+  const wasCheckedIn = useRef(checkedInToday);
+
+  useEffect(() => {
+    if (!wasCheckedIn.current && checkedInToday) {
+      triggerSmallConfetti();
+    }
+    wasCheckedIn.current = checkedInToday;
+  }, [checkedInToday]);
 
   if (!address || loading) return null;
 
