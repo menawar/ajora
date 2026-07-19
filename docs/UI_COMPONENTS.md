@@ -14,3 +14,7 @@ It includes built-in hover and tap animations using framer-motion.
 ## Card
 The `Card` component supports `variant` (default, glass, border) and an `interactive` flag.
 When interactive, it scales on hover and tap, and receives keyboard focus rings.
+
+## EmptyState
+Used for zero-data states (e.g. no stats yet).
+Features an icon, title, description, and an optional action component (like a link or button).
