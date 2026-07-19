@@ -4,22 +4,8 @@ import { motion } from "framer-motion";
 import { Users, Activity, TrendingUp, BarChart3, Fingerprint } from "lucide-react";
 import dailyJson from "../../../metrics/daily.json";
 import summary from "../../../metrics/summary.json";
-
-interface DailyRow {
-  periodId: number;
-  date: string;
-  txCount: number;
-  activeUsers: number;
-  newUsers: number;
-  contributions: number;
-  principalIn: string;
-  prizesPaid: string;
-  sprays: number;
-  welcomes: number;
-  picks: number;
-  checkIns: number;
-  resolved: { winningNumber: number; pot: string } | null;
-}
+import { DailyRow } from "./types";
+import { DailyLogItem } from "./DailyLogItem";
 
 const daily = dailyJson as DailyRow[];
 
@@ -140,16 +126,7 @@ export default function StatsPage() {
       <section className="flex flex-col gap-3 mt-4">
         <h2 className="text-sm font-bold uppercase tracking-wide text-gray-400">Daily Log</h2>
         {rows.slice(0, 7).map((d) => (
-          <div key={d.periodId} className="bg-white rounded-2xl border border-gray-100 p-4 text-sm shadow-sm flex items-center justify-between">
-            <div>
-              <div className="font-bold text-gray-900">{d.date}</div>
-              <div className="text-xs text-gray-500 mt-1">{d.txCount} txs · {d.activeUsers} active</div>
-            </div>
-            <div className="text-right">
-              <div className="font-bold text-celo-green">+{d.newUsers} new</div>
-              <div className="text-xs text-gray-400 mt-1">{d.contributions} saves</div>
-            </div>
-          </div>
+          <DailyLogItem key={d.periodId} d={d} />
         ))}
       </section>
 
