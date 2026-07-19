@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 
 export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
-  variant?: "primary" | "secondary" | "outline" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
 }
 
@@ -11,6 +11,7 @@ const variantStyles = {
   secondary: "bg-gray-100 text-gray-800 hover:bg-gray-200",
   outline: "border-2 border-celo-green text-celo-green hover:bg-celo-green/10",
   danger: "bg-red-500 text-white hover:bg-red-600",
+  ghost: "bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900",
 };
 
 const sizeStyles = {
