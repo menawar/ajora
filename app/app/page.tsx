@@ -14,6 +14,7 @@ import { useDraw } from "../hooks/useDraw";
 import { usePotToday, useSave } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
 import { ComboFlow } from "../components/ComboFlow";
+import { ActivityFeed } from "../components/ActivityFeed";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -48,7 +49,7 @@ export default function Home() {
 
   return (
     <motion.main 
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6"
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24"
       variants={containerVariants}
       initial="hidden"
       animate="show"
@@ -99,6 +100,10 @@ export default function Home() {
             dangerouslySetInnerHTML={{ __html: t("home.status", { tickets: pot.myTickets.toString(), balance: cusd(pot.myPrincipal) }) }}
           />
         )}
+
+        <div className="mt-2">
+          <ActivityFeed />
+        </div>
 
         {address && pot.myTickets > 0n && myPick.number === 0 && (
           <Link

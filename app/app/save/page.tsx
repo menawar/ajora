@@ -5,12 +5,15 @@ import { formatUnits, parseUnits } from "viem";
 import { motion, type Variants } from "framer-motion";
 import { Coins, Loader2 } from "lucide-react";
 import { useTranslation } from "../../lib/i18n";
+import { Skeleton } from "../../components/ui/Skeleton";
 import { ConnectBar } from "../../components/ConnectBar";
 import { publicClient } from "../../lib/clients";
 import { contracts } from "../../lib/contracts";
 import { useSave } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
+import { ErrorAlert } from "../../components/ui/ErrorAlert";
+import { useToast } from "../../hooks/useToast";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
 const MIN = parseUnits("0.1", 18);
@@ -33,10 +36,19 @@ export default function SavePage() {
   const { save, status, reset } = useSave();
   const { multiplierX10 } = useStreak();
   const { t } = useTranslation();
+  const { toast } = useToast();
 
   const [amount, setAmount] = useState<string>("0.1");
   const [custom, setCustom] = useState(false);
   const [balance, setBalance] = useState<bigint>();
+
+  useEffect(() => {
+    if (status.step === "success") {
+      toast(`Saved! +${status.tickets.toString()} tickets. Now pick your lucky number 🎯`, "success");
+      // Reset status after a delay so it doesn't stay in success state indefinitely
+      setTimeout(() => reset(), 4000);
+    }
+  }, [status, toast, reset]);
 
   useEffect(() => {
     if (!address) return;
@@ -61,7 +73,7 @@ export default function SavePage() {
 
   return (
     <motion.main 
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6"
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24"
       variants={containerVariants}
       initial="hidden"
       animate="show"
@@ -138,8 +150,9 @@ export default function SavePage() {
           </motion.div>
         )}
 
-        <div className="flex justify-between text-sm text-gray-500 px-1">
+        <div className="flex justify-between text-sm text-gray-500 px-1 items-center h-5">
           <span>
+            {address && balance === undefined && <Skeleton variant="text" className="w-24 h-4" />}
             {balance !== undefined &&
               t("save.balance", { balance: Number(formatUnits(balance, 18)).toFixed(2) })}
           </span>
@@ -176,15 +189,10 @@ export default function SavePage() {
         {insufficient && (
           <p className="text-center text-sm text-amber-600">{t("save.insufficient")}</p>
         )}
-        {status.step === "success" && (
-          <p className="text-center text-sm text-celo-green">
-            Saved! +{status.tickets.toString()} tickets. Now pick your lucky number 🎯
-          </p>
-        )}
         {status.step === "error" && (
-          <div className="text-center text-sm">
-            <p className="text-red-500">{status.message}</p>
-            <button type="button" onClick={() => void save(amount)} className="mt-1 underline">
+          <div className="flex flex-col items-center gap-2">
+            <ErrorAlert message={status.message} />
+            <button type="button" onClick={() => void save(amount)} className="text-sm underline text-gray-500 hover:text-gray-700">
               Retry
             </button>
           </div>
