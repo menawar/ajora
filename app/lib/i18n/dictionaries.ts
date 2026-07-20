@@ -3,7 +3,7 @@
 // Swahili ship first — the primary MiniPay audiences. Add keys to `en`, then fill
 // each locale; a missing key falls back to English at lookup time.
 
-export const locales = ["en", "pcm", "sw"] as const;
+export const locales = ["en", "pcm", "sw", "fr"] as const;
 export type Locale = (typeof locales)[number];
 
 /** Endonyms for the language switcher. */
@@ -11,6 +11,7 @@ export const localeNames: Record<Locale, string> = {
   en: "English",
   pcm: "Pidgin",
   sw: "Kiswahili",
+  fr: "Français",
 };
 
 export const en = {
@@ -131,4 +132,42 @@ export const sw: Dictionary = {
   "language.label": "Lugha",
 };
 
-export const dictionaries: Record<Locale, Dictionary> = { en, pcm, sw };
+export const fr: Dictionary = {
+  "nav.home": "Accueil",
+  "nav.save": "Épargner",
+  "nav.pick": "Choisir",
+  "nav.draw": "Tirage",
+  "nav.crew": "Équipe",
+  "nav.wallet": "Portefeuille",
+  "home.tagline": "Épargnez peu, gardez chaque centime, gagnez le gros lot.",
+  "home.faqLink": "[FR] How is my money safe?",
+  "home.cta.save": "Commencer à épargner",
+  "home.cta.draw": "Voir le tirage",
+  "home.status": "Vous avez <strong>{{tickets}}</strong> tickets · <strong>{{balance}} cUSD</strong> épargnés aujourd'hui (toujours retirables)",
+  "home.pickPrompt": "Vos tickets ont besoin d'un numéro — choisissez maintenant 🎯",
+  "home.footer": "Sans risque: vos économies vous appartiennent toujours. Seul le bonus est en jeu.",
+  "save.subtitle": "Gardez chaque centime — les économies sont toujours retirables.",
+  "save.amountPlaceholder": "Montant en cUSD (min 0.10)",
+  "save.balance": "Solde: {{balance}} cUSD",
+  "save.tickets": "+{{tickets}} tickets",
+  "save.tooSmall": "Montant trop petit (min 0.10)",
+  "save.insufficient": "cUSD insuffisant",
+  "save.approving": "Approbation cUSD...",
+  "save.saving": "Sauvegarde sur Celo...",
+  "save.submit": "Épargner {{amount}} cUSD",
+  "pick.title": "Choisissez votre numéro",
+  "pick.subtitle.tickets": "Vos <strong>{{tickets}}</strong> tickets misent sur un numéro.",
+  "pick.subtitle.empty": "Épargnez d'abord pour gagner des tickets pour le tirage de ce soir.",
+  "pick.current": "Choix actuel: <strong>{{number}}</strong> avec <strong>{{weight}}</strong> tickets",
+  "pick.current.replaces": " — choisir de nouveau le remplace",
+  "pick.locking": "Verrouillage...",
+  "pick.update": "Mettre à jour",
+  "pick.submit": "Verrouiller 🎯",
+  "pick.cta.save": "Épargnez pour obtenir des tickets",
+  "pick.success": "Vous êtes dans le tirage de ce soir. Revenez après minuit UTC 🌙",
+  "pick.footer": "Re-choisir avant la fin de la journée déplace tous vos tickets vers le nouveau numéro.",
+  "pick.number_pad": "Pavé numérique",
+  "language.label": "Langue",
+};
+
+export const dictionaries: Record<Locale, Dictionary> = { en, pcm, sw, fr };
