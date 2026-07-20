@@ -10,6 +10,7 @@ import { usePotToday } from "../../hooks/usePotVault";
 import { useWallet } from "../../hooks/useWallet";
 import { useToast } from "../../hooks/useToast";
 import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
+import confetti from "canvas-confetti";
 
 const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
@@ -24,6 +25,12 @@ export default function PickPage() {
   // Show a toast when the user successfully picks a number
   useEffect(() => {
     if (myPick.number !== 0 && selected) {
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#35d07f', '#fbcc5c', '#ffffff']
+      });
       toast(t("pick.success"), "success");
       trackEvent(AnalyticsEvents.NUMBER_PICKED, { number: myPick.number });
       setSelected(undefined); // Clear selection after successful pick
