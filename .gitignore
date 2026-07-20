@@ -31,3 +31,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Scripts
+ramp_realistic.js
