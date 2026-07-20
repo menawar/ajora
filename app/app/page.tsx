@@ -11,10 +11,11 @@ import { StreakChip } from "../components/StreakChip";
 import { PushToggle } from "../components/PushToggle";
 import { Countdown, localCloseTime } from "../components/Countdown";
 import { useDraw } from "../hooks/useDraw";
-import { usePotToday, useSave } from "../hooks/usePotVault";
+import { usePotToday } from "../hooks/usePotVault";
 import { useWallet } from "../hooks/useWallet";
 import { ComboFlow } from "../components/ComboFlow";
 import { ActivityFeed } from "../components/ActivityFeed";
+import { Skeleton } from "../components/ui/Skeleton";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -49,16 +50,16 @@ export default function Home() {
 
   return (
     <motion.main 
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24"
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6 pb-24 bg-bg-primary"
       variants={containerVariants}
       initial="hidden"
       animate="show"
     >
-      <motion.header variants={itemVariants} className="text-center">
-        <h1 className="text-4xl font-bold">Ajora 🎉</h1>
-        <p className="mt-1 text-gray-500">
+      <motion.header variants={itemVariants} className="text-center pt-4">
+        <h1 className="text-5xl font-black tracking-tight text-gradient mb-2">Ajora</h1>
+        <p className="mt-1 text-text-secondary text-sm font-medium">
           {t("home.tagline")}{" "}
-          <Link href="/faq" className="underline">
+          <Link href="/faq" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
             {t("home.faqLink")}
           </Link>
         </p>
@@ -69,53 +70,69 @@ export default function Home() {
       <motion.div variants={itemVariants}><StreakChip /></motion.div>
       <motion.div variants={itemVariants}><PushToggle /></motion.div>
 
-      <motion.section variants={itemVariants} className="rounded-2xl bg-gradient-to-br from-celo-green to-celo-gold p-5 text-white shadow-sm">
-        <div className="text-sm opacity-90">Today&apos;s jara pot</div>
-        <div className="text-3xl font-bold">
-          {pot.loading ? "…" : `${cusd(pot.jaraPot)} cUSD`}
-        </div>
-        <div className="mt-1 flex justify-between text-sm opacity-90">
-          <span>
-            Draw closes in <Countdown closeAt={pot.closeAt} onExpire={pot.refetch} />
-            {pot.closeAt > 0 && ` (${localCloseTime(pot.closeAt)})`}
-          </span>
-          <Link href="/board" className="underline">
-            {pot.totalTickets.toString()} tickets in →
-          </Link>
+      <motion.section variants={itemVariants} className="glass-panel rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-bg-secondary to-bg-primary">
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-celo-green/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-celo-gold/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10">
+          <div className="text-sm font-bold uppercase tracking-widest text-celo-green mb-1">Today&apos;s Pot</div>
+          <div className="text-5xl font-black text-text-primary tracking-tight">
+            {pot.loading ? <Skeleton className="h-12 w-3/4 mb-2" /> : `${cusd(pot.jaraPot)} `}
+            {!pot.loading && <span className="text-2xl font-bold text-text-muted uppercase tracking-wide">cUSD</span>}
+          </div>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex justify-between items-center text-sm font-medium text-text-secondary bg-bg-secondary/50 px-3 py-2 rounded-xl border border-gray-100 dark:border-gray-800">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" /> Closes in
+              </span>
+              <span className="font-mono">
+                <Countdown closeAt={pot.closeAt} onExpire={pot.refetch} />
+                {pot.closeAt > 0 && <span className="text-text-muted ml-1">({localCloseTime(pot.closeAt)})</span>}
+              </span>
+            </div>
+            
+            <Link href="/board" className="flex justify-between items-center text-sm font-medium text-celo-green bg-celo-green/5 px-3 py-2 rounded-xl border border-celo-green/10 hover:bg-celo-green/10 transition-colors">
+              <span>Total Tickets</span>
+              <span className="font-bold flex items-center gap-1">{pot.loading ? "…" : pot.totalTickets.toString()} &rarr;</span>
+            </Link>
+          </div>
         </div>
       </motion.section>
 
-      <motion.section variants={itemVariants} className="flex flex-col gap-3">
+      <motion.section variants={itemVariants} className="flex flex-col gap-4">
         {address ? (
           <ComboFlow amountCusd="0.1" pickNumber={comboNumber} />
         ) : (
-          <div className="rounded-xl bg-celo-green px-4 py-4 text-center text-lg font-semibold text-white opacity-50">
-            Connect to Play
+          <div className="glass-panel rounded-3xl p-8 text-center border-dashed border-2 border-gray-200 dark:border-gray-800">
+            <h3 className="text-lg font-bold text-text-primary mb-2">Connect to Play</h3>
+            <p className="text-sm text-text-secondary">Join thousands of others saving and winning daily.</p>
           </div>
         )}
 
         {address && !pot.loading && (
-          <p 
-            className="text-center text-sm text-gray-500"
-            dangerouslySetInnerHTML={{ __html: t("home.status", { tickets: pot.myTickets.toString(), balance: cusd(pot.myPrincipal) }) }}
-          />
+          <div className="glass-panel rounded-2xl p-4 text-center">
+            <p 
+              className="text-sm font-medium text-text-secondary"
+              dangerouslySetInnerHTML={{ __html: t("home.status", { tickets: `<strong class="text-text-primary">${pot.myTickets.toString()}</strong>`, balance: `<strong class="text-text-primary text-celo-green">${cusd(pot.myPrincipal)}</strong>` }) }}
+            />
+          </div>
+        )}
+
+        {address && pot.myTickets > 0n && myPick.number === 0 && (
+          <Link
+            href="/pick"
+            className="rounded-2xl border-2 border-celo-gold bg-celo-gold/10 px-4 py-4 text-center font-bold text-amber-700 shadow-[0_0_15px_rgba(251,204,92,0.2)] hover:bg-celo-gold/20 transition-all animate-pulse"
+          >
+            {t("home.pickPrompt")}
+          </Link>
         )}
 
         <div className="mt-2">
           <ActivityFeed />
         </div>
-
-        {address && pot.myTickets > 0n && myPick.number === 0 && (
-          <Link
-            href="/pick"
-            className="rounded-xl border border-celo-gold bg-celo-gold/10 px-4 py-3 text-center font-semibold text-amber-700"
-          >
-            {t("home.pickPrompt")}
-          </Link>
-        )}
       </motion.section>
 
-      <motion.footer variants={itemVariants} className="mt-auto text-center text-xs text-gray-400">
+      <motion.footer variants={itemVariants} className="mt-auto pt-6 text-center text-xs font-medium text-text-muted pb-safe">
         {t("home.footer")}
       </motion.footer>
     </motion.main>
