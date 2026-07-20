@@ -7,6 +7,7 @@ import { ToastProvider } from "../hooks/useToast";
 import { TabBar } from "../components/TabBar";
 import { OfflineBanner } from "../components/OfflineBanner";
 import { PageTransition } from "../components/PageTransition";
+import { AnalyticsProvider } from "../components/AnalyticsProvider";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -62,13 +63,15 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <WalletProvider>
-              <ToastProvider>
-                <OfflineBanner />
-                <PageTransition>
-                  {children}
-                </PageTransition>
-                <TabBar />
-              </ToastProvider>
+              <AnalyticsProvider>
+                <ToastProvider>
+                  <OfflineBanner />
+                  <PageTransition>
+                    {children}
+                  </PageTransition>
+                  <TabBar />
+                </ToastProvider>
+              </AnalyticsProvider>
             </WalletProvider>
           </LanguageProvider>
         </ThemeProvider>

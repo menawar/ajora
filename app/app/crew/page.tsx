@@ -9,6 +9,8 @@ import { useWallet } from "../../hooks/useWallet";
 import { shareUrl, storedRef } from "../../lib/share";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { Users2 } from "lucide-react";
+import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
+import { useEffect } from "react";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -18,6 +20,12 @@ function SpraySection() {
   const { address } = useWallet();
   const { spraysLeft, dailyFreeLeft, spray, spraying, done, error } = useSpray();
   const [friend, setFriend] = useState("");
+
+  useEffect(() => {
+    if (done) {
+      trackEvent(AnalyticsEvents.SPRAY_COMPLETED, { friend });
+    }
+  }, [done, friend]);
 
   if (!address) return null;
 
@@ -43,7 +51,10 @@ function SpraySection() {
         <button
           type="button"
           disabled={spraying || spraysLeft === 0n || !friend}
-          onClick={() => void spray(friend)}
+          onClick={() => {
+            trackEvent(AnalyticsEvents.SPRAY_INITIATED, { friend });
+            void spray(friend);
+          }}
           className="rounded-xl bg-celo-gold px-4 py-2.5 font-semibold text-white disabled:opacity-50"
         >
           {spraying ? "…" : "Spray"}

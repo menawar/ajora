@@ -14,6 +14,7 @@ import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
 import { ErrorAlert } from "../../components/ui/ErrorAlert";
 import { useToast } from "../../hooks/useToast";
+import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
 const MIN = parseUnits("0.1", 18);
@@ -45,10 +46,11 @@ export default function SavePage() {
   useEffect(() => {
     if (status.step === "success") {
       toast(`Saved! +${status.tickets.toString()} tickets. Now pick your lucky number 🎯`, "success");
+      trackEvent(AnalyticsEvents.SAVE_COMPLETED, { amount, tickets: status.tickets.toString() });
       // Reset status after a delay so it doesn't stay in success state indefinitely
       setTimeout(() => reset(), 4000);
     }
-  }, [status, toast, reset]);
+  }, [status, toast, reset, amount]);
 
   useEffect(() => {
     if (!address) return;
@@ -169,6 +171,7 @@ export default function SavePage() {
           whileTap={{ scale: 0.98 }}
           type="button"
           onClick={() => {
+            trackEvent(AnalyticsEvents.SAVE_INITIATED, { amount });
             reset();
             void save(amount);
           }}

@@ -1,3 +1,4 @@
+import { trackEvent, AnalyticsEvents } from "../lib/analytics";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -67,12 +68,14 @@ export function useSavings() {
     return () => clearInterval(t);
   }, [refetch]);
 
+
   const claimPrincipal = useCallback(
     async (periodId: bigint) => {
       const wallet = walletClient();
       if (!wallet || !address) return;
       setClaiming(periodId);
       setError(undefined);
+      trackEvent(AnalyticsEvents.WITHDRAW_INITIATED, { periodId: periodId.toString() });
       try {
         const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
         const hash = await wallet.writeContract({
@@ -84,6 +87,7 @@ export function useSavings() {
           feeCurrency,
         });
         await publicClient.waitForTransactionReceipt({ hash });
+        trackEvent(AnalyticsEvents.WITHDRAW_COMPLETED, { periodId: periodId.toString() });
         refetch();
       } catch (e) {
         setError(e instanceof Error ? e.message.split("\n")[0] : "Withdrawal failed");

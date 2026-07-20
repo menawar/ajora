@@ -9,6 +9,7 @@ import { useDraw } from "../../hooks/useDraw";
 import { usePotToday } from "../../hooks/usePotVault";
 import { useWallet } from "../../hooks/useWallet";
 import { useToast } from "../../hooks/useToast";
+import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 
 const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
@@ -24,6 +25,7 @@ export default function PickPage() {
   useEffect(() => {
     if (myPick.number !== 0 && selected) {
       toast(t("pick.success"), "success");
+      trackEvent(AnalyticsEvents.NUMBER_PICKED, { number: myPick.number });
       setSelected(undefined); // Clear selection after successful pick
     }
   }, [myPick.number, selected, t, toast]);
