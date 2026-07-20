@@ -185,3 +185,16 @@ export const referralVests = onchainTable("referral_vests", (t) => ({
   referrer: t.hex().notNull(),
   timestamp: t.bigint().notNull(),
 }));
+
+/**
+ * Materialized daily metrics for O(1) fetching on the dashboard.
+ */
+export const dailyMetrics = onchainTable("daily_metrics", (t) => ({
+  day: t.bigint().primaryKey(),
+  dau: t.integer().notNull(),
+  newUsers: t.integer().notNull(),
+  txCount: t.integer().notNull(),
+  principalIn: t.bigint().notNull(),
+  jaraPaid: t.bigint().notNull(),
+  referrals: t.integer().notNull(),
+}));

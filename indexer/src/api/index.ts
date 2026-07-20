@@ -459,51 +459,10 @@ app.get("/metrics/daily", zValidator("query", dailyMetricsQuerySchema), async (c
   const days = Math.min(Math.max(1, query.days ? Number(query.days) : 30), 365);
   const since = currentPeriod() - BigInt(days - 1);
 
-  const activity = await db
-    .select({ day: schema.userDays.day, dau: count() })
-    .from(schema.userDays)
-    .where(gte(schema.userDays.day, since))
-    .groupBy(schema.userDays.day);
-
-  const joined = await db
-    .select({ day: schema.users.firstSeenPeriod, newUsers: count() })
-    .from(schema.users)
-    .where(gte(schema.users.firstSeenPeriod, since))
-    .groupBy(schema.users.firstSeenPeriod);
-
-  const saved = await db
-    .select({
-      day: schema.contributions.periodId,
-      txCount: count(),
-      principalIn: sum(schema.contributions.amount),
-    })
-    .from(schema.contributions)
-    .where(gte(schema.contributions.periodId, since))
-    .groupBy(schema.contributions.periodId);
-
-  const picked = await db
-    .select({ day: schema.picks.periodId, txCount: count() })
-    .from(schema.picks)
-    .where(gte(schema.picks.periodId, since))
-    .groupBy(schema.picks.periodId);
-
-  const sprayed = await db
-    .select({ day: schema.sprays.periodId, txCount: count() })
-    .from(schema.sprays)
-    .where(gte(schema.sprays.periodId, since))
-    .groupBy(schema.sprays.periodId);
-
-  const paid = await db
-    .select({ day: schema.wins.periodId, jaraPaid: sum(schema.wins.amount) })
-    .from(schema.wins)
-    .where(gte(schema.wins.periodId, since))
-    .groupBy(schema.wins.periodId);
-
-  const referred = await db
-    .select({ day: schema.referrals.periodId, referrals: count() })
-    .from(schema.referrals)
-    .where(gte(schema.referrals.periodId, since))
-    .groupBy(schema.referrals.periodId);
+  const metrics = await db
+    .select()
+    .from(schema.dailyMetrics)
+    .where(gte(schema.dailyMetrics.day, since));
 
   // Of the users active on `day`, how many came back on day+1 / day+7.
   const later = alias(schema.userDays, "later");
@@ -530,13 +489,14 @@ app.get("/metrics/daily", zValidator("query", dailyMetricsQuerySchema), async (c
     }
   };
 
-  roll(activity, (r) => ({ dau: r.dau }));
-  roll(joined, (r) => ({ newUsers: r.newUsers }));
-  roll(saved, (r) => ({ contributions: r.txCount, principalIn: r.principalIn }));
-  roll(picked, (r) => ({ picks: r.txCount }));
-  roll(sprayed, (r) => ({ sprays: r.txCount }));
-  roll(paid, (r) => ({ jaraPaid: r.jaraPaid }));
-  roll(referred, (r) => ({ referrals: r.referrals }));
+  roll(metrics, (m) => ({
+    dau: m.dau,
+    newUsers: m.newUsers,
+    txCount: m.txCount,
+    principalIn: m.principalIn,
+    jaraPaid: m.jaraPaid,
+    referrals: m.referrals,
+  }));
   roll(d1, (r) => ({ retainedD1: r.retained }));
   roll(d7, (r) => ({ retainedD7: r.retained }));
 
@@ -545,14 +505,12 @@ app.get("/metrics/daily", zValidator("query", dailyMetricsQuerySchema), async (c
     .sort(([a], [b]) => (a < b ? -1 : 1))
     .map(([day, m]) => {
       const dau = Number(m.dau ?? 0);
-      const txCount =
-        Number(m.contributions ?? 0) + Number(m.picks ?? 0) + Number(m.sprays ?? 0);
       return {
         day,
         date: dateOf(day),
         dau,
         newUsers: Number(m.newUsers ?? 0),
-        txCount,
+        txCount: Number(m.txCount ?? 0),
         principalIn: (m.principalIn as string | undefined) ?? "0",
         jaraPaid: (m.jaraPaid as string | undefined) ?? "0",
         referrals: Number(m.referrals ?? 0),
