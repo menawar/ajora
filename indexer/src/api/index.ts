@@ -1,6 +1,8 @@
 import { db } from "ponder:api";
 import schema from "ponder:schema";
 import { Hono, type Context as HonoContext } from "hono";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
 import {
   client,
   graphql,
@@ -17,6 +19,11 @@ import {
 } from "ponder";
 
 const app = new Hono();
+
+app.onError((err, c) => {
+  console.error("API Error:", err);
+  return c.json({ error: err.message || "Internal Server Error" }, 500);
+});
 
 app.use("/sql/*", client({ db, schema }));
 
@@ -36,12 +43,14 @@ const json = (c: HonoContext, data: unknown) =>
   );
 
 const clampLimit = (c: HonoContext, fallback: number) => {
-  const n = Number(c.req.query("limit") ?? fallback);
+  const limitStr = c.req.query("limit");
+  const n = limitStr ? Number(limitStr) : fallback;
   return Number.isFinite(n) ? Math.min(Math.max(1, Math.trunc(n)), 100) : fallback;
 };
 
 const clampOffset = (c: HonoContext) => {
-  const n = Number(c.req.query("offset") ?? 0);
+  const offsetStr = c.req.query("offset");
+  const n = offsetStr ? Number(offsetStr) : 0;
   return Number.isFinite(n) && n > 0 ? Math.min(Math.trunc(n), 10_000) : 0;
 };
 
@@ -132,9 +141,11 @@ async function computeFlagsUncached(): Promise<Map<string, string[]>> {
 
 // ------------------------------------------------------------------- crews (#63)
 
+const idParamSchema = z.object({ id: z.string().regex(/^\d+$/) });
+
 /** Crew detail: metadata, members, and daily savings history. */
-app.get("/crews/:id", async (c) => {
-  const crewId = BigInt(c.req.param("id"));
+app.get("/crews/:id", zValidator("param", idParamSchema), async (c) => {
+  const crewId = BigInt(c.req.valid("param").id);
   const [crew] = await db.select().from(schema.crews).where(eq(schema.crews.id, crewId));
   if (!crew) return c.notFound();
 
@@ -154,9 +165,18 @@ app.get("/crews/:id", async (c) => {
   return json(c, { ...crew, members, savings });
 });
 
+const leaderboardQuerySchema = z.object({
+  by: z.enum(["saved", "members", "won", "streak"]).optional().default("saved"),
+  limit: z.string().regex(/^\d+$/).optional(),
+  offset: z.string().regex(/^\d+$/).optional(),
+  includeFlagged: z.enum(["true", "false"]).optional(),
+  period: z.string().regex(/^\d+$/).optional(),
+});
+
 /** Crew leaderboard, default sort by totalSaved descending. */
-app.get("/leaderboard/crews", async (c) => {
-  const by = c.req.query("by") ?? "saved";
+app.get("/leaderboard/crews", zValidator("query", leaderboardQuerySchema), async (c) => {
+  const query = c.req.valid("query");
+  const by = query.by;
   const order =
     by === "members"
       ? desc(schema.crews.memberCount)
@@ -186,8 +206,9 @@ const wantsFlagged = (c: HonoContext) => c.req.query("includeFlagged") === "true
  * Top savers for one period (default: today). Feeds the "today's top savers" board.
  * Flagged accounts are excluded unless ?includeFlagged=true (raw view).
  */
-app.get("/leaderboard/savers", async (c) => {
-  const period = BigInt(c.req.query("period") ?? currentPeriod());
+app.get("/leaderboard/savers", zValidator("query", leaderboardQuerySchema), async (c) => {
+  const query = c.req.valid("query");
+  const period = query.period ? BigInt(query.period) : currentPeriod();
   const flagged = wantsFlagged(c) ? [] : [...(await computeFlags()).keys()];
   const where = flagged.length
     ? and(
@@ -212,8 +233,9 @@ app.get("/leaderboard/savers", async (c) => {
 });
 
 /** All-time boards over the users table: ?by=saved (default) | won | streak. */
-app.get("/leaderboard/alltime", async (c) => {
-  const by = c.req.query("by") ?? "saved";
+app.get("/leaderboard/alltime", zValidator("query", leaderboardQuerySchema), async (c) => {
+  const query = c.req.valid("query");
+  const by = query.by;
   const order =
     by === "won"
       ? desc(schema.users.totalWon)
@@ -235,8 +257,8 @@ app.get("/leaderboard/alltime", async (c) => {
 });
 
 /** Period state: totals while open, draw result + winners once resolved. */
-app.get("/periods/:id", async (c) => {
-  const periodId = BigInt(c.req.param("id"));
+app.get("/periods/:id", zValidator("param", idParamSchema), async (c) => {
+  const periodId = BigInt(c.req.valid("param").id);
 
   const [totals] = await db
     .select({
@@ -297,9 +319,13 @@ app.get("/periods/:id", async (c) => {
   });
 });
 
+const addressParamSchema = z.object({
+  address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+});
+
 /** Profile + win history: everything a win card or wallet screen needs. */
-app.get("/users/:address", async (c) => {
-  const address = c.req.param("address").toLowerCase() as `0x${string}`;
+app.get("/users/:address", zValidator("param", addressParamSchema), async (c) => {
+  const address = c.req.valid("param").address.toLowerCase() as `0x${string}`;
   const [user] = await db.select().from(schema.users).where(eq(schema.users.address, address));
   if (!user) return c.notFound();
 
@@ -388,8 +414,8 @@ app.get("/notify/unclaimed", async (c) => {
  * Draw outcome digest for the push service (#16): who to congratulate, who to console.
  * `resolved: false` until the keeper reveals — callers poll after 00:08 UTC.
  */
-app.get("/notify/draw/:id", async (c) => {
-  const periodId = BigInt(c.req.param("id"));
+app.get("/notify/draw/:id", zValidator("param", idParamSchema), async (c) => {
+  const periodId = BigInt(c.req.valid("param").id);
   const [draw] = await db.select().from(schema.draws).where(eq(schema.draws.periodId, periodId));
   if (!draw) return json(c, { resolved: false, periodId });
 
@@ -420,12 +446,17 @@ app.get("/notify/draw/:id", async (c) => {
   });
 });
 
+const dailyMetricsQuerySchema = z.object({
+  days: z.string().regex(/^\d+$/).optional(),
+});
+
 /**
  * Daily rollup (AJORA_SPEC.md §12 daily_metrics): DAU, new users, tx count,
  * principal in, jara paid, d1/d7 retention, k-factor. ?days=N window, default 30.
  */
-app.get("/metrics/daily", async (c) => {
-  const days = Math.min(Math.max(1, Number(c.req.query("days") ?? 30) || 30), 365);
+app.get("/metrics/daily", zValidator("query", dailyMetricsQuerySchema), async (c) => {
+  const query = c.req.valid("query");
+  const days = Math.min(Math.max(1, query.days ? Number(query.days) : 30), 365);
   const since = currentPeriod() - BigInt(days - 1);
 
   const activity = await db
