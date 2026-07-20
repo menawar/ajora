@@ -198,3 +198,13 @@ export const dailyMetrics = onchainTable("daily_metrics", (t) => ({
   jaraPaid: t.bigint().notNull(),
   referrals: t.integer().notNull(),
 }));
+
+/**
+ * Global singleton metrics for protocol TVL and high-level KPIs.
+ */
+export const globalStats = onchainTable("global_stats", (t) => ({
+  id: t.text().primaryKey(), // always "singleton"
+  tvl: t.bigint().notNull(),
+  totalJaraPaid: t.bigint().notNull(),
+  totalUsers: t.integer().notNull(),
+}));

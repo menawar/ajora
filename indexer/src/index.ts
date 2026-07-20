@@ -15,6 +15,7 @@ import {
   crewSavingsDaily,
   referralVests,
   dailyMetrics,
+  globalStats,
 } from "ponder:schema";
 
 type EventWithLog = { transaction: { hash: `0x${string}` }; log: { logIndex: number } };
@@ -79,6 +80,9 @@ ponder.on("PotVault:PrincipalClaimed", async ({ event, context }) => {
   });
   await upsertUser(context, event.args.user, event.block.timestamp, {
     withdrawn: event.args.amount,
+  });
+  await incrementDailyMetric(context, periodOf(event.block.timestamp), {
+    principalIn: 0n - event.args.amount,
   });
   await touch(context, event.args.user, event.block.timestamp);
 });
@@ -357,4 +361,20 @@ async function incrementDailyMetric(context: Context, day: bigint, delta: DailyM
       jaraPaid: row.jaraPaid + (delta.jaraPaid ?? 0n),
       referrals: row.referrals + (delta.referrals ?? 0),
     }));
+
+  if (delta.newUsers || delta.principalIn || delta.jaraPaid) {
+    await context.db
+      .insert(globalStats)
+      .values({
+        id: "singleton",
+        tvl: delta.principalIn ?? 0n,
+        totalJaraPaid: delta.jaraPaid ?? 0n,
+        totalUsers: delta.newUsers ?? 0,
+      })
+      .onConflictDoUpdate((row) => ({
+        tvl: row.tvl + (delta.principalIn ?? 0n),
+        totalJaraPaid: row.totalJaraPaid + (delta.jaraPaid ?? 0n),
+        totalUsers: row.totalUsers + (delta.newUsers ?? 0),
+      }));
+  }
 }
