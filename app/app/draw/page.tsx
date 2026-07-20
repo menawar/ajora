@@ -13,8 +13,8 @@ import { useDraw } from "../../hooks/useDraw";
 import { usePotToday, useSponsor } from "../../hooks/usePotVault";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
-import { Confetti } from "../../components/Confetti";
 import { ErrorAlert } from "../../components/ui/ErrorAlert";
+import { triggerWinConfetti } from "../../lib/confetti";
 
 function cusd(value: bigint): string {
   return Number(formatUnits(value, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -118,6 +118,15 @@ export default function DrawPage() {
     }
   }, [last?.periodId]);
 
+  useEffect(() => {
+    if (last?.won) {
+      const timer = setTimeout(() => {
+        triggerWinConfetti();
+      }, 2500); // Trigger after the RevealNumber animation finishes
+      return () => clearTimeout(timer);
+    }
+  }, [last?.won]);
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6 pb-24">
       <header className="text-center">
@@ -184,9 +193,9 @@ export default function DrawPage() {
                     </p>
                     {!last.claimed ? (
                       <>
-                        {claimState.step === "error" && (
+                        {error && (
                           <div className="flex flex-col items-center gap-2">
-                            <ErrorAlert message={claimState.message} />
+                            <ErrorAlert message={error} />
                             <button
                               type="button"
                               onClick={() => void claimPrize()}
@@ -199,10 +208,10 @@ export default function DrawPage() {
                         <button
                           type="button"
                           onClick={() => void claimPrize()}
-                          disabled={claimState.step === "claiming"}
+                          disabled={claiming}
                           className="rounded-xl bg-celo-green px-4 py-3 font-semibold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
                         >
-                          {claimState.step === "claiming" ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
+                          {claiming ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
                         </button>
                       </>
                     ) : (
