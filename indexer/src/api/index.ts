@@ -166,7 +166,7 @@ app.get("/crews/:id", zValidator("param", idParamSchema), async (c) => {
 });
 
 const leaderboardQuerySchema = z.object({
-  by: z.enum(["saved", "members", "won", "streak"]).optional().default("saved"),
+  by: z.enum(["saved", "members", "won", "streak", "activeMembers"]).optional().default("saved"),
   limit: z.string().regex(/^\d+$/).optional(),
   offset: z.string().regex(/^\d+$/).optional(),
   includeFlagged: z.enum(["true", "false"]).optional(),
@@ -180,6 +180,8 @@ app.get("/leaderboard/crews", zValidator("query", leaderboardQuerySchema), async
   const order =
     by === "members"
       ? desc(schema.crews.memberCount)
+      : by === "activeMembers"
+      ? desc(schema.crews.activeCrewMembers)
       : desc(schema.crews.totalSaved);
   const rows = await db
     .select()

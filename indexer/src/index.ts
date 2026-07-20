@@ -234,6 +234,7 @@ ponder.on("CrewRegistry:CrewCreated", async ({ event, context }) => {
     founder: event.args.founder,
     code: event.args.code,
     memberCount: 1, // the founder
+    activeCrewMembers: 0,
     totalSaved: 0n,
     createdAt: event.block.timestamp,
   });
@@ -291,9 +292,24 @@ async function upsertUser(
   timestamp: bigint,
   delta: UserDelta,
 ) {
-  const isNew = !(await context.db.find(users, { address }));
+  const userObj = await context.db.find(users, { address });
+  const isNew = !userObj;
   if (isNew) {
     await incrementDailyMetric(context, periodOf(timestamp), { newUsers: 1 });
+  }
+
+  const prevBalance = userObj?.currentBalance ?? 0n;
+  const newBalance = prevBalance + (delta.saved ?? 0n) - (delta.withdrawn ?? 0n);
+
+  if ((prevBalance > 0n) !== (newBalance > 0n)) {
+    const member = await context.db.find(crewMembers, { address });
+    if (member) {
+      await context.db
+        .update(crews, { id: member.crewId })
+        .set((row) => ({
+          activeCrewMembers: row.activeCrewMembers + (newBalance > 0n ? 1 : -1),
+        }));
+    }
   }
 
   await context.db

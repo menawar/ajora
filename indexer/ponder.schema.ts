@@ -149,11 +149,12 @@ export const userDays = onchainTable(
 
 /** One row per crew (CrewRegistry:CrewCreated), AJORA_SPEC.md §12. */
 export const crews = onchainTable("crews", (t) => ({
-  id: t.bigint().primaryKey(), // crewId
-  founder: t.hex().notNull(),
-  code: t.hex().notNull(), // founder's bytes32 referral code
-  memberCount: t.integer().notNull(),
-  totalSaved: t.bigint().notNull(), // lifetime, summed from ContributionRecorded
+  id: t.bigint().primaryKey(), // CrewRegistry.crewCount at creation
+  founder: t.hex().notNull(), // Ajora is founder-led; spec §14
+  code: t.hex().notNull(), // Unique string for invite links
+  memberCount: t.integer().notNull(), // total crewMembers rows
+  activeCrewMembers: t.integer().notNull(), // members with balance > 0
+  totalSaved: t.bigint().notNull(), // sum of all active member balances
   createdAt: t.bigint().notNull(),
 }));
 
