@@ -5,7 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Globe, ChevronDown, Check } from "lucide-react";
 import { useTranslation, locales, localeNames, type Locale } from "../lib/i18n";
 
-export function LanguageSwitcher({ className = "" }: { className?: string }) {
+export function LanguageSwitcher({ 
+  className = "",
+  direction = "down"
+}: { 
+  className?: string;
+  direction?: "up" | "down";
+}) {
   const { locale, setLocale, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -20,6 +26,11 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const yOffset = direction === "up" ? 10 : -10;
+  const positionClass = direction === "up" 
+    ? "bottom-full mb-2 origin-bottom-right" 
+    : "top-full mt-2 origin-top-right";
+
   return (
     <div className={`relative inline-block text-left ${className}`} ref={dropdownRef}>
       <button
@@ -31,17 +42,17 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
       >
         <Globe className="h-4 w-4 text-gray-500" />
         {localeNames[locale]}
-        <ChevronDown className="h-4 w-4 text-gray-400" />
+        <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${isOpen && direction === "up" ? "rotate-180" : ""}`} />
       </button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: yOffset }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            exit={{ opacity: 0, y: yOffset }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 z-50 mt-2 w-40 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            className={`absolute right-0 z-50 w-40 rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${positionClass}`}
             role="menu"
             aria-orientation="vertical"
           >
