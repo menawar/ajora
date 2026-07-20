@@ -22,8 +22,9 @@ export interface SaverRow {
 const INDEXER_URL = process.env.NEXT_PUBLIC_INDEXER_URL ?? "";
 
 /** Indexer-first (#60): sybil-filtered board in one query. Throws to trigger fallback. */
-async function fetchFromIndexer(limit: number) {
-  const res = await fetch(`${INDEXER_URL}/leaderboard/savers?limit=${limit}`, {
+async function fetchFromIndexer(limit: number, includeFlagged = false) {
+  const url = `${INDEXER_URL}/leaderboard/savers?limit=${limit}${includeFlagged ? "&includeFlagged=true" : ""}`;
+  const res = await fetch(url, {
     signal: AbortSignal.timeout(8_000),
   });
   if (!res.ok) throw new Error(`indexer ${res.status}`);
@@ -42,7 +43,7 @@ async function fetchFromIndexer(limit: number) {
  * the period topic. One-shot fetch with manual refresh — the indexer (#14)
  * replaces this with a proper query.
  */
-export function useTopSavers(limit = 10) {
+export function useTopSavers(limit = 10, includeFlagged = false) {
   const [rows, setRows] = useState<SaverRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
@@ -60,7 +61,7 @@ export function useTopSavers(limit = 10) {
       // so the board still works if the indexer is unset or down.
       if (INDEXER_URL) {
         try {
-          const got = await fetchFromIndexer(limit);
+          const got = await fetchFromIndexer(limit, includeFlagged);
           setRows(got.rows);
           setExcludedFlagged(got.excludedFlagged);
           setSource("indexer");
@@ -131,7 +132,7 @@ export function useTopSavers(limit = 10) {
         setLoading(false);
       }
     })();
-  }, [limit]);
+  }, [limit, includeFlagged]);
 
   // Seed instantly from cache on mount so the board paints even while the first
   // fetch is in flight (or never lands, offline).
@@ -142,7 +143,7 @@ export function useTopSavers(limit = 10) {
       setCachedAt(cached.at);
       setSource("cache");
     }
-  }, [limit]);
+  }, [limit, includeFlagged]);
 
   useEffect(refetch, [refetch]);
 
