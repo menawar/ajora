@@ -11,6 +11,7 @@ import { EmptyState } from "../../components/ui/EmptyState";
 import { Users2 } from "lucide-react";
 import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 import { useEffect } from "react";
+import confetti from "canvas-confetti";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -23,6 +24,12 @@ function SpraySection() {
 
   useEffect(() => {
     if (done) {
+      confetti({
+        particleCount: 120,
+        spread: 90,
+        origin: { y: 0.7 },
+        colors: ['#35d07f', '#fbcc5c', '#ea580c']
+      });
       trackEvent(AnalyticsEvents.SPRAY_COMPLETED, { friend });
     }
   }, [done, friend]);
