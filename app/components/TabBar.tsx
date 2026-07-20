@@ -41,7 +41,7 @@ export function TabBar() {
                 className="relative flex flex-1 flex-col items-center"
               >
                 <motion.div
-                  whileTap={{ scale: 0.85 }}
+                  whileTap={{ scale: 0.8 }}
                   className={`relative flex w-full flex-col items-center gap-1 py-2 text-[10px] sm:text-xs transition-colors ${
                     active ? "font-bold text-celo-green" : "text-text-muted hover:text-text-primary"
                   }`}
@@ -49,17 +49,17 @@ export function TabBar() {
                   {active && (
                     <motion.div
                       layoutId="tab-indicator"
-                      className="absolute inset-0 z-0 mx-auto w-10 sm:w-12 rounded-2xl bg-celo-green/20"
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className="absolute inset-0 z-0 mx-auto w-12 sm:w-14 rounded-2xl bg-celo-green/10 shadow-[0_0_15px_rgba(53,208,127,0.3)]"
+                      transition={{ type: "spring", stiffness: 350, damping: 20 }}
                     />
                   )}
                   <motion.div
                     initial={false}
-                    animate={{ y: active ? -4 : 0, scale: active ? 1.1 : 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    animate={{ y: active ? -6 : 0, scale: active ? 1.15 : 1 }}
+                    transition={{ type: "spring", stiffness: 450, damping: 15 }}
                     className="relative z-10 flex flex-col items-center gap-1"
                   >
-                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-sm" strokeWidth={active ? 2.5 : 2} />
+                    <Icon className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-300 ${active ? "drop-shadow-[0_2px_8px_rgba(53,208,127,0.6)]" : "drop-shadow-sm"}`} strokeWidth={active ? 2.5 : 2} />
                     <span>{t(tab.labelKey)}</span>
                   </motion.div>
                 </motion.div>
