@@ -24,13 +24,13 @@ export function TabBar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   return (
-    <nav className="fixed inset-x-0 bottom-0 border-t border-gray-200 bg-bg-primary/95 backdrop-blur pb-safe z-50">
+    <nav className="fixed inset-x-4 bottom-4 glass-panel rounded-3xl pb-safe z-50">
       <div className="mx-auto flex max-w-md flex-col">
-        <div className="flex justify-center items-center gap-4 pt-2">
+        <div className="flex justify-center items-center gap-4 pt-2 pb-1">
           <ThemeToggle />
           <LanguageSwitcher direction="up" />
         </div>
-        <div className="flex w-full">
+        <div className="flex w-full px-2 pb-2">
           {tabs.map((tab) => {
             const active = pathname === tab.href;
             const Icon = tab.icon;
@@ -41,24 +41,25 @@ export function TabBar() {
                 className="relative flex flex-1 flex-col items-center"
               >
                 <motion.div
-                  whileTap={{ scale: 0.9 }}
-                  className={`relative flex w-full flex-col items-center gap-1 py-3 text-[10px] sm:text-xs transition-colors ${
-                    active ? "font-semibold text-celo-green" : "text-gray-400 hover:text-gray-600"
+                  whileTap={{ scale: 0.85 }}
+                  className={`relative flex w-full flex-col items-center gap-1 py-2 text-[10px] sm:text-xs transition-colors ${
+                    active ? "font-bold text-celo-green" : "text-text-muted hover:text-text-primary"
                   }`}
                 >
                   {active && (
                     <motion.div
                       layoutId="tab-indicator"
-                      className="absolute inset-0 z-0 mx-auto w-12 rounded-full bg-celo-green/10"
+                      className="absolute inset-0 z-0 mx-auto w-10 sm:w-12 rounded-2xl bg-celo-green/20"
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     />
                   )}
                   <motion.div
                     initial={false}
-                    animate={{ y: active ? -2 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    animate={{ y: active ? -4 : 0, scale: active ? 1.1 : 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                     className="relative z-10 flex flex-col items-center gap-1"
                   >
-                    <Icon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={active ? 2.5 : 2} />
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 drop-shadow-sm" strokeWidth={active ? 2.5 : 2} />
                     <span>{t(tab.labelKey)}</span>
                   </motion.div>
                 </motion.div>

@@ -4,39 +4,68 @@
   --color-celo-green-base: #35d07f;
   --color-celo-gold-base: #fbcc5c;
   --color-celo-dark-base: #1a1a2e;
+  
   --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f3f4f6;
+  
   --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #9ca3af;
+
+  --color-glass-bg: rgba(255, 255, 255, 0.7);
+  --color-glass-border: rgba(255, 255, 255, 0.4);
+  --color-glass-shadow: rgba(31, 38, 135, 0.07);
 }
 
 .dark {
-  --color-celo-green-base: #35d07f; /* Green remains bright */
+  --color-celo-green-base: #35d07f;
   --color-celo-gold-base: #fbcc5c;
-  --color-celo-dark-base: #ffffff; /* Dark becomes white for contrast in dark mode */
-  --color-bg-primary: #111827;
-  --color-text-primary: #f9fafb;
-  --color-text-secondary: #9ca3af;
+  --color-celo-dark-base: #ffffff;
+  
+  --color-bg-primary: #0b0c10;
+  --color-bg-secondary: #1a1b26;
+  
+  --color-text-primary: #f8f9fa;
+  --color-text-secondary: #c5c6c7;
+  --color-text-muted: #6b7280;
+
+  --color-glass-bg: rgba(26, 27, 38, 0.6);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-shadow: rgba(0, 0, 0, 0.25);
 }
 
-/* Ajora brand tokens — Celo palette. Generates utilities like bg-celo-green, from-celo-gold. */
 @theme {
   --color-celo-green: var(--color-celo-green-base);
   --color-celo-gold: var(--color-celo-gold-base);
   --color-celo-dark: var(--color-celo-dark-base);
+  
   --color-bg-primary: var(--color-bg-primary);
+  --color-bg-secondary: var(--color-bg-secondary);
+  
   --color-text-primary: var(--color-text-primary);
   --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
 @utility glass-panel {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  background-color: var(--color-glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 8px 32px 0 var(--color-glass-shadow);
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(90deg, var(--color-celo-green-base), var(--color-celo-gold-base));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 html,
 body {
   height: 100%;
 }
+
