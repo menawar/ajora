@@ -3,7 +3,7 @@
 // Swahili ship first — the primary MiniPay audiences. Add keys to `en`, then fill
 // each locale; a missing key falls back to English at lookup time.
 
-export const locales = ["en", "pcm", "sw", "fr"] as const;
+export const locales = ["en", "pcm", "sw", "fr", "es"] as const;
 export type Locale = (typeof locales)[number];
 
 /** Endonyms for the language switcher. */
@@ -12,6 +12,7 @@ export const localeNames: Record<Locale, string> = {
   pcm: "Pidgin",
   sw: "Kiswahili",
   fr: "Français",
+  es: "Español",
 };
 
 export const en = {
@@ -170,4 +171,42 @@ export const fr: Dictionary = {
   "language.label": "Langue",
 };
 
-export const dictionaries: Record<Locale, Dictionary> = { en, pcm, sw, fr };
+export const es: Dictionary = {
+  "nav.home": "Inicio",
+  "nav.save": "Ahorrar",
+  "nav.pick": "Elegir",
+  "nav.draw": "Sorteo",
+  "nav.crew": "Equipo",
+  "nav.wallet": "Billetera",
+  "home.tagline": "Ahorra poco, guarda cada centavo, gana el premio mayor.",
+  "home.faqLink": "¿Cómo está seguro mi dinero?",
+  "home.cta.save": "Empezar a ahorrar",
+  "home.cta.draw": "Ver sorteo",
+  "home.status": "Tienes <strong>{{tickets}}</strong> boletos · <strong>{{balance}} cUSD</strong> ahorrados hoy (siempre retirables)",
+  "home.pickPrompt": "Tus boletos necesitan un número — elige ahora 🎯",
+  "home.footer": "Sin riesgo: tus ahorros siempre son tuyos. Solo el bono está en juego.",
+  "save.subtitle": "Guarda cada centavo — los ahorros siempre son retirables.",
+  "save.amountPlaceholder": "Monto en cUSD (mín 0.10)",
+  "save.balance": "Saldo: {{balance}} cUSD",
+  "save.tickets": "+{{tickets}} boletos",
+  "save.tooSmall": "Monto demasiado pequeño (mín 0.10)",
+  "save.insufficient": "cUSD insuficiente",
+  "save.approving": "Aprobando cUSD...",
+  "save.saving": "Guardando en Celo...",
+  "save.submit": "Ahorrar {{amount}} cUSD",
+  "pick.title": "Elige tu número",
+  "pick.subtitle.tickets": "Tus <strong>{{tickets}}</strong> boletos apuestan a un número.",
+  "pick.subtitle.empty": "Ahorra primero para ganar boletos para el sorteo de esta noche.",
+  "pick.current": "Elección actual: <strong>{{number}}</strong> con <strong>{{weight}}</strong> boletos",
+  "pick.current.replaces": " — elegir de nuevo lo reemplaza",
+  "pick.locking": "Bloqueando...",
+  "pick.update": "Actualizar",
+  "pick.submit": "Confirmar 🎯",
+  "pick.cta.save": "Ahorra para obtener boletos",
+  "pick.success": "Estás en el sorteo de esta noche. Vuelve después de la medianoche UTC 🌙",
+  "pick.footer": "Volver a elegir antes del cierre del día mueve todos tus boletos al nuevo número.",
+  "pick.number_pad": "Teclado numérico",
+  "language.label": "Idioma",
+};
+
+export const dictionaries: Record<Locale, Dictionary> = { en, pcm, sw, fr, es };
