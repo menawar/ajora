@@ -1,30 +1,43 @@
-import { onchainTable, primaryKey } from "ponder";
+import { onchainTable, primaryKey, index } from "ponder";
 
 /** One row per address that ever touched the game (AJORA_SPEC.md §12). */
-export const users = onchainTable("users", (t) => ({
-  address: t.hex().primaryKey(),
-  firstSeenPeriod: t.bigint().notNull(),
-  totalSaved: t.bigint().notNull(),
-  currentBalance: t.bigint().notNull(),
-  totalWon: t.bigint().notNull(),
-  ticketsAllTime: t.bigint().notNull(),
-  currentStreak: t.integer().notNull(),
-  multiplierX10: t.integer().notNull(), // 10 = 1.0x, mirrors StreakSBT
-  lastCheckInDay: t.bigint().notNull(), // 0 = never; feeds streak-at-risk nudges (#16)
-  verified: t.boolean().notNull(),
-}));
+export const users = onchainTable(
+  "users",
+  (t) => ({
+    address: t.hex().primaryKey(),
+    firstSeenPeriod: t.bigint().notNull(),
+    totalSaved: t.bigint().notNull(),
+    currentBalance: t.bigint().notNull(),
+    totalWon: t.bigint().notNull(),
+    ticketsAllTime: t.bigint().notNull(),
+    currentStreak: t.integer().notNull(),
+    multiplierX10: t.integer().notNull(), // 10 = 1.0x, mirrors StreakSBT
+    lastCheckInDay: t.bigint().notNull(), // 0 = never; feeds streak-at-risk nudges (#16)
+    verified: t.boolean().notNull(),
+  }),
+  (table) => ({
+    firstSeenIdx: index().on(table.firstSeenPeriod),
+    lastCheckInIdx: index().on(table.lastCheckInDay),
+  }),
+);
 
-export const contributions = onchainTable("contributions", (t) => ({
-  id: t.text().primaryKey(), // txHash-logIndex
-  user: t.hex().notNull(),
-  periodId: t.bigint().notNull(),
-  amount: t.bigint().notNull(),
-  token: t.hex().notNull(), // §12 parity; constant until multi-stablecoin vaults land
-  tickets: t.bigint().notNull(),
-  timestamp: t.bigint().notNull(),
-  txHash: t.hex().notNull(),
-  blockNumber: t.bigint().notNull(),
-}));
+export const contributions = onchainTable(
+  "contributions",
+  (t) => ({
+    id: t.text().primaryKey(), // txHash-logIndex
+    user: t.hex().notNull(),
+    periodId: t.bigint().notNull(),
+    amount: t.bigint().notNull(),
+    token: t.hex().notNull(), // §12 parity; constant until multi-stablecoin vaults land
+    tickets: t.bigint().notNull(),
+    timestamp: t.bigint().notNull(),
+    txHash: t.hex().notNull(),
+    blockNumber: t.bigint().notNull(),
+  }),
+  (table) => ({
+    periodIdx: index().on(table.periodId),
+  }),
+);
 
 export const picks = onchainTable(
   "picks",
@@ -36,20 +49,29 @@ export const picks = onchainTable(
     txHash: t.hex().notNull(),
     blockNumber: t.bigint().notNull(),
   }),
-  (table) => ({ pk: primaryKey({ columns: [table.user, table.periodId] }) }),
+  (table) => ({
+    pk: primaryKey({ columns: [table.user, table.periodId] }),
+    periodIdx: index().on(table.periodId),
+  }),
 );
 
-export const sprays = onchainTable("sprays", (t) => ({
-  id: t.text().primaryKey(),
-  from: t.hex().notNull(),
-  to: t.hex().notNull(),
-  periodId: t.bigint().notNull(),
-  value: t.bigint().notNull(),
-  campaignId: t.hex().notNull(), // §12: which sponsor budget backed this spray
-  timestamp: t.bigint().notNull(),
-  txHash: t.hex().notNull(),
-  blockNumber: t.bigint().notNull(),
-}));
+export const sprays = onchainTable(
+  "sprays",
+  (t) => ({
+    id: t.text().primaryKey(),
+    from: t.hex().notNull(),
+    to: t.hex().notNull(),
+    periodId: t.bigint().notNull(),
+    value: t.bigint().notNull(),
+    campaignId: t.hex().notNull(), // §12: which sponsor budget backed this spray
+    timestamp: t.bigint().notNull(),
+    txHash: t.hex().notNull(),
+    blockNumber: t.bigint().notNull(),
+  }),
+  (table) => ({
+    periodIdx: index().on(table.periodId),
+  }),
+);
 
 /** Singleton mirror of SprayFaucet.activeCampaign, kept via CampaignActivated events. */
 export const campaignState = onchainTable("campaign_state", (t) => ({
@@ -83,7 +105,10 @@ export const wins = onchainTable(
     txHash: t.hex().notNull(),
     blockNumber: t.bigint().notNull(),
   }),
-  (table) => ({ pk: primaryKey({ columns: [table.user, table.periodId] }) }),
+  (table) => ({
+    pk: primaryKey({ columns: [table.user, table.periodId] }),
+    periodIdx: index().on(table.periodId),
+  }),
 );
 
 /** Principal withdrawals and prize payouts, unified for the wallet history screen. */
