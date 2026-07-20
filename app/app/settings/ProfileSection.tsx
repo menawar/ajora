@@ -15,7 +15,7 @@ export function ProfileSection() {
         <div>
           <h2 className="font-semibold text-gray-900">Profile</h2>
           <p className="text-xs text-gray-500 font-mono">
-            {address ? \`\${address.slice(0, 6)}...\${address.slice(-4)}\` : "Not connected"}
+            {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not connected"}
           </p>
         </div>
       </div>

@@ -1,5 +1,5 @@
-import { trackEvent, AnalyticsEvents } from "../lib/analytics";
 "use client";
+import { trackEvent, AnalyticsEvents } from "../lib/analytics";
 
 import { useCallback, useEffect, useState } from "react";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";

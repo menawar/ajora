@@ -14,5 +14,5 @@ const styles = {
 };
 
 export function Text({ children, className = "", variant = "body" }: TextProps) {
-  return <p className={\`\${styles[variant]} \${className}\`}>{children}</p>;
+  return <p className={`${styles[variant]} ${className}`}>{children}</p>;
 }

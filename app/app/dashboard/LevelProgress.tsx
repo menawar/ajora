@@ -15,7 +15,7 @@ export function LevelProgress({ xp, nextLevelXp, level }: { xp: number, nextLeve
         <motion.div
           className="h-full bg-celo-green"
           initial={{ width: 0 }}
-          animate={{ width: \`\${progress}%\` }}
+          animate={{ width: `${progress}%` }}
           transition={{ ease: "easeOut", duration: 1 }}
         />
       </div>

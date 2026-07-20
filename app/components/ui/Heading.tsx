@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 interface HeadingProps {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
@@ -16,6 +16,6 @@ const styles = {
 };
 
 export function Heading({ level = 2, children, className = "" }: HeadingProps) {
-  const Tag = \`h\${level}\` as keyof JSX.IntrinsicElements;
-  return <Tag className={\`\${styles[level]} \${className}\`}>{children}</Tag>;
+  const Tag = `h${level}` as keyof React.JSX.IntrinsicElements;
+  return <Tag className={`${styles[level]} ${className}`}>{children}</Tag>;
 }

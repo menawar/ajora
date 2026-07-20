@@ -38,7 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {icon && !isLoading && iconPosition === "left" && icon}
-        {children}
+        {children as React.ReactNode}
         {icon && iconPosition === "right" && icon}
       </motion.button>
     );

@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useAccount } from "wagmi";
+import { useWallet } from "../hooks/useWallet";
 import { trackEvent, AnalyticsEvents } from "../lib/analytics";
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
-  const { address, isConnected } = useAccount();
+  const { address } = useWallet();
+  const isConnected = !!address;
   const prevConnected = useRef(false);
 
   useEffect(() => {
