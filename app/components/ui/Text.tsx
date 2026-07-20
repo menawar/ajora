@@ -7,10 +7,10 @@ interface TextProps {
 }
 
 const styles = {
-  body: "text-base text-gray-900",
-  muted: "text-base text-gray-500",
-  small: "text-sm text-gray-600",
-  tiny: "text-xs text-gray-400",
+  body: "text-base md:text-lg text-text-primary leading-relaxed",
+  muted: "text-base text-text-muted",
+  small: "text-sm text-text-secondary",
+  tiny: "text-xs text-text-muted",
 };
 
 export function Text({ children, className = "", variant = "body" }: TextProps) {

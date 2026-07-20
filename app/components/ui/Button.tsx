@@ -11,17 +11,17 @@ export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
 }
 
 const variantStyles = {
-  primary: "bg-celo-green text-white shadow-md shadow-celo-green/20 hover:shadow-lg hover:shadow-celo-green/30",
-  secondary: "bg-gray-100 text-gray-800 hover:bg-gray-200",
+  primary: "bg-celo-green text-celo-dark font-bold shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]",
+  secondary: "bg-bg-secondary text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800",
   outline: "border-2 border-celo-green text-celo-green hover:bg-celo-green/10",
-  danger: "bg-red-500 text-white hover:bg-red-600",
-  ghost: "bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+  danger: "bg-red-500 text-white shadow-[0_4px_14px_0_rgba(239,68,68,0.39)] hover:bg-red-600 hover:shadow-[0_6px_20px_rgba(239,68,68,0.23)]",
+  ghost: "bg-transparent text-text-secondary hover:bg-bg-secondary hover:text-text-primary",
 };
 
 const sizeStyles = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2.5 text-base",
-  lg: "px-6 py-3.5 text-lg",
+  sm: "px-4 py-2 text-sm",
+  md: "px-6 py-3 text-base",
+  lg: "px-8 py-4 text-lg",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -30,9 +30,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <motion.button
         ref={ref}
-        whileHover={isDisabled ? {} : { scale: 1.02 }}
-        whileTap={isDisabled ? {} : { scale: 0.98 }}
-        className={`rounded-xl font-semibold transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-offset-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+        whileHover={isDisabled ? {} : { scale: 1.03, y: -1 }}
+        whileTap={isDisabled ? {} : { scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        className={`rounded-2xl transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-offset-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
         disabled={isDisabled}
         {...props}
       >
