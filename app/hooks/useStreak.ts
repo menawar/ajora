@@ -1,3 +1,4 @@
+import { trackEvent, AnalyticsEvents } from "../lib/analytics";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -96,6 +97,7 @@ export function useStreak() {
     return () => clearInterval(t);
   }, [refetch]);
 
+
   const checkIn = useCallback(async () => {
     const wallet = walletClient();
     if (!wallet || !address) return;
@@ -111,6 +113,7 @@ export function useStreak() {
         feeCurrency,
       });
       await publicClient.waitForTransactionReceipt({ hash });
+      trackEvent(AnalyticsEvents.STREAK_CHECKIN);
       refetch();
     } catch (e) {
       setError(e instanceof Error ? e.message.split("\n")[0] : "Check-in failed");
