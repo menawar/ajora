@@ -15,6 +15,7 @@ import { useWallet } from "../../hooks/useWallet";
 import { ErrorAlert } from "../../components/ui/ErrorAlert";
 import { useToast } from "../../hooks/useToast";
 import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
+import confetti from "canvas-confetti";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
 const MIN = parseUnits("0.1", 18);
@@ -45,6 +46,12 @@ export default function SavePage() {
 
   useEffect(() => {
     if (status.step === "success") {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#35d07f', '#fbcc5c']
+      });
       toast(`Saved! +${status.tickets.toString()} tickets. Now pick your lucky number 🎯`, "success");
       trackEvent(AnalyticsEvents.SAVE_COMPLETED, { amount, tickets: status.tickets.toString() });
       // Reset status after a delay so it doesn't stay in success state indefinitely
