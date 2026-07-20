@@ -12,9 +12,11 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "ponder": "^0.16.6",
+    "@hono/zod-validator": "^0.9.0",
     "hono": "^4.5.0",
-    "viem": "^2.21.3"
+    "ponder": "^0.16.6",
+    "viem": "^2.21.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^20.9.0",
