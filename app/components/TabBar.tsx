@@ -28,7 +28,7 @@ export function TabBar() {
       <div className="mx-auto flex max-w-md flex-col">
         <div className="flex justify-center items-center gap-4 pt-2">
           <ThemeToggle />
-          <LanguageSwitcher />
+          <LanguageSwitcher direction="up" />
         </div>
         <div className="flex w-full">
           {tabs.map((tab) => {
