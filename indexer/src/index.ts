@@ -14,6 +14,7 @@ import {
   crewMembers,
   crewSavingsDaily,
   referralVests,
+  dailyMetrics,
 } from "ponder:schema";
 
 type EventWithLog = { transaction: { hash: `0x${string}` }; log: { logIndex: number } };
@@ -51,6 +52,10 @@ ponder.on("PotVault:Contributed", async ({ event, context }) => {
   await upsertUser(context, event.args.user, event.block.timestamp, {
     saved: event.args.amount,
     tickets: event.args.ticketsMinted,
+  });
+  await incrementDailyMetric(context, periodOf(event.block.timestamp), {
+    txCount: 1,
+    principalIn: event.args.amount,
   });
   await touch(context, event.args.user, event.block.timestamp);
 });
@@ -93,6 +98,9 @@ ponder.on("PotVault:WinningsClaimed", async ({ event, context }) => {
   await context.db
     .update(wins, { user: event.args.user, periodId: event.args.periodId })
     .set({ claimed: true });
+  await incrementDailyMetric(context, periodOf(event.block.timestamp), {
+    jaraPaid: event.args.amount,
+  });
   await touch(context, event.args.user, event.block.timestamp);
 });
 
@@ -113,6 +121,9 @@ ponder.on("DrawManager:NumberPicked", async ({ event, context }) => {
       txHash: event.transaction.hash,
       blockNumber: event.block.number,
     });
+  await incrementDailyMetric(context, periodOf(event.block.timestamp), {
+    txCount: 1,
+  });
   await touch(context, event.args.user, event.block.timestamp);
 });
 
@@ -169,6 +180,9 @@ ponder.on("SprayFaucet:Sprayed", async ({ event, context }) => {
     txHash: event.transaction.hash,
     blockNumber: event.block.number,
   });
+  await incrementDailyMetric(context, periodOf(event.block.timestamp), {
+    txCount: 1,
+  });
   await touch(context, event.args.from, event.block.timestamp);
 });
 
@@ -193,6 +207,9 @@ ponder.on("SprayFaucet:ReferralBonus", async ({ event, context }) => {
     timestamp: event.block.timestamp,
     txHash: event.transaction.hash,
     blockNumber: event.block.number,
+  });
+  await incrementDailyMetric(context, periodOf(event.block.timestamp), {
+    referrals: 1,
   });
 });
 
@@ -270,6 +287,11 @@ async function upsertUser(
   timestamp: bigint,
   delta: UserDelta,
 ) {
+  const isNew = !(await context.db.find(users, { address }));
+  if (isNew) {
+    await incrementDailyMetric(context, periodOf(timestamp), { newUsers: 1 });
+  }
+
   await context.db
     .insert(users)
     .values({
@@ -298,8 +320,41 @@ async function upsertUser(
 
 /** Record a user-initiated action for DAU/retention (one row per user per day). */
 async function touch(context: Context, address: `0x${string}`, timestamp: bigint) {
+  const day = periodOf(timestamp);
+  const exists = await context.db.find(userDays, { address, day });
+  if (!exists) {
+    await context.db.insert(userDays).values({ address, day });
+    await incrementDailyMetric(context, day, { dau: 1 });
+  }
+}
+
+interface DailyMetricDelta {
+  dau?: number;
+  newUsers?: number;
+  txCount?: number;
+  principalIn?: bigint;
+  jaraPaid?: bigint;
+  referrals?: number;
+}
+
+async function incrementDailyMetric(context: Context, day: bigint, delta: DailyMetricDelta) {
   await context.db
-    .insert(userDays)
-    .values({ address, day: periodOf(timestamp) })
-    .onConflictDoNothing();
+    .insert(dailyMetrics)
+    .values({
+      day,
+      dau: delta.dau ?? 0,
+      newUsers: delta.newUsers ?? 0,
+      txCount: delta.txCount ?? 0,
+      principalIn: delta.principalIn ?? 0n,
+      jaraPaid: delta.jaraPaid ?? 0n,
+      referrals: delta.referrals ?? 0,
+    })
+    .onConflictDoUpdate((row) => ({
+      dau: row.dau + (delta.dau ?? 0),
+      newUsers: row.newUsers + (delta.newUsers ?? 0),
+      txCount: row.txCount + (delta.txCount ?? 0),
+      principalIn: row.principalIn + (delta.principalIn ?? 0n),
+      jaraPaid: row.jaraPaid + (delta.jaraPaid ?? 0n),
+      referrals: row.referrals + (delta.referrals ?? 0),
+    }));
 }
