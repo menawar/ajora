@@ -451,6 +451,18 @@ const dailyMetricsQuerySchema = z.object({
 });
 
 /**
+ * Global singleton metrics (TVL, total jara paid, total users).
+ */
+app.get("/metrics/global", async (c) => {
+  const [stats] = await db.select().from(schema.globalStats).where(eq(schema.globalStats.id, "singleton"));
+  return json(c, {
+    tvl: (stats?.tvl as string | undefined) ?? "0",
+    totalJaraPaid: (stats?.totalJaraPaid as string | undefined) ?? "0",
+    totalUsers: stats?.totalUsers ?? 0,
+  });
+});
+
+/**
  * Daily rollup (AJORA_SPEC.md §12 daily_metrics): DAU, new users, tx count,
  * principal in, jara paid, d1/d7 retention, k-factor. ?days=N window, default 30.
  */
