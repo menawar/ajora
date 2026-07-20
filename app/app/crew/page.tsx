@@ -8,10 +8,11 @@ import { useSpray } from "../../hooks/useSpray";
 import { useWallet } from "../../hooks/useWallet";
 import { shareUrl, storedRef } from "../../lib/share";
 import { EmptyState } from "../../components/ui/EmptyState";
-import { Users2 } from "lucide-react";
+import { Users2, Send } from "lucide-react";
 import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 import { useEffect } from "react";
 import confetti from "canvas-confetti";
+import { Skeleton } from "../../components/ui/Skeleton";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -37,23 +38,26 @@ function SpraySection() {
   if (!address) return null;
 
   return (
-    <section className="rounded-2xl border border-gray-100 p-5">
-      <h2 className="font-semibold">Spray a friend 🎉</h2>
-      <p className="mt-1 text-sm text-gray-500">
+    <section className="glass-panel rounded-3xl p-6 mt-6 relative overflow-hidden">
+      <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+        <Send className="w-32 h-32" />
+      </div>
+      <h2 className="text-lg font-bold text-text-primary">Spray a friend 🎉</h2>
+      <p className="mt-1 text-sm text-text-secondary leading-relaxed">
         Gift a free ticket — costs you nothing, the sponsor pays.{" "}
-        <strong>{spraysLeft.toString()}</strong> sprays left to send today.
+        <strong className="text-text-primary">{spraysLeft.toString()}</strong> sprays left to send today.
       </p>
       {dailyFreeLeft === 0n && (
-        <p className="mt-2 text-xs font-semibold text-amber-600 bg-amber-50 p-2 rounded-lg">
+        <p className="mt-3 text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-100 p-3 rounded-xl">
           ⚠️ You have reached your daily limit of free tickets. Friends cannot spray you until tomorrow.
         </p>
       )}
-      <div className="mt-3 flex gap-2">
+      <div className="mt-4 flex gap-2 relative z-10">
         <input
           placeholder="Friend's wallet address 0x…"
           value={friend}
           onChange={(e) => setFriend(e.target.value.trim())}
-          className="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-celo-green"
+          className="min-w-0 flex-1 rounded-2xl bg-bg-secondary border-none px-4 py-3 text-sm focus:ring-2 focus:ring-celo-green outline-none transition-all placeholder:text-text-muted"
         />
         <button
           type="button"
@@ -62,15 +66,15 @@ function SpraySection() {
             trackEvent(AnalyticsEvents.SPRAY_INITIATED, { friend });
             void spray(friend);
           }}
-          className="rounded-xl bg-celo-gold px-4 py-2.5 font-semibold text-white disabled:opacity-50"
+          className="rounded-2xl bg-celo-gold px-5 py-3 font-bold text-white shadow-md disabled:opacity-50 hover:bg-[#eab308] hover:shadow-lg transition-all active:scale-95"
         >
           {spraying ? "…" : "Spray"}
         </button>
       </div>
       {done && (
-        <p className="mt-2 animate-bounce text-center text-lg">🎉 🎊 🎉 Sprayed! 🎉 🎊 🎉</p>
+        <p className="mt-4 animate-bounce text-center text-lg font-bold text-celo-green">🎉 🎊 🎉 Sprayed! 🎉 🎊 🎉</p>
       )}
-      {error && <p className="mt-2 text-center text-sm text-red-500">{error}</p>}
+      {error && <p className="mt-3 text-center text-sm font-semibold text-red-500 bg-red-50 p-2 rounded-lg">{error}</p>}
     </section>
   );
 }
@@ -85,10 +89,10 @@ export default function CrewPage() {
   const inviteLink = crew.myCode ? shareUrl(crew.myCode) : "";
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6">
-      <header className="text-center">
-        <h1 className="text-2xl font-bold">Your crew</h1>
-        <p className="mt-1 text-sm text-gray-500">
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6 pb-24 bg-bg-primary">
+      <header className="text-center pt-4">
+        <h1 className="text-3xl font-black tracking-tight text-text-primary text-gradient">Your Crew</h1>
+        <p className="mt-2 text-sm text-text-secondary">
           Bigger crew, bigger pots — recruit with your code.
         </p>
       </header>
@@ -102,61 +106,67 @@ export default function CrewPage() {
           icon={<Users2 className="h-6 w-6" />}
         />
       ) : crew.loading ? (
-        <div className="h-32 animate-pulse rounded-2xl bg-gray-100" />
+        <Skeleton className="h-48 w-full rounded-3xl" />
       ) : crew.crewId === 0n ? (
-        <section className="rounded-2xl border border-gray-100 p-5">
-          <div className="mb-3 grid grid-cols-2 gap-2">
+        <section className="glass-panel rounded-3xl p-6">
+          <div className="mb-4 bg-bg-secondary p-1 rounded-2xl flex">
             <button
               type="button"
               onClick={() => setMode("join")}
-              className={`rounded-xl border py-2 text-sm font-semibold ${mode === "join" ? "border-celo-green bg-celo-green/10 text-celo-green" : "border-gray-200 text-gray-500"}`}
+              className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${mode === "join" ? "bg-white text-celo-green shadow-sm" : "text-text-muted hover:text-text-primary"}`}
             >
               Join a crew
             </button>
             <button
               type="button"
               onClick={() => setMode("create")}
-              className={`rounded-xl border py-2 text-sm font-semibold ${mode === "create" ? "border-celo-green bg-celo-green/10 text-celo-green" : "border-gray-200 text-gray-500"}`}
+              className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${mode === "create" ? "bg-white text-celo-green shadow-sm" : "text-text-muted hover:text-text-primary"}`}
             >
               Start a crew
             </button>
           </div>
-          {mode === "join" && (
+          <div className="flex flex-col gap-3">
+            {mode === "join" && (
+              <input
+                placeholder="Inviter's code"
+                value={inviter}
+                onChange={(e) => setInviter(e.target.value)}
+                className="w-full rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-celo-green transition-all"
+              />
+            )}
             <input
-              placeholder="Inviter's code"
-              value={inviter}
-              onChange={(e) => setInviter(e.target.value)}
-              className="mb-2 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-celo-green"
+              placeholder="Choose your own code (e.g. amara-lagos)"
+              value={myCode}
+              onChange={(e) => setMyCode(e.target.value)}
+              className="w-full rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-celo-green transition-all"
             />
-          )}
-          <input
-            placeholder="Choose your own code (e.g. amara-lagos)"
-            value={myCode}
-            onChange={(e) => setMyCode(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-celo-green"
-          />
-          <button
-            type="button"
-            disabled={crew.busy || !address || !myCode || (mode === "join" && !inviter)}
-            onClick={() =>
-              void (mode === "join" ? crew.joinCrew(inviter, myCode) : crew.createCrew(myCode))
-            }
-            className="mt-3 w-full rounded-xl bg-celo-green px-4 py-3 font-semibold text-white disabled:opacity-50"
-          >
-            {crew.busy ? "Confirming…" : mode === "join" ? "Join crew" : "Create crew"}
-          </button>
-          {crew.error && <p className="mt-2 text-center text-sm text-red-500">{crew.error}</p>}
+            <button
+              type="button"
+              disabled={crew.busy || !address || !myCode || (mode === "join" && !inviter)}
+              onClick={() =>
+                void (mode === "join" ? crew.joinCrew(inviter, myCode) : crew.createCrew(myCode))
+              }
+              className="mt-2 w-full rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {crew.busy ? "Confirming…" : mode === "join" ? "Join Crew" : "Create Crew"}
+            </button>
+          </div>
+          {crew.error && <p className="mt-4 text-center text-sm font-semibold text-red-500 bg-red-50 p-2 rounded-lg">{crew.error}</p>}
         </section>
       ) : (
-        <section className="rounded-2xl bg-gradient-to-br from-celo-green to-celo-gold p-5 text-white">
-          <div className="flex justify-between text-sm opacity-90">
-            <span>Crew #{crew.crewId.toString()}</span>
-            <span>{crew.memberCount.toString()} members</span>
+        <section className="rounded-3xl bg-gradient-to-br from-celo-green via-[#2ebf73] to-celo-gold p-6 text-white shadow-xl relative overflow-hidden">
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex justify-between text-sm font-medium opacity-90 relative z-10">
+            <span className="bg-white/20 px-2 py-1 rounded-md">Crew #{crew.crewId.toString()}</span>
+            <span className="flex items-center gap-1"><Users2 className="w-4 h-4" /> {crew.memberCount.toString()} members</span>
           </div>
-          <div className="mt-1 text-2xl font-bold">{cusd(crew.savingsToday)} cUSD saved today</div>
-          <div className="mt-3 rounded-xl bg-white/20 p-3 text-center">
-            <div className="text-xs opacity-90">Your invite code</div>
-            <div className="text-xl font-bold">{crew.myCode}</div>
+          <div className="mt-4 mb-2 relative z-10">
+            <div className="text-4xl font-black tracking-tight drop-shadow-md">{cusd(crew.savingsToday)} <span className="text-xl font-bold opacity-80 uppercase tracking-wide">cUSD</span></div>
+            <div className="text-sm font-medium opacity-90 mt-1">Saved by crew today</div>
+          </div>
+          <div className="mt-6 rounded-2xl bg-white/15 backdrop-blur-md p-4 text-center border border-white/20 relative z-10">
+            <div className="text-xs font-semibold uppercase tracking-wider opacity-90 mb-1">Your Invite Code</div>
+            <div className="text-2xl font-black tracking-widest">{crew.myCode}</div>
           </div>
           <button
             type="button"
@@ -166,21 +176,25 @@ export default function CrewPage() {
                 url: inviteLink,
               }).catch(() => navigator.clipboard?.writeText(inviteLink))
             }
-            className="mt-3 w-full rounded-xl bg-white px-4 py-3 font-semibold text-celo-green"
+            className="mt-4 w-full rounded-2xl bg-white px-4 py-3.5 font-bold text-celo-green shadow-lg hover:bg-gray-50 active:scale-95 transition-all relative z-10"
           >
-            Share invite link
+            Share Invite Link
           </button>
         </section>
       )}
 
       {crew.members && crew.members.length > 0 && (
-        <section className="rounded-2xl border border-gray-100 p-5">
-          <h2 className="font-semibold mb-3">Crew Members</h2>
-          <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+        <section className="glass-panel rounded-3xl p-5">
+          <h2 className="font-bold text-text-primary mb-4 flex items-center gap-2">
+            <Users2 className="w-5 h-5 text-celo-green" /> Crew Roster
+          </h2>
+          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
             {crew.members.map((m) => (
-              <div key={m.address} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg text-sm">
-                <span className="font-mono text-gray-700">{m.address.slice(0, 8)}…{m.address.slice(-6)}</span>
-                <span className="text-gray-400 text-xs">{new Date(m.joinedAt * 1000).toLocaleDateString()}</span>
+              <div key={m.address} className="flex justify-between items-center bg-bg-secondary p-3 rounded-xl text-sm border border-transparent hover:border-gray-200 transition-colors">
+                <span className="font-mono font-medium text-text-primary bg-white px-2 py-1 rounded-md shadow-sm">
+                  {m.address.slice(0, 6)}…{m.address.slice(-4)}
+                </span>
+                <span className="text-text-muted text-xs font-medium">Joined {new Date(m.joinedAt * 1000).toLocaleDateString()}</span>
               </div>
             ))}
           </div>
@@ -189,9 +203,10 @@ export default function CrewPage() {
 
       <SpraySection />
 
-      <footer className="mt-auto text-center text-xs text-gray-400">
+      <footer className="mt-auto text-center text-xs text-text-muted font-medium">
         Invites earn a bonus ticket after your friend saves on 3 different days.
       </footer>
     </main>
   );
 }
+
