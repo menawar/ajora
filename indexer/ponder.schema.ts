@@ -5,6 +5,7 @@ export const users = onchainTable("users", (t) => ({
   address: t.hex().primaryKey(),
   firstSeenPeriod: t.bigint().notNull(),
   totalSaved: t.bigint().notNull(),
+  currentBalance: t.bigint().notNull(),
   totalWon: t.bigint().notNull(),
   ticketsAllTime: t.bigint().notNull(),
   currentStreak: t.integer().notNull(),
@@ -21,6 +22,8 @@ export const contributions = onchainTable("contributions", (t) => ({
   token: t.hex().notNull(), // §12 parity; constant until multi-stablecoin vaults land
   tickets: t.bigint().notNull(),
   timestamp: t.bigint().notNull(),
+  txHash: t.hex().notNull(),
+  blockNumber: t.bigint().notNull(),
 }));
 
 export const picks = onchainTable(
@@ -30,6 +33,8 @@ export const picks = onchainTable(
     periodId: t.bigint().notNull(),
     number: t.integer().notNull(),
     weight: t.bigint().notNull(),
+    txHash: t.hex().notNull(),
+    blockNumber: t.bigint().notNull(),
   }),
   (table) => ({ pk: primaryKey({ columns: [table.user, table.periodId] }) }),
 );
@@ -42,6 +47,8 @@ export const sprays = onchainTable("sprays", (t) => ({
   value: t.bigint().notNull(),
   campaignId: t.hex().notNull(), // §12: which sponsor budget backed this spray
   timestamp: t.bigint().notNull(),
+  txHash: t.hex().notNull(),
+  blockNumber: t.bigint().notNull(),
 }));
 
 /** Singleton mirror of SprayFaucet.activeCampaign, kept via CampaignActivated events. */
@@ -57,6 +64,8 @@ export const draws = onchainTable("draws", (t) => ({
   pot: t.bigint().notNull(),
   totalWinningWeight: t.bigint().notNull(),
   resolvedAt: t.bigint().notNull(), // claim-window anchor (DrawManager.CLAIM_WINDOW)
+  txHash: t.hex().notNull(),
+  blockNumber: t.bigint().notNull(),
 }));
 
 /**
@@ -71,6 +80,8 @@ export const wins = onchainTable(
     amount: t.bigint().notNull(),
     claimed: t.boolean().notNull(),
     timestamp: t.bigint().notNull(),
+    txHash: t.hex().notNull(),
+    blockNumber: t.bigint().notNull(),
   }),
   (table) => ({ pk: primaryKey({ columns: [table.user, table.periodId] }) }),
 );
@@ -83,6 +94,8 @@ export const payouts = onchainTable("payouts", (t) => ({
   amount: t.bigint().notNull(),
   kind: t.text().notNull(), // "principal" | "winnings"
   timestamp: t.bigint().notNull(),
+  txHash: t.hex().notNull(),
+  blockNumber: t.bigint().notNull(),
 }));
 
 /** SprayFaucet:ReferralBonus — a converted invite; feeds the k-factor metric. */
@@ -92,6 +105,8 @@ export const referrals = onchainTable("referrals", (t) => ({
   periodId: t.bigint().notNull(),
   value: t.bigint().notNull(),
   timestamp: t.bigint().notNull(),
+  txHash: t.hex().notNull(),
+  blockNumber: t.bigint().notNull(),
 }));
 
 /**

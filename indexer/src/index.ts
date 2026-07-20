@@ -27,6 +27,7 @@ const STABLECOIN = "0x765DE816845861e75A25fCA122bb6898B8B1282a" as const;
 
 interface UserDelta {
   saved?: bigint;
+  withdrawn?: bigint;
   won?: bigint;
   tickets?: bigint;
   streak?: number;
@@ -44,6 +45,8 @@ ponder.on("PotVault:Contributed", async ({ event, context }) => {
     token: STABLECOIN,
     tickets: event.args.ticketsMinted,
     timestamp: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
   });
   await upsertUser(context, event.args.user, event.block.timestamp, {
     saved: event.args.amount,
@@ -66,6 +69,11 @@ ponder.on("PotVault:PrincipalClaimed", async ({ event, context }) => {
     amount: event.args.amount,
     kind: "principal",
     timestamp: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
+  });
+  await upsertUser(context, event.args.user, event.block.timestamp, {
+    withdrawn: event.args.amount,
   });
   await touch(context, event.args.user, event.block.timestamp);
 });
@@ -79,6 +87,8 @@ ponder.on("PotVault:WinningsClaimed", async ({ event, context }) => {
     amount: event.args.amount,
     kind: "winnings",
     timestamp: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
   });
   await context.db
     .update(wins, { user: event.args.user, periodId: event.args.periodId })
@@ -94,8 +104,15 @@ ponder.on("DrawManager:NumberPicked", async ({ event, context }) => {
       periodId: event.args.periodId,
       number: event.args.number,
       weight: event.args.weight,
+      txHash: event.transaction.hash,
+      blockNumber: event.block.number,
     })
-    .onConflictDoUpdate({ number: event.args.number, weight: event.args.weight });
+    .onConflictDoUpdate({ 
+      number: event.args.number, 
+      weight: event.args.weight,
+      txHash: event.transaction.hash,
+      blockNumber: event.block.number,
+    });
   await touch(context, event.args.user, event.block.timestamp);
 });
 
@@ -107,6 +124,8 @@ ponder.on("DrawManager:DrawResolved", async ({ event, context }) => {
     pot: event.args.pot,
     totalWinningWeight: event.args.totalWinningWeight,
     resolvedAt: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
   });
 });
 
@@ -119,6 +138,8 @@ ponder.on("DrawManager:PrizeClaimed", async ({ event, context }) => {
     amount: event.args.amount,
     claimed: false,
     timestamp: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
   });
   await upsertUser(context, event.args.user, event.block.timestamp, {
     won: event.args.amount,
@@ -145,6 +166,8 @@ ponder.on("SprayFaucet:Sprayed", async ({ event, context }) => {
     value: event.args.value,
     campaignId: active?.campaignId ?? `0x${"0".repeat(64)}`,
     timestamp: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
   });
   await touch(context, event.args.from, event.block.timestamp);
 });
@@ -168,6 +191,8 @@ ponder.on("SprayFaucet:ReferralBonus", async ({ event, context }) => {
     periodId: event.args.periodId,
     value: event.args.value,
     timestamp: event.block.timestamp,
+    txHash: event.transaction.hash,
+    blockNumber: event.block.number,
   });
 });
 
@@ -251,6 +276,7 @@ async function upsertUser(
       address,
       firstSeenPeriod: periodOf(timestamp),
       totalSaved: delta.saved ?? 0n,
+      currentBalance: (delta.saved ?? 0n) - (delta.withdrawn ?? 0n),
       totalWon: delta.won ?? 0n,
       ticketsAllTime: delta.tickets ?? 0n,
       currentStreak: delta.streak ?? 0,
@@ -260,6 +286,7 @@ async function upsertUser(
     })
     .onConflictDoUpdate((row) => ({
       totalSaved: row.totalSaved + (delta.saved ?? 0n),
+      currentBalance: row.currentBalance + (delta.saved ?? 0n) - (delta.withdrawn ?? 0n),
       totalWon: row.totalWon + (delta.won ?? 0n),
       ticketsAllTime: row.ticketsAllTime + (delta.tickets ?? 0n),
       currentStreak: delta.streak ?? row.currentStreak,
