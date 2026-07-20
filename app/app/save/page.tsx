@@ -82,14 +82,14 @@ export default function SavePage() {
 
   return (
     <motion.main 
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24"
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6 pb-24 bg-bg-primary"
       variants={containerVariants}
       initial="hidden"
       animate="show"
     >
-      <motion.header variants={itemVariants} className="text-center">
-        <h1 className="text-2xl font-bold">{t("nav.save")}</h1>
-        <p className="mt-1 text-sm text-gray-500">
+      <motion.header variants={itemVariants} className="text-center pt-4">
+        <h1 className="text-3xl font-black tracking-tight text-text-primary text-gradient">{t("nav.save")}</h1>
+        <p className="mt-2 text-sm text-text-secondary">
           {t("save.subtitle")}
         </p>
       </motion.header>
@@ -98,8 +98,8 @@ export default function SavePage() {
         <ConnectBar />
       </motion.div>
 
-      <motion.section variants={itemVariants} className="flex flex-col gap-4">
-        <div className="grid grid-cols-4 gap-2" role="group" aria-label="Amount presets">
+      <motion.section variants={itemVariants} className="flex flex-col gap-5 mt-2">
+        <div className="grid grid-cols-4 gap-3" role="group" aria-label="Amount presets">
           {PRESETS.map((p) => (
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -111,10 +111,10 @@ export default function SavePage() {
                 setAmount(p);
                 reset();
               }}
-              className={`rounded-xl py-3 font-semibold transition-all shadow-sm ${
+              className={`rounded-2xl py-3.5 font-bold transition-all ${
                 !custom && amount === p
-                  ? "bg-celo-green text-white shadow-celo-green/30"
-                  : "glass-panel text-gray-700 hover:bg-white/80 border border-gray-200/50"
+                  ? "bg-celo-green text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
+                  : "glass-panel text-text-primary hover:bg-bg-secondary"
               }`}
             >
               {p}
@@ -129,10 +129,10 @@ export default function SavePage() {
               setAmount("");
               reset();
             }}
-            className={`rounded-xl py-3 font-semibold transition-all shadow-sm ${
+            className={`rounded-2xl py-3.5 font-bold transition-all ${
               custom
-                ? "bg-celo-green text-white shadow-celo-green/30"
-                : "glass-panel text-gray-700 hover:bg-white/80 border border-gray-200/50"
+                ? "bg-celo-green text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
+                : "glass-panel text-text-primary hover:bg-bg-secondary"
             }`}
             aria-label="Custom amount"
           >
@@ -146,7 +146,7 @@ export default function SavePage() {
             animate={{ height: "auto", opacity: 1 }}
             className="relative overflow-hidden"
           >
-            <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
+            <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted h-5 w-5 pointer-events-none" aria-hidden="true" />
             <input
               id="custom-amount-input"
               aria-label="Custom amount in cUSD"
@@ -154,13 +154,13 @@ export default function SavePage() {
               placeholder={t("save.amountPlaceholder")}
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-              className="w-full rounded-xl border border-gray-200 glass-panel pl-12 pr-4 py-3 text-lg outline-celo-green transition-all focus:shadow-[0_0_12px_rgba(53,208,127,0.3)]"
+              className="w-full rounded-2xl bg-bg-secondary border-none pl-12 pr-4 py-4 text-lg font-bold text-text-primary outline-none focus:ring-2 focus:ring-celo-green transition-all placeholder:text-text-muted placeholder:font-normal"
             />
           </motion.div>
         )}
 
-        <div className="flex justify-between text-sm text-gray-500 px-1 items-center h-5">
-          <span>
+        <div className="glass-panel rounded-2xl p-4 flex justify-between items-center text-sm">
+          <span className="text-text-muted font-medium flex items-center gap-2">
             {address && balance === undefined && <Skeleton variant="text" className="w-24 h-4" />}
             {balance !== undefined &&
               t("save.balance", { balance: Number(formatUnits(balance, 18)).toFixed(2) })}
@@ -168,14 +168,15 @@ export default function SavePage() {
           <motion.span 
             key={tickets.toString()}
             initial={{ scale: 1.1, color: "#35d07f" }}
-            animate={{ scale: 1, color: "#6b7280" }}
+            animate={{ scale: 1, color: "var(--text-primary)" }}
+            className="font-bold bg-bg-secondary px-3 py-1 rounded-lg text-text-primary"
           >
-            {parsed >= MIN && t("save.tickets", { tickets: tickets.toString() })}
+            {parsed >= MIN ? t("save.tickets", { tickets: tickets.toString() }) : "0 Tickets"}
           </motion.span>
         </div>
 
         <motion.button
-          whileTap={{ scale: 0.98 }}
+          whileTap={{ scale: 0.96 }}
           type="button"
           onClick={() => {
             trackEvent(AnalyticsEvents.SAVE_INITIATED, { amount });
@@ -183,7 +184,7 @@ export default function SavePage() {
             void save(amount);
           }}
           disabled={busy || !address || parsed < MIN || insufficient}
-          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-celo-green to-[#2ebf73] px-4 py-4 text-lg font-bold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
         >
           {busy ? (
             <>
@@ -195,21 +196,21 @@ export default function SavePage() {
           )}
         </motion.button>
 
-        {tooSmall && <p className="text-center text-sm text-amber-600">{t("save.tooSmall")}</p>}
+        {tooSmall && <p className="text-center text-sm font-semibold text-amber-600 bg-amber-50 p-2 rounded-lg">{t("save.tooSmall")}</p>}
         {insufficient && (
-          <p className="text-center text-sm text-amber-600">{t("save.insufficient")}</p>
+          <p className="text-center text-sm font-semibold text-amber-600 bg-amber-50 p-2 rounded-lg">{t("save.insufficient")}</p>
         )}
         {status.step === "error" && (
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2 mt-2">
             <ErrorAlert message={status.message} />
-            <button type="button" onClick={() => void save(amount)} className="text-sm underline text-gray-500 hover:text-gray-700">
-              Retry
+            <button type="button" onClick={() => void save(amount)} className="text-sm font-semibold text-text-secondary hover:text-text-primary transition-colors py-1 px-3 bg-bg-secondary rounded-lg">
+              Retry Transaction
             </button>
           </div>
         )}
       </motion.section>
 
-      <motion.footer variants={itemVariants} className="mt-auto text-center text-xs text-gray-400">
+      <motion.footer variants={itemVariants} className="mt-auto pt-6 text-center text-xs font-medium text-text-muted pb-safe">
         More saved = more tickets. Streaks multiply your tickets up to 3x.
       </motion.footer>
     </motion.main>
