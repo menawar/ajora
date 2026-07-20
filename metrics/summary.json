@@ -41,15 +41,27 @@
     "0x3e270ed54b43919f9b14c01a9dae4f54a87d2f90": 20647,
     "0xb6f183d1c81147c254e08153ac278029794a96cc": 20647,
     "0x50a5344a3972c5b652254ce2cbd8c29aa2b2dfbd": 20647,
-    "0x275d60d15b5bb0c9ce305110d1883845bd775185": 20647
+    "0x275d60d15b5bb0c9ce305110d1883845bd775185": 20647,
+    "0xeb2069b9c65fac04d447c99d91e1e3a961eafa43": 20653,
+    "0x3df9c2c7a9fbc8e331e566d8ba3cfff91af4b0e7": 20653,
+    "0xda51b6e57d2793cba1f6a5cb4236b36b86e699e3": 20653,
+    "0x6a4f99af0dbecb1807f095a9b127ea346eb9c536": 20653,
+    "0x5b873cf53cf2534715b0ec4e2658fd707c643704": 20653,
+    "0x88b0b56de555f71f50bb6a13c92609a2ea7b56cd": 20653,
+    "0x5d64777dfdcc0c40cf1e6f88aed85c0b0f499719": 20653,
+    "0x74e05097c7d6de07d6f8f837bd2adb671e9cb4d5": 20653,
+    "0xd9e9a6c239dcaf10d5f57a1aecc1646bbf1389de": 20653,
+    "0xc1637179590243267673905d1ad94f08d0ad1e4d": 20653,
+    "0xc465a70b29ea5aa72d11c52b46ce7a7e3ca5ab21": 20653,
+    "0x5413f77034b1869f74ef620d8cd5a83f8f232bc7": 20653
   },
   "verified": [],
-  "totalTx": 165,
-  "totalPrincipalIn": "7170000000000000000",
+  "totalTx": 204,
+  "totalPrincipalIn": "8390000000000000000",
   "totalPrizesPaid": "0",
-  "totalUsers": 42,
+  "totalUsers": 54,
   "verifiedUsers": 0,
   "totalRake": "0",
   "totalDeployed": "0",
-  "updatedAt": "2026-07-19T04:06:07.874Z"
+  "updatedAt": "2026-07-20T04:26:03.553Z"
 }
