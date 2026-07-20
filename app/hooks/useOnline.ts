@@ -14,6 +14,10 @@ export function useOnline(): boolean {
     setOnline(navigator.onLine);
     const goOnline = () => setOnline(true);
     const goOffline = () => setOnline(false);
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(console.error);
+    }
     window.addEventListener("online", goOnline);
     window.addEventListener("offline", goOffline);
     return () => {
