@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { formatUnits } from "viem";
 import { motion } from "framer-motion";
-import type { SavingsEntry } from "../../hooks/useSavings";
+import type { SavingsEntry } from "../hooks/useSavings";
 
 interface SavingsChartProps {
   entries: SavingsEntry[];
