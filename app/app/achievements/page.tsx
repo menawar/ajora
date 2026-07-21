@@ -6,6 +6,7 @@ import Link from "next/link";
 import { MOCK_ACHIEVEMENTS } from "../../data/achievements";
 import { BadgeCard } from "../../components/ui/BadgeCard";
 import { useToast } from "../../hooks/useToast";
+import { useTranslation } from "../../lib/i18n";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -19,6 +20,7 @@ const itemVariants: Variants = {
 
 export default function AchievementsPage() {
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const handleBadgeClick = (title: string, unlocked: boolean) => {
     if (unlocked) {
@@ -46,10 +48,10 @@ export default function AchievementsPage() {
           Settings
         </Link>
         <h1 className="text-3xl font-black tracking-tight text-gradient flex items-center gap-3">
-          Trophy Room <Medal className="w-6 h-6 text-celo-gold" />
+          {t("achievements.title")} <Medal className="w-6 h-6 text-celo-gold" />
         </h1>
         <p className="mt-1 text-sm text-text-secondary font-medium">
-          {unlockedCount} of {MOCK_ACHIEVEMENTS.length} achievements unlocked
+          {t("achievements.unlocked").replace("{{count}}", String(unlockedCount)).replace("{{total}}", String(MOCK_ACHIEVEMENTS.length))}
         </p>
       </motion.header>
 
