@@ -76,6 +76,10 @@ export default function Home() {
           <Link href="/stats" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
             Stats
           </Link>
+          <span className="text-gray-300 dark:text-gray-700">|</span>
+          <Link href="/quests" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+            Quests
+          </Link>
         </p>
       </motion.header>
 
