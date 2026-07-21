@@ -17,13 +17,25 @@ export function useRipple(options: RippleOptions = {}) {
   const sfx = useSFX();
 
   const createRipple = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
+    (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
+      // For keyboard events, only trigger on Enter or Space
+      if (e.type === "keydown") {
+        const key = (e as React.KeyboardEvent).key;
+        if (key !== "Enter" && key !== " ") return;
+      }
+
       sfx.click();
       const el = e.currentTarget;
       const rect = el.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height) * 2;
-      const x = e.clientX - rect.left - size / 2;
-      const y = e.clientY - rect.top - size / 2;
+      
+      // Center the ripple for keyboard events, otherwise use mouse position
+      const x = e.type === "keydown" 
+        ? rect.width / 2 - size / 2 
+        : (e as React.MouseEvent).clientX - rect.left - size / 2;
+      const y = e.type === "keydown" 
+        ? rect.height / 2 - size / 2 
+        : (e as React.MouseEvent).clientY - rect.top - size / 2;
 
       const ripple = document.createElement("span");
       ripple.style.cssText = `
@@ -68,7 +80,7 @@ export function useRipple(options: RippleOptions = {}) {
     [color, duration, sfx],
   );
 
-  return { onMouseDown: createRipple };
+  return { onMouseDown: createRipple, onKeyDown: createRipple };
 }
 
 /** Convenience wrapper component that applies a ripple to its children */
@@ -87,7 +99,11 @@ export function Ripple({
 }) {
   const rippleProps = useRipple({ color, duration });
   return (
-    <Tag className={`relative overflow-hidden ${className}`} {...rippleProps}>
+    <Tag 
+      className={`relative overflow-hidden ${className}`} 
+      {...rippleProps}
+      {...(Tag === "div" ? { tabIndex: 0, role: "button" } : {})}
+    >
       {children}
     </Tag>
   );
