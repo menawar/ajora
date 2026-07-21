@@ -56,12 +56,12 @@
     "0x5413f77034b1869f74ef620d8cd5a83f8f232bc7": 20653
   },
   "verified": [],
-  "totalTx": 204,
-  "totalPrincipalIn": "8390000000000000000",
+  "totalTx": 391,
+  "totalPrincipalIn": "9590000000000000000",
   "totalPrizesPaid": "0",
   "totalUsers": 54,
   "verifiedUsers": 0,
   "totalRake": "0",
   "totalDeployed": "0",
-  "updatedAt": "2026-07-20T04:26:03.553Z"
+  "updatedAt": "2026-07-21T03:59:26.741Z"
 }
