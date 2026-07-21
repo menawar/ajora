@@ -16,6 +16,8 @@ import { useWallet } from "../hooks/useWallet";
 import { ComboFlow } from "../components/ComboFlow";
 import { ActivityFeed } from "../components/ActivityFeed";
 import { Skeleton } from "../components/ui/Skeleton";
+import { CountUp } from "../components/ui/CountUp";
+import Link from "next/link";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -77,8 +79,17 @@ export default function Home() {
         <div className="relative z-10">
           <div className="text-sm font-bold uppercase tracking-widest text-celo-green mb-1">Today&apos;s Pot</div>
           <div className="text-5xl font-black text-text-primary tracking-tight">
-            {pot.loading ? <Skeleton className="h-12 w-3/4 mb-2" /> : `${cusd(pot.jaraPot)} `}
-            {!pot.loading && <span className="text-2xl font-bold text-text-muted uppercase tracking-wide">cUSD</span>}
+            {pot.loading ? <Skeleton className="h-12 w-3/4 mb-2" /> : (
+              <>
+                <CountUp
+                  to={Number(formatUnits(pot.jaraPot, 18))}
+                  decimals={2}
+                  duration={1400}
+                />
+                {" "}
+                <span className="text-2xl font-bold text-text-muted uppercase tracking-wide">cUSD</span>
+              </>
+            )}
           </div>
           <div className="mt-4 flex flex-col gap-2">
             <div className="flex justify-between items-center text-sm font-medium text-text-secondary bg-bg-secondary/50 px-3 py-2 rounded-xl border border-gray-100 dark:border-gray-800">
