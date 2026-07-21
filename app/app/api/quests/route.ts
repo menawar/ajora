@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServiceSupabase } from "../../lib/supabase";
+import { getServiceSupabase } from "../../../lib/supabase";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -28,8 +28,8 @@ export async function GET(request: Request) {
     if (progressError) throw progressError;
 
     // 3. Merge them together
-    const mapped = quests.map(q => {
-      const progress = userProgress.find(up => up.quest_id === q.id);
+    const mapped = quests.map((q: any) => {
+      const progress = userProgress.find((up: any) => up.quest_id === q.id);
       return {
         id: q.id,
         title: q.title,

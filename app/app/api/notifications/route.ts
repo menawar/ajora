@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServiceSupabase } from "../../lib/supabase";
+import { getServiceSupabase } from "../../../lib/supabase";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     if (error) throw error;
 
-    const mapped = data.map(n => ({
+    const mapped = data.map((n: any) => ({
       id: n.id,
       type: n.type,
       title: n.title,

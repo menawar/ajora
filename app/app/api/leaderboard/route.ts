@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServiceSupabase } from "../../lib/supabase";
+import { getServiceSupabase } from "../../../lib/supabase";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       if (error) throw error;
       
       // Map to frontend expected shape
-      const mapped = data.map((u, i) => ({
+      const mapped = data.map((u: any, i: number) => ({
         rank: i + 1,
         address: u.address,
         score: u.total_saved_usd,
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
       if (error) throw error;
 
-      const mapped = data.map((u, i) => ({
+      const mapped = data.map((u: any, i: number) => ({
         rank: i + 1,
         address: u.address,
         score: u.current_streak,
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
 
       if (error) throw error;
 
-      const mapped = data.map((c, i) => ({
+      const mapped = data.map((c: any, i: number) => ({
         rank: i + 1,
         address: c.name, // Using name as address field for the UI
         score: c.total_volume_usd,

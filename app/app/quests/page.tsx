@@ -3,8 +3,10 @@
 import { motion, type Variants } from "framer-motion";
 import { ArrowLeft, Target, Flame } from "lucide-react";
 import Link from "next/link";
-import { MOCK_QUESTS } from "../../data/quests";
+import { useState, useEffect } from "react";
 import { QuestCard } from "../../components/ui/QuestCard";
+import { useWallet } from "../../hooks/useWallet";
+import { type Quest } from "../../data/quests";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -17,9 +19,38 @@ const itemVariants: Variants = {
 };
 
 export default function QuestsPage() {
-  const dailyQuests = MOCK_QUESTS.filter(q => q.type === "daily");
-  const weeklyQuests = MOCK_QUESTS.filter(q => q.type === "weekly");
+  const { address } = useWallet();
+  const [quests, setQuests] = useState<Quest[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    if (!address) {
+      setLoading(false);
+      return;
+    }
+    const fetchQuests = async () => {
+      try {
+        const res = await fetch(`/api/quests?address=${address}`);
+        if (!res.ok) throw new Error("Failed");
+        const json = await res.json();
+        if (active && Array.isArray(json)) {
+          setQuests(json);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    fetchQuests();
+    return () => { active = false; };
+  }, [address]);
+
+  const dailyQuests = quests.filter(q => q.type === "daily");
+  const weeklyQuests = quests.filter(q => q.type === "weekly");
   
+  // In a real app we'd fetch this from the user's profile, but for now we hardcode or mock
   const xpEarned = 750;
 
   return (
@@ -59,9 +90,15 @@ export default function QuestsPage() {
           <span className="w-1.5 h-4 bg-blue-500 rounded-full block" />
           Daily Missions
         </h2>
-        {dailyQuests.map((quest) => (
-          <QuestCard key={quest.id} quest={quest} />
-        ))}
+        {loading ? (
+          <div className="text-sm text-text-muted">Loading...</div>
+        ) : dailyQuests.length === 0 ? (
+          <div className="text-sm text-text-muted">No daily missions found.</div>
+        ) : (
+          dailyQuests.map((quest) => (
+            <QuestCard key={quest.id} quest={quest} />
+          ))
+        )}
       </motion.section>
 
       <motion.section variants={itemVariants} className="flex flex-col gap-4 mt-4">
@@ -69,9 +106,15 @@ export default function QuestsPage() {
           <span className="w-1.5 h-4 bg-celo-gold rounded-full block" />
           Weekly Challenges
         </h2>
-        {weeklyQuests.map((quest) => (
-          <QuestCard key={quest.id} quest={quest} />
-        ))}
+        {loading ? (
+          <div className="text-sm text-text-muted">Loading...</div>
+        ) : weeklyQuests.length === 0 ? (
+          <div className="text-sm text-text-muted">No weekly missions found.</div>
+        ) : (
+          weeklyQuests.map((quest) => (
+            <QuestCard key={quest.id} quest={quest} />
+          ))
+        )}
       </motion.section>
     </motion.main>
   );
