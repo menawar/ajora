@@ -58,10 +58,15 @@ export default function Home() {
     >
       <motion.header variants={itemVariants} className="text-center pt-4">
         <h1 className="text-5xl font-black tracking-tight text-gradient mb-2">Ajora</h1>
-        <p className="mt-1 text-text-secondary text-sm font-medium">
-          {t("home.tagline")}{" "}
+        <p className="mt-1 text-text-secondary text-sm font-medium flex items-center justify-center gap-3">
+          <span>{t("home.tagline")}</span>
+          <span className="text-gray-300 dark:text-gray-700">|</span>
           <Link href="/faq" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
-            {t("home.faqLink")}
+            {t("home.faqLink", { defaultValue: "FAQ" })}
+          </Link>
+          <span className="text-gray-300 dark:text-gray-700">|</span>
+          <Link href="/stats" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+            Stats
           </Link>
         </p>
       </motion.header>
