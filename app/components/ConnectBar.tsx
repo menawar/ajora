@@ -21,7 +21,7 @@ export function ConnectBar() {
     return (
       <div className="flex flex-col items-center gap-1.5">
         <div className="flex items-center justify-center gap-2 text-sm text-gray-700 glass-panel px-4 py-2 rounded-full mx-auto w-fit">
-          <Avatar size="sm" />
+          <Avatar address={address} size="sm" />
           <span className="font-medium">{shorten(address)}</span>
           {miniPay && <span className="rounded-md bg-celo-green/20 px-2 py-0.5 text-[10px] font-bold text-celo-green uppercase tracking-wider">MiniPay</span>}
         </div>

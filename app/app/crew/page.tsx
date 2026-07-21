@@ -14,6 +14,8 @@ import { useEffect } from "react";
 import confetti from "canvas-confetti";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { ReferralCard } from "../../components/ReferralCard";
+import { CrewGoalProgress } from "../../components/ui/CrewGoalProgress";
+import { Avatar } from "../../components/ui/Avatar";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -167,6 +169,8 @@ export default function CrewPage() {
               <div className="text-sm font-medium opacity-90 mt-1">Saved by crew today</div>
             </div>
           </div>
+          
+          <CrewGoalProgress current={Number(formatUnits(crew.savingsToday, 18))} target={100} />
 
           <ReferralCard code={crew.myCode} memberCount={Number(crew.memberCount)} />
         </section>
@@ -177,13 +181,16 @@ export default function CrewPage() {
           <h2 className="font-bold text-text-primary mb-4 flex items-center gap-2">
             <Users2 className="w-5 h-5 text-celo-green" /> Crew Roster
           </h2>
-          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+          <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
             {crew.members.map((m) => (
-              <div key={m.address} className="flex justify-between items-center bg-bg-secondary p-3 rounded-xl text-sm border border-transparent hover:border-gray-200 transition-colors">
-                <span className="font-mono font-medium text-text-primary bg-white px-2 py-1 rounded-md shadow-sm">
+              <div key={m.address} className="flex flex-col items-center text-center bg-bg-secondary/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:bg-bg-secondary transition-colors">
+                <Avatar address={m.address} size={48} className="mb-2 shadow-sm" />
+                <span className="font-mono font-bold text-text-primary text-xs w-full truncate">
                   {m.address.slice(0, 6)}…{m.address.slice(-4)}
                 </span>
-                <span className="text-text-muted text-xs font-medium">Joined {new Date(m.joinedAt * 1000).toLocaleDateString()}</span>
+                <span className="text-text-muted text-[10px] font-medium mt-1">
+                  Joined {new Date(m.joinedAt * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                </span>
               </div>
             ))}
           </div>
