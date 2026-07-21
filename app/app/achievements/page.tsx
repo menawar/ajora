@@ -1,110 +1,84 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { useAchievements } from "../../hooks/useAchievements";
-import { AchievementCard } from "../../components/AchievementCard";
-import { ProgressBar } from "../../components/ui/ProgressBar";
-import { useWallet } from "../../hooks/useWallet";
-import { ConnectBar } from "../../components/ConnectBar";
+import { ArrowLeft, Medal } from "lucide-react";
 import Link from "next/link";
+import { MOCK_ACHIEVEMENTS } from "../../data/achievements";
+import { BadgeCard } from "../../components/ui/BadgeCard";
+import { useToast } from "../../hooks/useToast";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 15 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
 };
 
 export default function AchievementsPage() {
-  const { address } = useWallet();
-  const { achievements, unlockedCount } = useAchievements();
-  const pct = achievements.length > 0 ? (unlockedCount / achievements.length) * 100 : 0;
+  const { toast } = useToast();
+  
+  const handleBadgeClick = (title: string, unlocked: boolean) => {
+    if (unlocked) {
+      toast(`You unlocked: ${title}`, "success");
+    } else {
+      toast(`Keep saving to unlock ${title}`, "info");
+    }
+  };
 
-  const unlocked = achievements.filter((a) => a.unlocked);
-  const locked   = achievements.filter((a) => !a.unlocked);
+  const unlockedCount = MOCK_ACHIEVEMENTS.filter(a => a.unlockedAt !== null).length;
 
   return (
     <motion.main
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24 bg-bg-primary"
+      className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6 pb-24 bg-bg-primary"
       variants={containerVariants}
       initial="hidden"
       animate="show"
     >
-      {/* Header */}
       <motion.header variants={itemVariants} className="pt-4">
         <Link
-          href="/"
+          href="/settings"
           className="flex items-center gap-2 text-sm font-semibold text-text-secondary hover:text-text-primary transition-colors mb-4"
         >
-          ← Back
+          <ArrowLeft className="w-4 h-4" />
+          Settings
         </Link>
-        <h1 className="text-3xl font-black tracking-tight text-gradient">Achievements</h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          {unlockedCount} of {achievements.length} unlocked
+        <h1 className="text-3xl font-black tracking-tight text-gradient flex items-center gap-3">
+          Trophy Room <Medal className="w-6 h-6 text-celo-gold" />
+        </h1>
+        <p className="mt-1 text-sm text-text-secondary font-medium">
+          {unlockedCount} of {MOCK_ACHIEVEMENTS.length} achievements unlocked
         </p>
       </motion.header>
 
-      <motion.div variants={itemVariants}>
-        <ConnectBar />
+      {/* Progress Bar overall */}
+      <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-4">
+        <div className="flex justify-between text-xs font-bold text-text-primary uppercase tracking-widest mb-2">
+          <span>Completion</span>
+          <span>{Math.round((unlockedCount / MOCK_ACHIEVEMENTS.length) * 100)}%</span>
+        </div>
+        <div className="w-full h-2 bg-bg-secondary rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${(unlockedCount / MOCK_ACHIEVEMENTS.length) * 100}%` }}
+            transition={{ duration: 1.5, type: "spring" }}
+            className="h-full bg-celo-green rounded-full"
+          />
+        </div>
       </motion.div>
 
-      {/* Progress */}
-      {address && (
-        <motion.div variants={itemVariants} className="glass-panel rounded-3xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-bold text-text-primary">Overall Progress</div>
-            <div className="text-sm font-black text-celo-green">{unlockedCount}/{achievements.length}</div>
-          </div>
-          <ProgressBar value={pct} variant="gradient" size="lg" />
-          <p className="text-xs text-text-muted mt-2">
-            {locked.length} more to unlock — keep saving!
-          </p>
-        </motion.div>
-      )}
-
-      {/* Unlocked */}
-      {unlocked.length > 0 && (
-        <motion.section variants={itemVariants}>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-celo-green mb-3 flex items-center gap-2">
-            <span className="w-1 h-4 bg-celo-green rounded-full" />
-            Unlocked ({unlocked.length})
-          </h2>
-          <div className="flex flex-col gap-3">
-            {unlocked.map((a, i) => (
-              <AchievementCard key={a.id} achievement={a} index={i} />
-            ))}
-          </div>
-        </motion.section>
-      )}
-
-      {/* Locked */}
-      {locked.length > 0 && (
-        <motion.section variants={itemVariants}>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-3 flex items-center gap-2">
-            <span className="w-1 h-4 bg-gray-300 dark:bg-gray-600 rounded-full" />
-            Locked ({locked.length})
-          </h2>
-          <div className="flex flex-col gap-3">
-            {locked.map((a, i) => (
-              <AchievementCard key={a.id} achievement={a} index={i} />
-            ))}
-          </div>
-        </motion.section>
-      )}
-
-      {!address && (
-        <motion.div variants={itemVariants} className="glass-panel rounded-3xl py-12 text-center border-dashed border-2 border-gray-200 dark:border-gray-800">
-          <div className="text-4xl mb-3">🏆</div>
-          <p className="text-sm font-bold text-text-primary">Connect to see your achievements</p>
-        </motion.div>
-      )}
-
-      <motion.footer variants={itemVariants} className="mt-auto text-center text-xs text-text-muted pb-safe">
-        Achievements are computed from your on-chain activity. No cheating!
-      </motion.footer>
+      <motion.section variants={itemVariants} className="grid grid-cols-2 gap-4">
+        {MOCK_ACHIEVEMENTS.map((achievement, i) => (
+          <BadgeCard
+            key={achievement.id}
+            achievement={achievement}
+            index={i}
+            onClick={() => handleBadgeClick(achievement.title, achievement.unlockedAt !== null)}
+          />
+        ))}
+      </motion.section>
     </motion.main>
   );
 }
