@@ -145,14 +145,6 @@ export default function StatsPage() {
       )}
 
       <motion.div variants={itemVariants} className="grid gap-4">
-        <div className="bg-blue-500/10 border border-blue-500 p-2 text-xs rounded break-all">
-          <strong>DEBUG INFO:</strong>
-          <br/>
-          TVL: {global.tvl} | Savers: {global.savers} | AvgPot: {global.avgPot}
-          <br/>
-          Address: {contracts.potVault.address}
-        </div>
-        
         {/* TVL Hero Card — real totalPrincipalOutstanding */}
         <StatCard
           title="Total Value Locked"
