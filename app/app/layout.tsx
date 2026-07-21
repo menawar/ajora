@@ -8,6 +8,7 @@ import { TabBar } from "../components/TabBar";
 import { OfflineBanner } from "../components/OfflineBanner";
 import { PageTransition } from "../components/PageTransition";
 import { AnalyticsProvider } from "../components/AnalyticsProvider";
+import { SkipToMain } from "../components/SkipToMain";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -65,10 +66,13 @@ export default function RootLayout({
             <WalletProvider>
               <AnalyticsProvider>
                 <ToastProvider>
+                  <SkipToMain />
                   <OfflineBanner />
-                  <PageTransition>
-                    {children}
-                  </PageTransition>
+                  <main id="main-content">
+                    <PageTransition>
+                      {children}
+                    </PageTransition>
+                  </main>
                   <TabBar />
                 </ToastProvider>
               </AnalyticsProvider>

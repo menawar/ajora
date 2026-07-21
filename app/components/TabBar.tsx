@@ -38,7 +38,8 @@ export function TabBar() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="relative flex flex-1 flex-col items-center"
+                aria-label={t(tab.labelKey)}
+                className="relative flex flex-1 flex-col items-center focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:outline-none rounded-xl"
               >
                 <motion.div
                   whileTap={{ scale: 0.8 }}
