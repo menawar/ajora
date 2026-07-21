@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { formatUnits } from "viem";
 import { motion } from "framer-motion";
 import type { SavingsEntry } from "../hooks/useSavings";
+import { TiltCard } from "./ui/TiltCard";
 
 interface SavingsChartProps {
   entries: SavingsEntry[];
@@ -57,16 +58,19 @@ export function SavingsChart({ entries, loading = false, className = "" }: Savin
 
   if (loading) {
     return (
-      <div className={`glass-panel rounded-3xl p-5 ${className}`}>
-        <div className="h-20 animate-pulse bg-bg-secondary rounded-xl" />
-      </div>
+      <TiltCard className={className}>
+        <div className="glass-panel rounded-3xl p-5">
+          <div className="h-20 animate-pulse bg-bg-secondary rounded-xl" />
+        </div>
+      </TiltCard>
     );
   }
 
   if (entries.length === 0) return null;
 
   return (
-    <div className={`glass-panel rounded-3xl p-5 ${className}`}>
+    <TiltCard className={className}>
+      <div className="glass-panel rounded-3xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
           <span className="w-1.5 h-5 bg-celo-green rounded-full block" />
@@ -137,6 +141,7 @@ export function SavingsChart({ entries, loading = false, className = "" }: Savin
             ))}
         </div>
       )}
-    </div>
+      </div>
+    </TiltCard>
   );
 }

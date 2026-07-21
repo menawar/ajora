@@ -45,9 +45,9 @@ export function ToggleItem({
 
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} className={containerClasses + " w-full text-left"}>
+      <motion.button type="button" whileTap={{ scale: 0.98 }} onClick={onClick} className={containerClasses + " w-full text-left"}>
         {content}
-      </button>
+      </motion.button>
     );
   }
 
