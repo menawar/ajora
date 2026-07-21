@@ -17,7 +17,6 @@ import { ComboFlow } from "../components/ComboFlow";
 import { ActivityFeed } from "../components/ActivityFeed";
 import { Skeleton } from "../components/ui/Skeleton";
 import { CountUp } from "../components/ui/CountUp";
-import Link from "next/link";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
