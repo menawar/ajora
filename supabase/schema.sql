@@ -66,3 +66,30 @@ CREATE INDEX IF NOT EXISTS idx_users_xp ON public.users(xp_balance DESC);
 CREATE INDEX IF NOT EXISTS idx_users_streak ON public.users(longest_streak DESC);
 CREATE INDEX IF NOT EXISTS idx_crews_volume ON public.crews(total_volume_usd DESC);
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON public.notifications(user_address, is_read);
+
+-- 6. RPC Functions
+-- Function to safely increment XP
+CREATE OR REPLACE FUNCTION public.increment_xp(user_addr TEXT, amount INTEGER)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.users
+  SET xp_balance = xp_balance + amount
+  WHERE address = user_addr;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to safely unlock a theme
+CREATE OR REPLACE FUNCTION public.unlock_theme(user_addr TEXT, theme_to_unlock TEXT, cost INTEGER)
+RETURNS void AS $$
+BEGIN
+  -- Check if user has enough XP
+  IF (SELECT xp_balance FROM public.users WHERE address = user_addr) >= cost THEN
+    UPDATE public.users
+    SET xp_balance = xp_balance - cost,
+        unlocked_themes = array_append(unlocked_themes, theme_to_unlock)
+    WHERE address = user_addr AND NOT (theme_to_unlock = ANY(unlocked_themes));
+  ELSE
+    RAISE EXCEPTION 'Insufficient XP';
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
