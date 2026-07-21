@@ -68,14 +68,25 @@ async function deriveQuestsFromChain(address: `0x${string}`) {
   // Scan recent blocks for save count (up to 14 periods back)
   const latest = await rpc.getBlockNumber();
   const fromBlock = latest > 50_000n ? latest - 50_000n : 0n;
-  const logs = await rpc.getLogs({
-    address: POTVAULT,
-    event: contributedAbi,
-    args: { user: address },
-    fromBlock,
-    toBlock: latest,
-  });
-  const uniquePeriods = new Set(logs.map((l) => l.args.periodId?.toString())).size;
+  const chunk = 4_000n;
+  const uniquePeriodsSet = new Set<string>();
+  
+  for (let start = fromBlock; start <= latest; start += chunk) {
+    const end = start + chunk - 1n < latest ? start + chunk - 1n : latest;
+    const logs = await rpc.getLogs({
+      address: POTVAULT,
+      event: contributedAbi,
+      args: { user: address },
+      fromBlock: start,
+      toBlock: end,
+    });
+    for (const l of logs) {
+      if (l.args.periodId) {
+        uniquePeriodsSet.add(l.args.periodId.toString());
+      }
+    }
+  }
+  const uniquePeriods = uniquePeriodsSet.size;
 
   // Check-in: if streakOf returns same-day value (simplistic: streak > 0 and last check was today's day index)
   const savedToday = todayPrincipal > 0n;
