@@ -52,10 +52,9 @@ export default function ThemesPage() {
           setUnlockedThemes(json.unlocked_themes || ['light', 'dark']);
         }
       } catch (e) {
-        console.error(e);
+        console.error("API failed", e);
         if (active) {
-          // fallback
-          setXpBalance(750);
+          setXpBalance(0);
         }
       } finally {
         if (active) setLoading(false);

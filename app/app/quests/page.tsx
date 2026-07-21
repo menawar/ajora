@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { QuestCard } from "../../components/ui/QuestCard";
 import { useWallet } from "../../hooks/useWallet";
-import { type Quest, MOCK_QUESTS } from "../../data/quests";
+import { type Quest } from "../../data/quests";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -38,8 +38,8 @@ export default function QuestsPage() {
           setQuests(json);
         }
       } catch (e) {
-        console.error("API failed, falling back to mock data", e);
-        if (active) setQuests(MOCK_QUESTS);
+        console.error("API failed", e);
+        if (active) setQuests([]);
       } finally {
         if (active) setLoading(false);
       }
