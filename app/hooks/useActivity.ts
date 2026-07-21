@@ -6,8 +6,8 @@ import { publicClient } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
-/** ~5 000 Celo blocks ≈ last ~83 minutes at ~1 s/block */
-const RECENT_BLOCKS = 5_000n;
+/** ~4 000 Celo blocks ≈ last ~66 minutes at ~1 s/block */
+const RECENT_BLOCKS = 4_000n;
 
 const contributedEvent = parseAbiItem(
   "event Contributed(address indexed user, uint256 indexed periodId, uint256 amount, uint256 ticketsMinted)",

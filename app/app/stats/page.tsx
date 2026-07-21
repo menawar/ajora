@@ -42,6 +42,9 @@ function useGlobalStats(): GlobalStats {
 
   const fetchStats = useCallback(() => {
     void (async () => {
+      let currentTvl = 0;
+      let currentAvgPot = 0;
+      
       try {
         const periodId = await publicClient.readContract({
           ...contracts.potVault,
@@ -53,27 +56,8 @@ function useGlobalStats(): GlobalStats {
           ...contracts.potVault,
           functionName: "totalPrincipalOutstanding",
         });
-        const tvl = Number(formatUnits(tvlRaw, 18));
-
-        // 2. Unique savers — distinct user addresses from Contributed logs over ~30 days
-        //    ~30 days × 86_400 blocks ≈ 2_592_000. Cap at 100_000 for RPC budget.
-        const latest = await publicClient.getBlockNumber();
-        const fromBlock = latest > 100_000n ? latest - 100_000n : 0n;
-        const chunk = 10_000n;
-        const uniqueUsers = new Set<string>();
-        for (let start = fromBlock; start <= latest; start += chunk) {
-          const end = start + chunk - 1n < latest ? start + chunk - 1n : latest;
-          const logs = await publicClient.getLogs({
-            address: contracts.potVault.address,
-            event: contributedEvent,
-            fromBlock: start,
-            toBlock: end,
-          });
-          for (const log of logs) {
-            if (log.args.user) uniqueUsers.add(log.args.user.toLowerCase());
-          }
-        }
-        const savers = uniqueUsers.size;
+        currentTvl = Number(formatUnits(tvlRaw, 18));
+        setStats((s) => ({ ...s, tvl: currentTvl })); // Update TVL immediately
 
         // 3. Average pot from last 7 resolved draws
         const drawIds = Array.from({ length: 7 }, (_, i) => periodId - BigInt(i + 1)).filter(
@@ -89,13 +73,36 @@ function useGlobalStats(): GlobalStats {
         const resolvedPots = draws
           .filter((d): d is NonNullable<typeof d> => d !== null && d.resolved && d.pot > 0n)
           .map((d) => Number(formatUnits(d.pot, 18)));
-        const avgPot =
-          resolvedPots.length > 0
+        
+        currentAvgPot = resolvedPots.length > 0
             ? resolvedPots.reduce((a, b) => a + b, 0) / resolvedPots.length
             : 0;
+        setStats((s) => ({ ...s, avgPot: currentAvgPot }));
+      } catch (err) {
+        console.error("Stats core fetch failed", err);
+      }
 
-        setStats({ tvl, savers, avgPot, loading: false });
-      } catch {
+      // 2. Unique savers — fetch in smaller 4000-block chunks to respect RPC limits
+      try {
+        const latest = await publicClient.getBlockNumber();
+        const fromBlock = latest > 100_000n ? latest - 100_000n : 0n;
+        const chunk = 4_000n;
+        const uniqueUsers = new Set<string>();
+        for (let start = fromBlock; start <= latest; start += chunk) {
+          const end = start + chunk - 1n < latest ? start + chunk - 1n : latest;
+          const logs = await publicClient.getLogs({
+            address: contracts.potVault.address,
+            event: contributedEvent,
+            fromBlock: start,
+            toBlock: end,
+          });
+          for (const log of logs) {
+            if (log.args.user) uniqueUsers.add(log.args.user.toLowerCase());
+          }
+        }
+        setStats((s) => ({ ...s, savers: uniqueUsers.size, loading: false }));
+      } catch (err) {
+        console.error("Stats logs fetch failed", err);
         setStats((s) => ({ ...s, loading: false }));
       }
     })();
