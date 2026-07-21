@@ -3,9 +3,10 @@
 import { motion, type Variants } from "framer-motion";
 import { ArrowLeft, BellRing, UserPlus, Gift, Trophy, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Ripple } from "../../components/ui/Ripple";
 import { useTranslation } from "../../lib/i18n";
+import { useWallet } from "../../hooks/useWallet";
 
 type NotificationType = "crew" | "draw" | "achievement" | "system";
 
@@ -18,40 +19,7 @@ interface Notification {
   read: boolean;
 }
 
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: "1",
-    type: "draw",
-    title: "Draw Results Are Out!",
-    message: "Check if you won the 5,000 cUSD grand prize for Period #124.",
-    time: "2 hours ago",
-    read: false,
-  },
-  {
-    id: "2",
-    type: "crew",
-    title: "Amara joined your crew",
-    message: "Your crew size increased. The daily multiplier is now active!",
-    time: "5 hours ago",
-    read: false,
-  },
-  {
-    id: "3",
-    type: "achievement",
-    title: "Badge Unlocked: Early Bird",
-    message: "You saved in the first hour of a new period.",
-    time: "1 day ago",
-    read: true,
-  },
-  {
-    id: "4",
-    type: "system",
-    title: "Welcome to Ajora",
-    message: "Your first deposit is safely earning yield.",
-    time: "3 days ago",
-    read: true,
-  }
-];
+// Mock structure is now defined by the Notification interface and API response
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -65,10 +33,61 @@ const itemVariants: Variants = {
 
 export default function NotificationsPage() {
   const { t } = useTranslation();
-  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+  const { address } = useWallet();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const markAllRead = () => {
+  useEffect(() => {
+    let active = true;
+    if (!address) {
+      setLoading(false);
+      return;
+    }
+    const fetchNotifs = async () => {
+      try {
+        const res = await fetch(`/api/notifications?address=${address}`);
+        if (!res.ok) throw new Error("Failed");
+        const json = await res.json();
+        if (active && Array.isArray(json)) setNotifications(json);
+      } catch (e) {
+        console.error("API failed", e);
+        if (active) setNotifications([]);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    fetchNotifs();
+    return () => { active = false; };
+  }, [address]);
+
+  const markAllRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    if (address) {
+      try {
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address, notificationIds: [] })
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  const markSingleRead = async (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    if (address) {
+      try {
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address, notificationIds: [id] })
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   const getIcon = (type: NotificationType) => {
@@ -120,7 +139,9 @@ export default function NotificationsPage() {
       </motion.header>
 
       <motion.section variants={itemVariants} className="flex flex-col gap-3 mt-2">
-        {notifications.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-celo-green border-t-transparent rounded-full animate-spin" /></div>
+        ) : notifications.length === 0 ? (
           <div className="glass-panel rounded-3xl py-12 text-center">
             <BellRing className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-sm font-bold text-text-primary">{t("notifications.empty")}</p>
@@ -135,9 +156,7 @@ export default function NotificationsPage() {
                     : "glass-panel border-celo-green/20 shadow-sm"
                 }`}
                 onClick={() => {
-                  setNotifications(prev => 
-                    prev.map(n => n.id === notif.id ? { ...n, read: true } : n)
-                  );
+                  if (!notif.read) markSingleRead(notif.id);
                 }}
               >
                 <div className={`mt-0.5 shrink-0 w-10 h-10 flex items-center justify-center rounded-full ${

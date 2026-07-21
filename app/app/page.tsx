@@ -81,7 +81,7 @@ export default function Home() {
             Quests
           </Link>
           <span className="text-gray-300 dark:text-gray-700">|</span>
-          <Link href="/leaderboard" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+          <Link href="/board" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
             Rank
           </Link>
         </p>

@@ -11,7 +11,7 @@ const contributedEvent = parseAbiItem(
   "event Contributed(address indexed user, uint256 indexed periodId, uint256 amount, uint256 ticketsMinted)",
 );
 
-const CHUNK = 5_000n; // stay well under public-RPC getLogs range limits
+const CHUNK = 4_000n; // stay well under public-RPC getLogs range limits
 const BATCH = 3; // parallel chunk requests
 
 export interface SaverRow {

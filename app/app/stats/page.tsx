@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Activity, Users, Coins } from "lucide-react";
+import { Activity, Users, Coins, Loader2 } from "lucide-react";
+import { formatUnits, parseAbiItem } from "viem";
 import { StatCard } from "../../components/ui/StatCard";
 import { RecentWinnersFeed } from "../../components/RecentWinnersFeed";
 import { CountUp } from "../../components/ui/CountUp";
 import { usePotToday } from "../../hooks/usePotVault";
-import { formatUnits } from "viem";
+import { publicClient } from "../../lib/clients";
+import { contracts } from "../../lib/contracts";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -22,12 +25,102 @@ const itemVariants: Variants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
+/** Unique Contributed emitters across a 30-day block window. */
+const contributedEvent = parseAbiItem(
+  "event Contributed(address indexed user, uint256 indexed periodId, uint256 amount, uint256 ticketsMinted)",
+);
+
+interface GlobalStats {
+  tvl: number;       // cUSD
+  savers: number;    // unique addresses
+  avgPot: number;    // cUSD, avg of last 7 resolved draws
+  loading: boolean;
+}
+
+function useGlobalStats(): GlobalStats {
+  const [stats, setStats] = useState<GlobalStats>({ tvl: 0, savers: 0, avgPot: 0, loading: true });
+
+  const fetchStats = useCallback(() => {
+    void (async () => {
+      let currentTvl = 0;
+      let currentAvgPot = 0;
+      
+      try {
+        const periodId = await publicClient.readContract({
+          ...contracts.potVault,
+          functionName: "currentPeriod",
+        });
+
+        // 1. Real TVL — totalPrincipalOutstanding()
+        const tvlRaw = await publicClient.readContract({
+          ...contracts.potVault,
+          functionName: "totalPrincipalOutstanding",
+        });
+        currentTvl = Number(formatUnits(tvlRaw, 18));
+        setStats((s) => ({ ...s, tvl: currentTvl })); // Update TVL immediately
+
+        // 3. Average pot from last 7 resolved draws
+        const drawIds = Array.from({ length: 7 }, (_, i) => periodId - BigInt(i + 1)).filter(
+          (id) => id >= 0n,
+        );
+        const draws = await Promise.all(
+          drawIds.map((id) =>
+            publicClient
+              .readContract({ ...contracts.drawManager, functionName: "drawOf", args: [id] })
+              .catch(() => null),
+          ),
+        );
+        const resolvedPots = draws
+          .filter((d): d is NonNullable<typeof d> => d !== null && d.resolved && d.pot > 0n)
+          .map((d) => Number(formatUnits(d.pot, 18)));
+        
+        currentAvgPot = resolvedPots.length > 0
+            ? resolvedPots.reduce((a, b) => a + b, 0) / resolvedPots.length
+            : 0;
+        setStats((s) => ({ ...s, avgPot: currentAvgPot }));
+      } catch (err) {
+        console.error("Stats core fetch failed", err);
+      }
+
+      // 2. Unique savers — fetch in smaller 4000-block chunks to respect RPC limits
+      try {
+        const latest = await publicClient.getBlockNumber();
+        const fromBlock = latest > 100_000n ? latest - 100_000n : 0n;
+        const chunk = 4_000n;
+        const uniqueUsers = new Set<string>();
+        for (let start = fromBlock; start <= latest; start += chunk) {
+          const end = start + chunk - 1n < latest ? start + chunk - 1n : latest;
+          const logs = await publicClient.getLogs({
+            address: contracts.potVault.address,
+            event: contributedEvent,
+            fromBlock: start,
+            toBlock: end,
+          });
+          for (const log of logs) {
+            if (log.args.user) uniqueUsers.add(log.args.user.toLowerCase());
+          }
+        }
+        setStats((s) => ({ ...s, savers: uniqueUsers.size, loading: false }));
+      } catch (err) {
+        console.error("Stats logs fetch failed", err);
+        setStats((s) => ({ ...s, loading: false }));
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
+  return stats;
+}
+
 export default function StatsPage() {
   const pot = usePotToday();
-  const tvl = pot.loading ? 0 : Number(formatUnits(pot.jaraPot, 18)) * 14.5; // Mock TVL based on pot size for demo
-  
+  const global = useGlobalStats();
+
   return (
-    <motion.main 
+    <motion.main
       className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6 pb-24 bg-bg-primary"
       variants={containerVariants}
       initial="hidden"
@@ -42,17 +135,22 @@ export default function StatsPage() {
       </motion.header>
 
       <motion.div variants={itemVariants} className="grid gap-4">
-        {/* TVL Hero Card */}
+        {/* TVL Hero Card — real totalPrincipalOutstanding */}
         <StatCard
           title="Total Value Locked"
           icon={<Coins className="w-5 h-5" />}
           value={
-            <>
-              $<CountUp to={tvl} decimals={2} duration={1500} />
-            </>
+            global.loading ? (
+              <span className="flex items-center gap-2 text-2xl">
+                <Loader2 className="w-5 h-5 animate-spin" /> Loading…
+              </span>
+            ) : (
+              <>
+                $<CountUp to={global.tvl} decimals={2} duration={1500} />
+              </>
+            )
           }
-          subtitle="Across all active savers"
-          trend={{ value: 12.5, label: "this week" }}
+          subtitle="cUSD locked across all active savers"
           delay={0.1}
         />
 
@@ -60,39 +158,79 @@ export default function StatsPage() {
           <StatCard
             title="Total Savers"
             icon={<Users className="w-4 h-4" />}
-            value={<CountUp to={1248} duration={1200} />}
-            trend={{ value: 5.2, label: "7d" }}
+            value={
+              global.loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CountUp to={global.savers} duration={1200} />
+              )
+            }
+            subtitle="unique addresses"
             delay={0.2}
           />
           <StatCard
             title="Avg Draw Pot"
             icon={<TrophyIcon className="w-4 h-4" />}
             value={
-              <>
-                <CountUp to={45.5} decimals={1} duration={1200} />
-                <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
-              </>
+              global.loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : global.avgPot === 0 ? (
+                <span className="text-sm text-text-muted">—</span>
+              ) : (
+                <>
+                  <CountUp to={global.avgPot} decimals={1} duration={1200} />
+                  <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
+                </>
+              )
             }
-            trend={{ value: 2.1, label: "7d" }}
+            subtitle="last 7 draws"
             delay={0.3}
           />
         </div>
+
+        {/* Today's live pot */}
+        {!pot.loading && pot.jaraPot > 0n && (
+          <StatCard
+            title="Today's Pot"
+            icon={<Coins className="w-4 h-4" />}
+            value={
+              <>
+                <CountUp
+                  to={Number(formatUnits(pot.jaraPot, 18))}
+                  decimals={2}
+                  duration={1000}
+                />
+                <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
+              </>
+            }
+            subtitle={`${pot.totalTickets.toString()} tickets in pool`}
+            delay={0.4}
+          />
+        )}
       </motion.div>
 
       <motion.div variants={itemVariants}>
         <RecentWinnersFeed />
       </motion.div>
 
-      <motion.section variants={itemVariants} className="glass-panel rounded-3xl p-5 border-l-4 border-l-celo-green">
-        <h3 className="text-sm font-bold text-text-primary mb-1">System Health: Optimal</h3>
+      <motion.section
+        variants={itemVariants}
+        className="glass-panel rounded-3xl p-5 border-l-4 border-l-celo-green"
+      >
+        <h3 className="text-sm font-bold text-text-primary mb-1">System Health: On-Chain</h3>
         <p className="text-xs text-text-secondary">
-          The Keeper bot is active and harvesting yield across Aave and Moola markets. 
-          Smart contracts are fully collateralized.
+          All data is read live from Celo mainnet contracts. The keeper bot manages daily draws and yield harvesting. Smart contracts are fully collateralized.
         </p>
       </motion.section>
 
-      <motion.footer variants={itemVariants} className="mt-auto pt-6 flex flex-col gap-4 text-center pb-safe">
-        <Link href="/" className="text-sm font-bold text-celo-green underline decoration-celo-green/30 decoration-dotted underline-offset-4 transition hover:text-[#2ebf73]">
+      <motion.footer
+        variants={itemVariants}
+        className="mt-auto pt-6 flex flex-col gap-4 text-center pb-safe"
+      >
+        <Link
+          href="/"
+          className="text-sm font-bold text-celo-green underline decoration-celo-green/30 decoration-dotted underline-offset-4 transition hover:text-[#2ebf73]"
+        >
           ← Back to home
         </Link>
       </motion.footer>
@@ -100,7 +238,7 @@ export default function StatsPage() {
   );
 }
 
-function TrophyIcon(props: any) {
+function TrophyIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

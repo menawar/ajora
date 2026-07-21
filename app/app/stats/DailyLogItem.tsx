@@ -1,4 +1,4 @@
-import { DailyMetric } from "../../hooks/useMetrics";
+import type { DailyMetric } from "../../hooks/useMetrics";
 
 function cusd(wei: string): string {
   if (!wei) return "0";

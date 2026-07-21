@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useTheme } from "../../hooks/useTheme";
 import { Ripple } from "../../components/ui/Ripple";
 import { useSFX } from "../../hooks/useSFX";
+import { useState, useEffect } from "react";
+import { useWallet } from "../../hooks/useWallet";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -29,7 +31,59 @@ const THEMES = [
 export default function ThemesPage() {
   const { theme, setTheme } = useTheme();
   const sfx = useSFX();
-  const xpBalance = 750;
+  const { address } = useWallet();
+  const [xpBalance, setXpBalance] = useState(0);
+  const [unlockedThemes, setUnlockedThemes] = useState<string[]>(['light', 'dark']);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    if (!address) {
+      setLoading(false);
+      return;
+    }
+    const fetchThemes = async () => {
+      try {
+        const res = await fetch(`/api/themes?address=${address}`);
+        if (!res.ok) throw new Error("Failed");
+        const json = await res.json();
+        if (active && json) {
+          setXpBalance(json.xp_balance || 0);
+          setUnlockedThemes(json.unlocked_themes || ['light', 'dark']);
+        }
+      } catch (e) {
+        console.error("API failed", e);
+        if (active) {
+          setXpBalance(0);
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    fetchThemes();
+    return () => { active = false; };
+  }, [address]);
+
+  const handleUnlock = async (themeId: string, price: number) => {
+    if (!address) return;
+    try {
+      const res = await fetch("/api/themes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address, themeId, price })
+      });
+      if (res.ok) {
+        setXpBalance(prev => prev - price);
+        setUnlockedThemes(prev => [...prev, themeId]);
+        sfx.click();
+        setTheme(themeId as any);
+      } else {
+        sfx.pop();
+      }
+    } catch (e) {
+      sfx.pop();
+    }
+  };
 
   return (
     <motion.main
@@ -65,7 +119,7 @@ export default function ThemesPage() {
       <motion.section variants={itemVariants} className="grid grid-cols-2 gap-4">
         {THEMES.map((t) => {
           const isSelected = theme === t.id || (theme === "system" && t.id === "light");
-          const isUnlocked = t.unlocked || xpBalance >= t.price; // Mocking unlock for demo if affordable
+          const isUnlocked = t.unlocked || unlockedThemes.includes(t.id);
 
           return (
             <Ripple key={t.id} className="rounded-2xl h-full" as="div">
@@ -73,7 +127,9 @@ export default function ThemesPage() {
                 onClick={() => {
                   if (isUnlocked) {
                     sfx.click();
-                    setTheme(t.id);
+                    setTheme(t.id as any);
+                  } else if (xpBalance >= t.price) {
+                    handleUnlock(t.id, t.price);
                   } else {
                     sfx.pop();
                   }
