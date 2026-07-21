@@ -7,7 +7,9 @@ import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
 /** How many recent periods (days) the wallet screen lists. */
-const LOOKBACK = 7;
+const LOOKBACK = 14;
+/** How many periods to scan for the all-time total. */
+const ALLTIME_LOOKBACK = 30;
 const POLL_MS = 15_000;
 
 export interface SavingsEntry {
@@ -16,10 +18,11 @@ export interface SavingsEntry {
   isToday: boolean;
 }
 
-/** Per-period principal for the last week, plus the no-loss claim write. */
+/** Per-period principal for the last 14 days, plus the no-loss claim write. */
 export function useSavings() {
   const { address } = useWallet();
   const [entries, setEntries] = useState<SavingsEntry[]>([]);
+  const [totalAllTime, setTotalAllTime] = useState(0n);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState<bigint>();
   const [error, setError] = useState<string>();
@@ -46,15 +49,27 @@ export function useSavings() {
             }),
           ),
         );
-        setEntries(
-          ids
-            .map((periodId, i) => ({
-              periodId,
-              principal: principals[i],
-              isToday: periodId === current,
-            }))
-            .filter((e) => e.principal > 0n),
+        const filtered = ids
+          .map((periodId, i) => ({
+            periodId,
+            principal: principals[i],
+            isToday: periodId === current,
+          }))
+          .filter((e) => e.principal > 0n);
+        setEntries(filtered);
+
+        // Scan a wider window for all-time total
+        const allTimeIds = Array.from({ length: ALLTIME_LOOKBACK }, (_, i) => current - BigInt(i));
+        const allTimePrincipals = await Promise.all(
+          allTimeIds.map((periodId) =>
+            publicClient.readContract({
+              ...contracts.potVault,
+              functionName: "principalOf",
+              args: [address, periodId],
+            }).catch(() => 0n),
+          ),
         );
+        setTotalAllTime(allTimePrincipals.reduce((sum, p) => sum + p, 0n));
         setLoading(false);
       } catch {
         setLoading(false);
@@ -99,5 +114,5 @@ export function useSavings() {
   );
 
   const total = entries.reduce((sum, e) => sum + e.principal, 0n);
-  return { entries, total, loading, claimPrincipal, claiming, error };
+  return { entries, total, totalAllTime, loading, claimPrincipal, claiming, error };
 }
