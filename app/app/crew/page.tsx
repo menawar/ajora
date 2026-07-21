@@ -16,6 +16,7 @@ import { Skeleton } from "../../components/ui/Skeleton";
 import { ReferralCard } from "../../components/ReferralCard";
 import { CrewGoalProgress } from "../../components/ui/CrewGoalProgress";
 import { Avatar } from "../../components/ui/Avatar";
+import { useSFX } from "../../hooks/useSFX";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -25,9 +26,11 @@ function SpraySection() {
   const { address } = useWallet();
   const { spraysLeft, dailyFreeLeft, spray, spraying, done, error } = useSpray();
   const [friend, setFriend] = useState("");
+  const sfx = useSFX();
 
   useEffect(() => {
     if (done) {
+      sfx.success();
       confetti({
         particleCount: 120,
         spread: 90,
@@ -36,7 +39,7 @@ function SpraySection() {
       });
       trackEvent(AnalyticsEvents.SPRAY_COMPLETED, { friend });
     }
-  }, [done, friend]);
+  }, [done, friend, sfx]);
 
   if (!address) return null;
 

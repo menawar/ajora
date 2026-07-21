@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import { useSFX } from "../../hooks/useSFX";
 
 interface RippleOptions {
   color?: string;
@@ -13,9 +14,11 @@ interface RippleOptions {
  */
 export function useRipple(options: RippleOptions = {}) {
   const { color = "rgba(255,255,255,0.35)", duration = 500 } = options;
+  const sfx = useSFX();
 
   const createRipple = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
+      sfx.click();
       const el = e.currentTarget;
       const rect = el.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height) * 2;
@@ -62,7 +65,7 @@ export function useRipple(options: RippleOptions = {}) {
       };
       setTimeout(cleanup, duration + 100);
     },
-    [color, duration],
+    [color, duration, sfx],
   );
 
   return { onMouseDown: createRipple };
