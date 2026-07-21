@@ -19,6 +19,7 @@
     "metrics": "node scripts/collect-metrics.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.7",
     "canvas-confetti": "^1.9.4",
     "dotenv": "^17.4.2",
     "framer-motion": "^12.42.2",
@@ -27,6 +28,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-qr-code": "^2.2.0",
+    "siwe": "^3.0.0",
     "viem": "^2.21.0"
   },
   "devDependencies": {
