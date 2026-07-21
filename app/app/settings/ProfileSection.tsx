@@ -1,14 +1,16 @@
 "use client";
 
 import { useWallet } from "../../hooks/useWallet";
-import { UserCircle2, Copy, CheckCircle2, ShieldCheck, Wallet } from "lucide-react";
+import { UserCircle2, Copy, CheckCircle2, ShieldCheck, Wallet, Trophy, ChevronRight } from "lucide-react";
 import { SettingsGroup } from "../../components/ui/SettingsGroup";
 import { ToggleItem } from "../../components/ui/ToggleItem";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function ProfileSection() {
   const { address } = useWallet();
   const [copied, setCopied] = useState(false);
+  const router = useRouter();
 
   const handleCopyAddress = () => {
     if (!address) return;
@@ -45,6 +47,13 @@ export function ProfileSection() {
         title="Connected Wallet"
         description="MiniPay Smart Wallet"
         action={null}
+      />
+      <ToggleItem
+        icon={<Trophy className="w-5 h-5 text-celo-gold" />}
+        title="Trophy Room"
+        description="View your unlocked achievements"
+        action={<ChevronRight className="w-5 h-5 text-text-muted" />}
+        onClick={() => router.push("/achievements")}
         borderBottom={false}
       />
     </SettingsGroup>
