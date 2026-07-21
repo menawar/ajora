@@ -1,7 +1,7 @@
 "use client";
 
 import { useWallet } from "../../hooks/useWallet";
-import { UserCircle2, Copy, CheckCircle2, ShieldCheck, Wallet, Trophy, ChevronRight } from "lucide-react";
+import { UserCircle2, Copy, CheckCircle2, ShieldCheck, Wallet, Trophy, ChevronRight, Palette } from "lucide-react";
 import { SettingsGroup } from "../../components/ui/SettingsGroup";
 import { ToggleItem } from "../../components/ui/ToggleItem";
 import { useState } from "react";
@@ -54,6 +54,13 @@ export function ProfileSection() {
         description="View your unlocked achievements"
         action={<ChevronRight className="w-5 h-5 text-text-muted" />}
         onClick={() => router.push("/achievements")}
+      />
+      <ToggleItem
+        icon={<Palette className="w-5 h-5 text-purple-500" />}
+        title="App Themes"
+        description="Customize your experience"
+        action={<ChevronRight className="w-5 h-5 text-text-muted" />}
+        onClick={() => router.push("/themes")}
         borderBottom={false}
       />
     </SettingsGroup>
