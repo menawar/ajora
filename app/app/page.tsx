@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { formatUnits } from "viem";
 import { motion, type Variants } from "framer-motion";
+import { Bell } from "lucide-react";
 import { useTranslation } from "../lib/i18n";
 import { ConnectBar } from "../components/ConnectBar";
 import { Onboarding } from "../components/Onboarding";
@@ -56,8 +57,15 @@ export default function Home() {
       initial="hidden"
       animate="show"
     >
-      <motion.header variants={itemVariants} className="text-center pt-4">
-        <h1 className="text-5xl font-black tracking-tight text-gradient mb-2">Ajora</h1>
+      <motion.header variants={itemVariants} className="pt-4 relative">
+        <h1 className="text-5xl font-black tracking-tight text-gradient text-center mb-2">Ajora</h1>
+        <Link 
+          href="/notifications"
+          className="absolute right-0 top-6 p-2 rounded-full bg-bg-secondary text-text-secondary hover:text-celo-green hover:bg-celo-green/10 transition-colors"
+        >
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500/50 animate-pulse" />
+        </Link>
         <p className="mt-1 text-text-secondary text-sm font-medium flex items-center justify-center gap-3">
           <span>{t("home.tagline")}</span>
           <span className="text-gray-300 dark:text-gray-700">|</span>
