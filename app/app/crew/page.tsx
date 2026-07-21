@@ -13,6 +13,7 @@ import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 import { useEffect } from "react";
 import confetti from "canvas-confetti";
 import { Skeleton } from "../../components/ui/Skeleton";
+import { ReferralCard } from "../../components/ReferralCard";
 
 function cusd(v: bigint): string {
   return Number(formatUnits(v, 18)).toLocaleString("en", { maximumFractionDigits: 2 });
@@ -154,32 +155,20 @@ export default function CrewPage() {
           {crew.error && <p className="mt-4 text-center text-sm font-semibold text-red-500 bg-red-50 p-2 rounded-lg">{crew.error}</p>}
         </section>
       ) : (
-        <section className="rounded-3xl bg-gradient-to-br from-celo-green via-[#2ebf73] to-celo-gold p-6 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-          <div className="flex justify-between text-sm font-medium opacity-90 relative z-10">
-            <span className="bg-white/20 px-2 py-1 rounded-md">Crew #{crew.crewId.toString()}</span>
-            <span className="flex items-center gap-1"><Users2 className="w-4 h-4" /> {crew.memberCount.toString()} members</span>
+        <section className="flex flex-col gap-4">
+          <div className="rounded-3xl bg-gradient-to-br from-celo-green via-[#2ebf73] to-celo-gold p-6 text-white shadow-xl relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="flex justify-between text-sm font-medium opacity-90 relative z-10">
+              <span className="bg-white/20 px-2 py-1 rounded-md">Crew #{crew.crewId.toString()}</span>
+              <span className="flex items-center gap-1"><Users2 className="w-4 h-4" /> {crew.memberCount.toString()} members</span>
+            </div>
+            <div className="mt-4 relative z-10">
+              <div className="text-4xl font-black tracking-tight drop-shadow-md">{cusd(crew.savingsToday)} <span className="text-xl font-bold opacity-80 uppercase tracking-wide">cUSD</span></div>
+              <div className="text-sm font-medium opacity-90 mt-1">Saved by crew today</div>
+            </div>
           </div>
-          <div className="mt-4 mb-2 relative z-10">
-            <div className="text-4xl font-black tracking-tight drop-shadow-md">{cusd(crew.savingsToday)} <span className="text-xl font-bold opacity-80 uppercase tracking-wide">cUSD</span></div>
-            <div className="text-sm font-medium opacity-90 mt-1">Saved by crew today</div>
-          </div>
-          <div className="mt-6 rounded-2xl bg-white/15 backdrop-blur-md p-4 text-center border border-white/20 relative z-10">
-            <div className="text-xs font-semibold uppercase tracking-wider opacity-90 mb-1">Your Invite Code</div>
-            <div className="text-2xl font-black tracking-widest">{crew.myCode}</div>
-          </div>
-          <button
-            type="button"
-            onClick={() =>
-              void navigator.share?.({
-                text: `Join my Ajora crew — save small, keep every cent, win the daily draw. Code: ${crew.myCode}`,
-                url: inviteLink,
-              }).catch(() => navigator.clipboard?.writeText(inviteLink))
-            }
-            className="mt-4 w-full rounded-2xl bg-white px-4 py-3.5 font-bold text-celo-green shadow-lg hover:bg-gray-50 active:scale-95 transition-all relative z-10"
-          >
-            Share Invite Link
-          </button>
+
+          <ReferralCard code={crew.myCode} memberCount={Number(crew.memberCount)} />
         </section>
       )}
 
