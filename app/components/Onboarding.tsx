@@ -3,20 +3,17 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Wallet, Target, Trophy, ArrowRight } from "lucide-react";
 import { storedRef } from "../lib/share";
 import { useWelcome } from "../hooks/useWelcome";
 import { useWallet } from "../hooks/useWallet";
+import { ErrorAlert } from "./ui/ErrorAlert";
+import { Carousel } from "./ui/Carousel";
+import { OnboardingStep } from "./OnboardingStep";
+import { triggerSmallConfetti } from "../lib/confetti";
 
 const SEEN_KEY = "ajora.onboarded";
 
-import { ErrorAlert } from "./ui/ErrorAlert";
-
-/**
- * First-run zero-deposit onboarding (AJORA_SPEC.md §11): explain no-loss in one
- * screen, hand over the sponsored welcome ticket, route to Pick. Unverified
- * accounts get an honest pending state with the save-instead path — never a
- * dead end.
- */
 export function Onboarding() {
   const { address, miniPay } = useWallet();
   const { welcomed, verified, loading, claim, claiming, error } = useWelcome();
@@ -28,8 +25,6 @@ export function Onboarding() {
       setOpen(true);
     }
   }, []);
-
-  // if (!open) return null;
 
   const dismiss = () => {
     localStorage.setItem(SEEN_KEY, "1");
@@ -47,88 +42,99 @@ export function Onboarding() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-0"
         >
           <motion.div
-            initial={{ y: "100%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: "100%", opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="mx-auto w-full max-w-md rounded-t-3xl bg-white p-6 sm:rounded-3xl"
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="w-full max-w-md bg-bg-primary rounded-[2rem] overflow-hidden shadow-2xl relative border border-gray-100 dark:border-gray-800"
           >
-        <h2 className="text-center text-2xl font-bold">Welcome to Ajora 🎉</h2>
-        {ref && (
-          <p className="mt-1 text-center text-sm text-celo-green">
-            Invited by <strong>{ref}</strong>
-          </p>
-        )}
+            <Carousel onComplete={() => triggerSmallConfetti()}>
+              <OnboardingStep
+                title="Save without risk"
+                subtitle="Every cent you save on Ajora stays yours. Withdraw it anytime with zero fees."
+                icon={<Wallet className="w-16 h-16" strokeWidth={1.5} />}
+                highlightColor="green"
+              />
+              <OnboardingStep
+                title="Pick a number"
+                subtitle="Your savings earn you tickets. Pick a number from 1 to 9 to enter the daily draw."
+                icon={<Target className="w-16 h-16" strokeWidth={1.5} />}
+                highlightColor="purple"
+              />
+              <OnboardingStep
+                title="Win every night"
+                subtitle="If your number hits, you win a share of the jara pot! Real Celo Dollars paid daily."
+                icon={<Trophy className="w-16 h-16" strokeWidth={1.5} />}
+                highlightColor="gold"
+              />
+            </Carousel>
 
-        <ul className="mt-4 flex flex-col gap-3 text-sm text-gray-600">
-          <li className="flex gap-2">
-            <span>💰</span> Save a little cUSD each day — <strong>keep every cent</strong>,
-            withdraw any time after the day closes.
-          </li>
-          <li className="flex gap-2">
-            <span>🎯</span> Savings earn tickets. Pick a number, win the nightly jara pot.
-          </li>
-          <li className="flex gap-2">
-            <span>🔥</span> Daily streaks multiply your tickets up to 3x.
-          </li>
-        </ul>
+            <div className="px-6 pb-6 pt-2">
+              {ref && (
+                <div className="text-center text-xs font-semibold text-celo-green mb-3 bg-celo-green/10 py-1.5 rounded-full inline-block px-3 w-full">
+                  Invited by {ref.slice(0, 8)}...
+                </div>
+              )}
 
-        <div className="mt-5 flex flex-col gap-2">
-          {claimedNow || welcomed ? (
-            <>
-              <p className="text-center text-sm font-medium text-celo-green">
-                Your free ticket is in tonight&apos;s draw 🎟️
-              </p>
-              <Link
-                href="/pick"
-                onClick={dismiss}
-                className="rounded-xl bg-celo-green px-4 py-3.5 text-center font-semibold text-white"
-              >
-                Pick your lucky number
-              </Link>
-            </>
-          ) : showClaim ? (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              disabled={claiming}
-              onClick={() =>
-                void claim().then(() => {
-                  setClaimedNow(true);
-                })
-              }
-              className="rounded-xl bg-celo-green px-4 py-3.5 font-semibold text-white disabled:opacity-50"
-            >
-              {claiming ? "Claiming…" : "Claim your FREE ticket 🎟️"}
-            </motion.button>
-          ) : showPending ? (
-            <>
-              <p className="text-center text-xs text-gray-500">
-                Your free ticket unlocks once your account is verified — meanwhile you can
-                start saving right away.
-              </p>
-              <Link
-                href="/save"
-                onClick={dismiss}
-                className="rounded-xl bg-celo-green px-4 py-3.5 text-center font-semibold text-white"
-              >
-                Save 0.10 cUSD to start
-              </Link>
-            </>
-          ) : (
-            <p className="text-center text-xs text-gray-500">
-              {miniPay || address ? "Loading your account…" : "Open Ajora inside MiniPay to get your free ticket."}
-            </p>
-          )}
-          {error && <div className="mt-2"><ErrorAlert message={error} /></div>}
-          <button type="button" onClick={dismiss} className="py-2 text-sm text-gray-400 mt-1">
-            Maybe later
-          </button>
-        </div>
+              <div className="flex flex-col gap-2">
+                {claimedNow || welcomed ? (
+                  <>
+                    <p className="text-center text-xs font-bold text-celo-green mb-1">
+                      Your free ticket is in tonight&apos;s draw 🎟️
+                    </p>
+                    <Link
+                      href="/pick"
+                      onClick={dismiss}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 w-full"
+                    >
+                      Pick your lucky number <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </>
+                ) : showClaim ? (
+                  <button
+                    type="button"
+                    disabled={claiming}
+                    onClick={() =>
+                      void claim().then(() => {
+                        setClaimedNow(true);
+                      })
+                    }
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none w-full"
+                  >
+                    {claiming ? "Claiming…" : "Claim your FREE ticket 🎟️"}
+                  </button>
+                ) : showPending ? (
+                  <>
+                    <p className="text-center text-[11px] font-medium text-text-muted mb-2 px-4 leading-tight">
+                      Your free ticket unlocks once verified. Start saving now to earn more tickets.
+                    </p>
+                    <Link
+                      href="/save"
+                      onClick={dismiss}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 w-full"
+                    >
+                      Save to start <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="text-center text-xs font-semibold text-text-muted">
+                      {miniPay || address ? "Loading account…" : "Open Ajora in MiniPay for a free ticket."}
+                    </p>
+                    <button
+                      onClick={dismiss}
+                      className="rounded-2xl border-2 border-gray-100 dark:border-gray-800 px-4 py-3 font-bold text-text-primary hover:bg-bg-secondary transition-colors w-full"
+                    >
+                      Start saving anyway
+                    </button>
+                  </div>
+                )}
+                {error && <div className="mt-2"><ErrorAlert message={error} /></div>}
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       )}
