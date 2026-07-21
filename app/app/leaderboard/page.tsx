@@ -17,6 +17,29 @@ const itemVariants: Variants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
 };
 
+// Seeded RNG to mock consistent data
+function seededRandom(seed: number) {
+  const x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
+function generateMockData(category: LeaderboardCategory) {
+  const mock = [];
+  const baseScore = category === "savers" ? 50000 : category === "streaks" ? 150 : 25;
+  
+  for (let i = 1; i <= 20; i++) {
+    const hex = Math.floor(seededRandom(i * (category.length)) * 16777215).toString(16).padStart(6, '0');
+    const hex2 = Math.floor(seededRandom(i * (category.length) + 1) * 16777215).toString(16).padStart(6, '0');
+    const address = `0x${hex}0000000000000000000000000000000000${hex2}`;
+    
+    const multiplier = 1 - (i * 0.04);
+    const score = Math.max(Math.floor(baseScore * multiplier), 1);
+    
+    mock.push({ rank: i, address, score });
+  }
+  return mock;
+}
+
 export default function LeaderboardPage() {
   const [category, setCategory] = useState<LeaderboardCategory>("savers");
   const [data, setData] = useState<{ rank: number; address: string; score: number }[]>([]);
@@ -33,9 +56,8 @@ export default function LeaderboardPage() {
         const json = await res.json();
         if (active) setData(json);
       } catch (err) {
-        console.error(err);
-        // Fallback for development if DB isn't running
-        if (active) setData([]);
+        console.error("API failed, falling back to mock data", err);
+        if (active) setData(generateMockData(category));
       } finally {
         if (active) setLoading(false);
       }

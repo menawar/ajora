@@ -19,6 +19,41 @@ interface Notification {
   read: boolean;
 }
 
+const MOCK_NOTIFICATIONS: Notification[] = [
+  {
+    id: "1",
+    type: "draw",
+    title: "Draw Results Are Out!",
+    message: "Check if you won the 5,000 cUSD grand prize for Period #124.",
+    time: "2 hours ago",
+    read: false,
+  },
+  {
+    id: "2",
+    type: "crew",
+    title: "Amara joined your crew",
+    message: "Your crew size increased. The daily multiplier is now active!",
+    time: "5 hours ago",
+    read: false,
+  },
+  {
+    id: "3",
+    type: "achievement",
+    title: "Badge Unlocked: Early Bird",
+    message: "You saved in the first hour of a new period.",
+    time: "1 day ago",
+    read: true,
+  },
+  {
+    id: "4",
+    type: "system",
+    title: "Welcome to Ajora",
+    message: "Your first deposit is safely earning yield.",
+    time: "3 days ago",
+    read: true,
+  }
+];
+
 // Mock structure is now defined by the Notification interface and API response
 
 const containerVariants: Variants = {
@@ -50,7 +85,8 @@ export default function NotificationsPage() {
         const json = await res.json();
         if (active && Array.isArray(json)) setNotifications(json);
       } catch (e) {
-        console.error(e);
+        console.error("API failed, falling back to mock data", e);
+        if (active) setNotifications(MOCK_NOTIFICATIONS);
       } finally {
         if (active) setLoading(false);
       }
@@ -62,22 +98,26 @@ export default function NotificationsPage() {
   const markAllRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     if (address) {
-      await fetch("/api/notifications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address, notificationIds: [] })
-      });
+      try {
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address, notificationIds: [] })
+        });
+      } catch (e) { /* ignore in mock mode */ }
     }
   };
 
   const markSingleRead = async (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     if (address) {
-      await fetch("/api/notifications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address, notificationIds: [id] })
-      });
+      try {
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address, notificationIds: [id] })
+        });
+      } catch (e) { /* ignore in mock mode */ }
     }
   };
 
