@@ -16,6 +16,7 @@ import { ErrorAlert } from "../../components/ui/ErrorAlert";
 import { useToast } from "../../hooks/useToast";
 import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 import confetti from "canvas-confetti";
+import { Ripple } from "../../components/ui/Ripple";
 
 const PRESETS = ["0.1", "0.5", "1"] as const;
 const MIN = parseUnits("0.1", 18);
@@ -175,26 +176,28 @@ export default function SavePage() {
           </motion.span>
         </div>
 
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          type="button"
-          onClick={() => {
-            trackEvent(AnalyticsEvents.SAVE_INITIATED, { amount });
-            reset();
-            void save(amount);
-          }}
-          disabled={busy || !address || parsed < MIN || insufficient}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
-        >
-          {busy ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              {status.step === "approving" ? t("save.approving") : t("save.saving")}
-            </>
-          ) : (
-            t("save.submit", { amount: amount || "…" })
-          )}
-        </motion.button>
+        <Ripple className="w-full rounded-2xl">
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            type="button"
+            onClick={() => {
+              trackEvent(AnalyticsEvents.SAVE_INITIATED, { amount });
+              reset();
+              void save(amount);
+            }}
+            disabled={busy || !address || parsed < MIN || insufficient}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
+          >
+            {busy ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                {status.step === "approving" ? t("save.approving") : t("save.saving")}
+              </>
+            ) : (
+              t("save.submit", { amount: amount || "…" })
+            )}
+          </motion.button>
+        </Ripple>
 
         {tooSmall && <p className="text-center text-sm font-semibold text-amber-600 bg-amber-50 p-2 rounded-lg">{t("save.tooSmall")}</p>}
         {insufficient && (

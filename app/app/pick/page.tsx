@@ -13,6 +13,8 @@ import { useToast } from "../../hooks/useToast";
 import { trackEvent, AnalyticsEvents } from "../../lib/analytics";
 import confetti from "canvas-confetti";
 import { ErrorAlert } from "../../components/ui/ErrorAlert";
+import { PulseRing } from "../../components/ui/PulseRing";
+import { Ripple } from "../../components/ui/Ripple";
 
 const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
@@ -94,13 +96,14 @@ export default function PickPage() {
             onClick={() => setSelected(n)}
             aria-label={`Pick number ${n}`}
             aria-pressed={active === n}
-            className={`aspect-square rounded-[1.25rem] text-4xl font-black transition-all focus:outline-none focus:ring-4 focus:ring-celo-green/50 ${
+            className={`relative aspect-square rounded-[1.25rem] text-4xl font-black transition-all focus:outline-none focus:ring-4 focus:ring-celo-green/50 flex items-center justify-center ${
               active === n
                 ? "border-none bg-celo-green text-white shadow-[0_8px_24px_rgba(53,208,127,0.4)] shadow-[inset_0_-4px_rgba(0,0,0,0.1)] scale-105 z-10"
                 : "bg-bg-secondary text-text-primary hover:bg-white dark:hover:bg-gray-800 shadow-sm border border-transparent hover:border-gray-200 dark:hover:border-gray-700 disabled:opacity-40 disabled:hover:bg-bg-secondary disabled:hover:scale-100 disabled:cursor-not-allowed"
             }`}
           >
-            {n}
+            {active === n && <PulseRing color="rgba(255,255,255,0.3)" size="lg" className="absolute inset-0 m-auto pointer-events-none" />}
+            <span className="relative z-10">{n}</span>
           </motion.button>
         ))}
       </motion.section>
@@ -114,18 +117,20 @@ export default function PickPage() {
 
       <motion.div variants={itemVariants}>
         {hasTickets ? (
-          <button
-            type="button"
-            disabled={!selected || picking || selected === myPick.number}
-            onClick={() => selected && void pick(selected)}
-            className="w-full rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all active:scale-95 hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {picking
-              ? t("pick.locking")
-              : myPick.number !== 0
-                ? t("pick.update")
-                : t("pick.submit")}
-          </button>
+          <Ripple className="w-full rounded-2xl">
+            <button
+              type="button"
+              disabled={!selected || picking || selected === myPick.number}
+              onClick={() => selected && void pick(selected)}
+              className="w-full rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {picking
+                ? t("pick.locking")
+                : myPick.number !== 0
+                  ? t("pick.update")
+                  : t("pick.submit")}
+            </button>
+          </Ripple>
         ) : (
           <Link
             href="/save"

@@ -6,6 +6,7 @@ import { Wallet, TrendingUp, Loader2, ArrowDownToLine, CalendarDays } from "luci
 import { ConnectBar } from "../../components/ConnectBar";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { SavingsChart } from "../../components/SavingsChart";
+import { CountUp } from "../../components/ui/CountUp";
 import { useSavings } from "../../hooks/useSavings";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
@@ -75,7 +76,11 @@ export default function WalletPage() {
             <Skeleton variant="text" className="h-8 w-24" />
           ) : (
             <div className="text-2xl font-black text-text-primary tracking-tight">
-              {cusd(total)}
+              <CountUp
+                to={Number(formatUnits(total, 18))}
+                decimals={2}
+                duration={1200}
+              />
               <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
             </div>
           )}
@@ -91,7 +96,11 @@ export default function WalletPage() {
             <Skeleton variant="text" className="h-8 w-24" />
           ) : (
             <div className="text-2xl font-black text-text-primary tracking-tight">
-              {cusd(totalAllTime)}
+              <CountUp
+                to={Number(formatUnits(totalAllTime, 18))}
+                decimals={2}
+                duration={1200}
+              />
               <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
             </div>
           )}
