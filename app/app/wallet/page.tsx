@@ -138,9 +138,17 @@ export default function WalletPage() {
 
       {/* Savings entries */}
       <motion.section variants={itemVariants} className="flex flex-col gap-3">
-        <div className="flex items-center gap-2 mb-1">
-          <Wallet className="w-4 h-4 text-text-muted" />
-          <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">Your Savings</h2>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <div className="flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-text-muted" />
+            <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">Your Savings</h2>
+          </div>
+          <Link
+            href="/history"
+            className="text-xs font-semibold text-celo-green hover:underline transition-colors"
+          >
+            View full history →
+          </Link>
         </div>
 
         {loading && (
