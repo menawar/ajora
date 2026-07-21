@@ -51,6 +51,19 @@ export const en = {
   "pick.footer": "Re-picking before the day closes moves all your tickets to the new number.",
   "pick.number_pad": "Number pad",
   "language.label": "Language",
+  "onboarding.step1.title": "Welcome to Ajora",
+  "onboarding.step1.desc": "Save small amounts, win the daily draw.",
+  "onboarding.step2.title": "No-Loss Savings",
+  "onboarding.step2.desc": "Your principal is always safe and withdrawable.",
+  "onboarding.step3.title": "Invite your Crew",
+  "onboarding.step3.desc": "Earn tickets together.",
+  "onboarding.skip": "Skip",
+  "onboarding.next": "Next",
+  "onboarding.finish": "Get Started",
+  "notifications.title": "Activity Hub",
+  "notifications.empty": "No new notifications",
+  "achievements.title": "Trophy Room",
+  "achievements.unlocked": "{{count}} of {{total}} achievements unlocked",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -93,6 +106,19 @@ export const pcm: Dictionary = {
   "pick.footer": "[PCM] Re-picking before the day closes moves all your tickets to the new number.",
   "pick.number_pad": "[PCM] Number pad",
   "language.label": "Language",
+  "onboarding.step1.title": "[PCM] Welcome to Ajora",
+  "onboarding.step1.desc": "[PCM] Save small amounts, win the daily draw.",
+  "onboarding.step2.title": "[PCM] No-Loss Savings",
+  "onboarding.step2.desc": "[PCM] Your principal is always safe and withdrawable.",
+  "onboarding.step3.title": "[PCM] Invite your Crew",
+  "onboarding.step3.desc": "[PCM] Earn tickets together.",
+  "onboarding.skip": "[PCM] Skip",
+  "onboarding.next": "[PCM] Next",
+  "onboarding.finish": "[PCM] Get Started",
+  "notifications.title": "[PCM] Activity Hub",
+  "notifications.empty": "[PCM] No new notifications",
+  "achievements.title": "[PCM] Trophy Room",
+  "achievements.unlocked": "[PCM] {{count}} of {{total}} achievements unlocked",
 };
 
 export const sw: Dictionary = {
@@ -131,6 +157,19 @@ export const sw: Dictionary = {
   "pick.footer": "[SW] Re-picking before the day closes moves all your tickets to the new number.",
   "pick.number_pad": "[SW] Number pad",
   "language.label": "Lugha",
+  "onboarding.step1.title": "[SW] Welcome to Ajora",
+  "onboarding.step1.desc": "[SW] Save small amounts, win the daily draw.",
+  "onboarding.step2.title": "[SW] No-Loss Savings",
+  "onboarding.step2.desc": "[SW] Your principal is always safe and withdrawable.",
+  "onboarding.step3.title": "[SW] Invite your Crew",
+  "onboarding.step3.desc": "[SW] Earn tickets together.",
+  "onboarding.skip": "[SW] Skip",
+  "onboarding.next": "[SW] Next",
+  "onboarding.finish": "[SW] Get Started",
+  "notifications.title": "[SW] Activity Hub",
+  "notifications.empty": "[SW] No new notifications",
+  "achievements.title": "[SW] Trophy Room",
+  "achievements.unlocked": "[SW] {{count}} of {{total}} achievements unlocked",
 };
 
 export const fr: Dictionary = {
@@ -169,6 +208,19 @@ export const fr: Dictionary = {
   "pick.footer": "Re-choisir avant la fin de la journée déplace tous vos tickets vers le nouveau numéro.",
   "pick.number_pad": "Pavé numérique",
   "language.label": "Langue",
+  "onboarding.step1.title": "Bienvenue sur Ajora",
+  "onboarding.step1.desc": "Épargnez de petits montants, gagnez le tirage quotidien.",
+  "onboarding.step2.title": "Épargne sans risque",
+  "onboarding.step2.desc": "Votre capital est toujours sûr et retirable.",
+  "onboarding.step3.title": "Invitez votre équipe",
+  "onboarding.step3.desc": "Gagnez des tickets ensemble.",
+  "onboarding.skip": "Passer",
+  "onboarding.next": "Suivant",
+  "onboarding.finish": "Commencer",
+  "notifications.title": "Centre d'activité",
+  "notifications.empty": "Aucune notification",
+  "achievements.title": "Salle des trophées",
+  "achievements.unlocked": "{{count}} sur {{total}} succès débloqués",
 };
 
 export const es: Dictionary = {
@@ -207,6 +259,19 @@ export const es: Dictionary = {
   "pick.footer": "Volver a elegir antes del cierre del día mueve todos tus boletos al nuevo número.",
   "pick.number_pad": "Teclado numérico",
   "language.label": "Idioma",
+  "onboarding.step1.title": "Bienvenido a Ajora",
+  "onboarding.step1.desc": "Ahorra pequeñas cantidades, gana el sorteo diario.",
+  "onboarding.step2.title": "Ahorro sin riesgo",
+  "onboarding.step2.desc": "Tu capital siempre está seguro y retirable.",
+  "onboarding.step3.title": "Invita a tu equipo",
+  "onboarding.step3.desc": "Ganen boletos juntos.",
+  "onboarding.skip": "Omitir",
+  "onboarding.next": "Siguiente",
+  "onboarding.finish": "Comenzar",
+  "notifications.title": "Centro de Actividad",
+  "notifications.empty": "No hay notificaciones",
+  "achievements.title": "Sala de Trofeos",
+  "achievements.unlocked": "{{count}} de {{total}} logros desbloqueados",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { en, pcm, sw, fr, es };

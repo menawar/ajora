@@ -5,6 +5,7 @@ import { ArrowLeft, BellRing, UserPlus, Gift, Trophy, CheckCircle2 } from "lucid
 import Link from "next/link";
 import { useState } from "react";
 import { Ripple } from "../../components/ui/Ripple";
+import { useTranslation } from "../../lib/i18n";
 
 type NotificationType = "crew" | "draw" | "achievement" | "system";
 
@@ -63,6 +64,7 @@ const itemVariants: Variants = {
 };
 
 export default function NotificationsPage() {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
 
   const markAllRead = () => {
@@ -94,10 +96,10 @@ export default function NotificationsPage() {
             className="flex items-center gap-2 text-sm font-semibold text-text-secondary hover:text-text-primary transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
-            Home
+            {t("nav.home")}
           </Link>
           <h1 className="text-3xl font-black tracking-tight text-gradient flex items-center gap-3">
-            Activity 
+            {t("notifications.title")}
             {unreadCount > 0 && (
               <span className="bg-red-500 text-white text-sm font-bold px-2 py-0.5 rounded-full shadow-sm">
                 {unreadCount}
@@ -121,8 +123,7 @@ export default function NotificationsPage() {
         {notifications.length === 0 ? (
           <div className="glass-panel rounded-3xl py-12 text-center">
             <BellRing className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm font-bold text-text-primary">All caught up!</p>
-            <p className="text-xs text-text-secondary mt-1">No new notifications.</p>
+            <p className="text-sm font-bold text-text-primary">{t("notifications.empty")}</p>
           </div>
         ) : (
           notifications.map((notif) => (
