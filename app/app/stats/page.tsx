@@ -156,7 +156,7 @@ export default function StatsPage() {
               </span>
             ) : (
               <>
-                ${global.tvl.toLocaleString("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                $<CountUp to={global.tvl} decimals={2} duration={1500} />
               </>
             )
           }
@@ -172,7 +172,7 @@ export default function StatsPage() {
               global.loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <span>{global.savers.toLocaleString("en")}</span>
+                <CountUp to={global.savers} duration={1200} />
               )
             }
             subtitle="unique addresses"
@@ -188,7 +188,7 @@ export default function StatsPage() {
                 <span className="text-sm text-text-muted">—</span>
               ) : (
                 <>
-                  <span>{global.avgPot.toLocaleString("en", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+                  <CountUp to={global.avgPot} decimals={1} duration={1200} />
                   <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
                 </>
               )
