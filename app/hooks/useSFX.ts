@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { playPop, playClick, playSuccess } from "../lib/audio";
+import { useHaptics } from "./useHaptics";
 
 export function useSFX() {
   const [enabled, setEnabled] = useState(false);
+  const haptics = useHaptics();
 
   useEffect(() => {
     // Load preference from localStorage
@@ -28,16 +30,19 @@ export function useSFX() {
   }, []);
 
   const pop = useCallback(() => {
+    haptics.lightTap();
     if (enabled) playPop();
-  }, [enabled]);
+  }, [enabled, haptics]);
 
   const click = useCallback(() => {
+    haptics.mediumTap();
     if (enabled) playClick();
-  }, [enabled]);
+  }, [enabled, haptics]);
 
   const success = useCallback(() => {
+    haptics.successTap();
     if (enabled) playSuccess();
-  }, [enabled]);
+  }, [enabled, haptics]);
 
   return { enabled, toggle, pop, click, success };
 }

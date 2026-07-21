@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import { TiltCard } from "./TiltCard";
 
 interface StatCardProps {
   title: string;
@@ -14,8 +15,9 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon, subtitle, trend, delay = 0 }: StatCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <TiltCard>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, type: "spring", stiffness: 300, damping: 24 }}
       className="glass-panel rounded-3xl p-5 flex flex-col gap-2 relative overflow-hidden group"
@@ -41,6 +43,7 @@ export function StatCard({ title, value, icon, subtitle, trend, delay = 0 }: Sta
           )}
         </div>
       )}
-    </motion.div>
+      </motion.div>
+    </TiltCard>
   );
 }
