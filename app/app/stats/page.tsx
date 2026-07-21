@@ -35,6 +35,7 @@ interface GlobalStats {
   savers: number;    // unique addresses
   avgPot: number;    // cUSD, avg of last 7 resolved draws
   loading: boolean;
+  error?: string;
 }
 
 function useGlobalStats(): GlobalStats {
@@ -44,6 +45,7 @@ function useGlobalStats(): GlobalStats {
     void (async () => {
       let currentTvl = 0;
       let currentAvgPot = 0;
+      let errorMsg = "";
       
       try {
         const periodId = await publicClient.readContract({
@@ -78,8 +80,9 @@ function useGlobalStats(): GlobalStats {
             ? resolvedPots.reduce((a, b) => a + b, 0) / resolvedPots.length
             : 0;
         setStats((s) => ({ ...s, avgPot: currentAvgPot }));
-      } catch (err) {
+      } catch (err: any) {
         console.error("Stats core fetch failed", err);
+        errorMsg += "CoreError: " + (err.message || String(err)) + " ";
       }
 
       // 2. Unique savers — fetch in smaller 4000-block chunks to respect RPC limits
@@ -100,10 +103,11 @@ function useGlobalStats(): GlobalStats {
             if (log.args.user) uniqueUsers.add(log.args.user.toLowerCase());
           }
         }
-        setStats((s) => ({ ...s, savers: uniqueUsers.size, loading: false }));
-      } catch (err) {
+        setStats((s) => ({ ...s, savers: uniqueUsers.size, loading: false, error: errorMsg }));
+      } catch (err: any) {
         console.error("Stats logs fetch failed", err);
-        setStats((s) => ({ ...s, loading: false }));
+        errorMsg += "LogsError: " + (err.message || String(err));
+        setStats((s) => ({ ...s, loading: false, error: errorMsg }));
       }
     })();
   }, []);
@@ -133,6 +137,12 @@ export default function StatsPage() {
         <h1 className="text-3xl font-black tracking-tight text-gradient">Global Stats</h1>
         <p className="mt-2 text-sm text-text-secondary">Network health and community metrics.</p>
       </motion.header>
+
+      {global.error && (
+        <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded-lg text-xs break-words">
+          <strong>Debug Error:</strong> {global.error}
+        </div>
+      )}
 
       <motion.div variants={itemVariants} className="grid gap-4">
         {/* TVL Hero Card — real totalPrincipalOutstanding */}
