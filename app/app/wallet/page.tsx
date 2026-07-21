@@ -5,6 +5,7 @@ import { motion, type Variants } from "framer-motion";
 import { Wallet, TrendingUp, Loader2, ArrowDownToLine, CalendarDays } from "lucide-react";
 import { ConnectBar } from "../../components/ConnectBar";
 import { Skeleton } from "../../components/ui/Skeleton";
+import { SavingsChart } from "../../components/SavingsChart";
 import { useSavings } from "../../hooks/useSavings";
 import { useStreak } from "../../hooks/useStreak";
 import { useWallet } from "../../hooks/useWallet";
@@ -127,6 +128,13 @@ export default function WalletPage() {
       <motion.div variants={itemVariants}>
         <WinningsSection />
       </motion.div>
+
+      {/* Savings chart */}
+      {!loading && entries.length > 1 && (
+        <motion.div variants={itemVariants}>
+          <SavingsChart entries={entries} />
+        </motion.div>
+      )}
 
       {/* Savings entries */}
       <motion.section variants={itemVariants} className="flex flex-col gap-3">
