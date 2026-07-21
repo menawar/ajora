@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PartyPopper, TrendingUp, Users, ChevronRight } from "lucide-react";
 import { useOnboarding } from "../../hooks/useOnboarding";
+import { useTranslation } from "../../lib/i18n";
 import { Ripple } from "./Ripple";
 import { useSFX } from "../../hooks/useSFX";
 
@@ -11,25 +12,26 @@ const SLIDES = [
   {
     id: "welcome",
     icon: <PartyPopper className="w-16 h-16 text-celo-green" />,
-    title: "Welcome to Ajora",
-    description: "The No-Loss Lottery where you save, grow your wealth, and stand a chance to win massive weekly prizes without risking a single penny.",
+    titleKey: "onboarding.step1.title",
+    descKey: "onboarding.step1.desc",
   },
   {
     id: "grow",
     icon: <TrendingUp className="w-16 h-16 text-celo-gold" />,
-    title: "Grow your Wealth",
-    description: "Your cUSD earns yield over time. Even if you don't win the grand prize, your money is working for you, safely tucked away.",
+    titleKey: "onboarding.step2.title",
+    descKey: "onboarding.step2.desc",
   },
   {
     id: "crew",
     icon: <Users className="w-16 h-16 text-[#35d07f]" />,
-    title: "Crew Multipliers",
-    description: "Bring your friends. Form a crew to hit daily savings goals and unlock massive win multipliers for everyone in your squad.",
+    titleKey: "onboarding.step3.title",
+    descKey: "onboarding.step3.desc",
   }
-];
+] as const;
 
 export function OnboardingModal() {
   const { hasSeenOnboarding, isLoaded, completeOnboarding } = useOnboarding();
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const sfx = useSFX();
 
@@ -70,7 +72,7 @@ export function OnboardingModal() {
                 onClick={() => { sfx.click(); completeOnboarding(); }}
                 className="text-sm font-bold text-text-muted hover:text-text-primary transition-colors"
               >
-                Skip
+                {t("onboarding.skip")}
               </button>
             </div>
 
@@ -93,10 +95,10 @@ export function OnboardingModal() {
                     {SLIDES[currentIndex].icon}
                   </div>
                   <h2 className="text-2xl font-black text-text-primary mb-4 tracking-tight">
-                    {SLIDES[currentIndex].title}
+                    {t(SLIDES[currentIndex].titleKey)}
                   </h2>
                   <p className="text-base text-text-secondary font-medium leading-relaxed px-2">
-                    {SLIDES[currentIndex].description}
+                    {t(SLIDES[currentIndex].descKey)}
                   </p>
                 </motion.div>
               </AnimatePresence>
@@ -125,9 +127,9 @@ export function OnboardingModal() {
                   className="flex w-full items-center justify-center gap-2 rounded-2xl bg-celo-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] active:scale-95"
                 >
                   {currentIndex === SLIDES.length - 1 ? (
-                    "Start Saving"
+                    t("onboarding.finish")
                   ) : (
-                    <>Next <ChevronRight className="w-5 h-5" /></>
+                    <>{t("onboarding.next")} <ChevronRight className="w-5 h-5" /></>
                   )}
                 </button>
               </Ripple>
