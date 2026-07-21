@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, ArrowDownToLine, Trophy, Clock } from "lucide-react
 import Link from "next/link";
 import { ConnectBar } from "../../components/ConnectBar";
 import { Skeleton } from "../../components/ui/Skeleton";
+import { PullToRefresh } from "../../components/ui/PullToRefresh";
 import { SavingsChart } from "../../components/SavingsChart";
 import { useSavings } from "../../hooks/useSavings";
 import { useWallet } from "../../hooks/useWallet";
@@ -58,14 +59,22 @@ export default function HistoryPage() {
     { id: "today",     label: "In Draw",   count: entries.filter((e) => e.isToday).length },
   ];
 
+  const handleRefresh = async () => {
+    // Add artificial delay for the animation
+    await new Promise((r) => setTimeout(r, 1000));
+    // Usually you would call refetch() from the hook here.
+    window.location.reload(); 
+  };
+
   return (
-    <motion.main
-      className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24 bg-bg-primary"
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-    >
-      {/* Header */}
+    <PullToRefresh onRefresh={handleRefresh}>
+      <motion.main
+        className="mx-auto flex min-h-dvh max-w-md flex-col gap-5 p-6 pb-24 bg-bg-primary"
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
+        {/* Header */}
       <motion.header variants={itemVariants} className="pt-4">
         <Link
           href="/wallet"
@@ -222,5 +231,6 @@ export default function HistoryPage() {
         Showing the last 30 periods. All savings are withdrawable — no lock-in.
       </motion.footer>
     </motion.main>
+    </PullToRefresh>
   );
 }
