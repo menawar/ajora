@@ -20,6 +20,7 @@ contract Treasury is ITreasury {
 
     /// @notice Lifetime rake collected, for the §6 "prizes come from real revenue" ledger.
     uint256 public totalRake;
+    uint256 public totalYieldFees;
 
     mapping(uint256 periodId => uint256) public rakeOf;
 
@@ -50,6 +51,13 @@ contract Treasury is ITreasury {
         rakeOf[periodId] += amount;
         totalRake += amount;
         emit RakeCollected(amount, periodId);
+    }
+
+    /// @inheritdoc ITreasury
+    function collectYieldFee(uint256 amount, uint256 periodId) external {
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+        totalYieldFees += amount;
+        emit YieldFeeCollected(amount, periodId);
     }
 
     /// @inheritdoc ITreasury

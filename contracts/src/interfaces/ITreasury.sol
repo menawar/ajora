@@ -6,11 +6,15 @@ pragma solidity ^0.8.24;
 ///         prizes back into the jara flywheel (AJORA_SPEC.md §8.7, §6 sinks).
 interface ITreasury {
     event RakeCollected(uint256 amount, uint256 indexed periodId);
+    event YieldFeeCollected(uint256 amount, uint256 indexed periodId);
     event FeeWithdrawn(address indexed to, uint256 amount);
     event JaraFunded(uint256 amount, uint256 indexed periodId);
 
     /// @notice Pull `amount` of rake from the caller (a paid Big Pot) and account it.
     function collectRake(uint256 amount, uint256 periodId) external;
+
+    /// @notice Collect yield rake from YieldAdapter.
+    function collectYieldFee(uint256 amount, uint256 periodId) external;
 
     /// @notice Recycle a resolved period's unclaimed prize remainder forward. Permissionless
     ///         once the claim window has passed. Returns the amount recycled.
