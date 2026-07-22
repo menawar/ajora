@@ -1,1 +1,0 @@
-export function Tabs({children}: {children: React.ReactNode}) { return <div className="flex border-b border-gray-200">{children}</div>; }

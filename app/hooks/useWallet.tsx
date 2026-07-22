@@ -91,17 +91,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     // Prefer the chosen 6963 wallet; else a sole announced wallet; else the
     // legacy injected provider (MiniPay webview, single-extension browsers).
     const announced = discoveredWallets();
-    const picked = rdns
-      ? announced.find((w) => w.info.rdns === rdns)?.provider
-      : announced.length === 1
-        ? announced[0].provider
-        : undefined;
-    const provider = picked ?? (announced.length === 0 ? injectedProvider() : undefined);
+    let pickedWallet: DiscoveredWallet | undefined;
+    
+    if (rdns) {
+      pickedWallet = announced.find((w) => w.info.rdns === rdns);
+    } else if (announced.length === 1) {
+      pickedWallet = announced[0];
+    }
+    
+    const provider = pickedWallet?.provider ?? (announced.length === 0 ? injectedProvider() : undefined);
     if (!provider) {
       if (announced.length === 0) setNoProvider(true);
       return; // several wallets, none picked: the picker is on screen
     }
-    setActiveProvider(picked);
+    setActiveProvider(provider, pickedWallet?.info?.rdns);
     setConnecting(true);
     setError(undefined);
     try {

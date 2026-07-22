@@ -63,12 +63,27 @@ export function discoveredWallets(): DiscoveredWallet[] {
 /** The provider the user actually connected with; writes must go through it. */
 let active: EIP1193Provider | undefined;
 
-export function setActiveProvider(provider: EIP1193Provider | undefined): void {
+export function setActiveProvider(provider: EIP1193Provider | undefined, rdns?: string): void {
   active = provider;
+  if (typeof window !== "undefined") {
+    if (rdns) {
+      window.localStorage.setItem("ajora:wallet:rdns", rdns);
+    } else if (!provider) {
+      window.localStorage.removeItem("ajora:wallet:rdns");
+    }
+  }
 }
 
 export function activeProvider(): (EIP1193Provider & { isMiniPay?: boolean }) | undefined {
-  return active ?? injectedProvider();
+  if (active) return active;
+  if (typeof window !== "undefined") {
+    const saved = window.localStorage.getItem("ajora:wallet:rdns");
+    if (saved && discovered.has(saved)) {
+      active = discovered.get(saved)!.provider;
+      return active;
+    }
+  }
+  return injectedProvider();
 }
 
 /** Wallet client over the selected provider; undefined outside a wallet context. */

@@ -1,1 +1,0 @@
-export function TooltipContent({text}: {text: string}) { return <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded">{text}</div>; }
