@@ -5,6 +5,7 @@ import { formatUnits } from "viem";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, ShieldAlert, Search, RefreshCw, ArrowUp, ArrowDown, Medal } from "lucide-react";
 import { useTopSavers } from "../../hooks/useTopSavers";
+import { useTopEarners } from "../../hooks/useTopEarners";
 import { useWallet } from "../../hooks/useWallet";
 import { useLeaderboardFilter, SortField, SortOrder } from "../../hooks/useLeaderboardFilter";
 import { Skeleton } from "../../components/ui/Skeleton";
@@ -19,9 +20,14 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 export default function BoardPage() {
   const { address } = useWallet();
   const [showSybilAdjusted, setShowSybilAdjusted] = useState(true);
+  const [boardType, setBoardType] = useState<"savings" | "xp">("savings");
   
-  // includeFlagged = true when we are NOT doing sybil adjustment (i.e. we want to see the raw data)
-  const { rows, loading, error, refetch, excludedFlagged } = useTopSavers(100, !showSybilAdjusted);
+  // includeFlagged = true when we are NOT doing sybil adjustment
+  const saversData = useTopSavers(100, !showSybilAdjusted);
+  const earnersData = useTopEarners(100);
+
+  const currentData = boardType === "savings" ? saversData : earnersData;
+  const { rows, loading, error, refetch, excludedFlagged } = { ...currentData, excludedFlagged: "excludedFlagged" in currentData ? currentData.excludedFlagged : 0 };
   
   const {
     query,
@@ -66,18 +72,35 @@ export default function BoardPage() {
         <h1 className="text-3xl font-black tracking-tight text-text-primary text-gradient">Top Savers</h1>
         <p className="mt-1 text-sm text-text-secondary">Climb the ranks by saving daily.</p>
         
-        <div className="mt-4 flex justify-center">
-          <button 
-            onClick={() => setShowSybilAdjusted(!showSybilAdjusted)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${showSybilAdjusted ? "bg-celo-green/10 text-celo-green border border-celo-green/20" : "bg-bg-secondary text-text-muted border border-gray-200"}`}
+        <div className="mt-4 flex justify-center gap-2">
+          <button
+            onClick={() => setBoardType("savings")}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${boardType === "savings" ? "bg-celo-green text-white" : "bg-bg-secondary text-text-muted hover:text-text-primary"}`}
           >
-            {showSybilAdjusted ? (
-              <><Shield className="w-4 h-4" /> Protected Mode</>
-            ) : (
-              <><ShieldAlert className="w-4 h-4" /> Raw Data Mode</>
-            )}
+            Savings
+          </button>
+          <button
+            onClick={() => setBoardType("xp")}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${boardType === "xp" ? "bg-celo-green text-white" : "bg-bg-secondary text-text-muted hover:text-text-primary"}`}
+          >
+            Quests XP
           </button>
         </div>
+
+        {boardType === "savings" && (
+          <div className="mt-4 flex justify-center">
+            <button 
+              onClick={() => setShowSybilAdjusted(!showSybilAdjusted)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${showSybilAdjusted ? "bg-celo-green/10 text-celo-green border border-celo-green/20" : "bg-bg-secondary text-text-muted border border-gray-200"}`}
+            >
+              {showSybilAdjusted ? (
+                <><Shield className="w-4 h-4" /> Protected Mode</>
+              ) : (
+                <><ShieldAlert className="w-4 h-4" /> Raw Data Mode</>
+              )}
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Controls */}
@@ -159,7 +182,10 @@ export default function BoardPage() {
                 
                 <div className="text-right">
                   <div className="text-lg font-black text-text-primary leading-tight">
-                    {cusd(r.total)} <span className="text-[10px] text-text-muted uppercase tracking-widest font-bold block -mt-1">cUSD</span>
+                    {boardType === "savings" ? cusd(r.total) : r.total.toString()}
+                    <span className="text-[10px] text-text-muted uppercase tracking-widest font-bold block -mt-1">
+                      {boardType === "savings" ? "cUSD" : "XP"}
+                    </span>
                   </div>
                 </div>
               </motion.div>
@@ -197,7 +223,7 @@ export default function BoardPage() {
         </button>
       )}
 
-      {showSybilAdjusted && excludedFlagged > 0 && (
+      {boardType === "savings" && showSybilAdjusted && excludedFlagged > 0 && (
         <footer className="mt-auto pt-4 text-center text-xs font-semibold text-amber-500 pb-safe">
           {excludedFlagged} flagged account{excludedFlagged === 1 ? "" : "s"} hidden by sybil protection.
         </footer>
