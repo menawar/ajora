@@ -70,7 +70,7 @@ export type TranslationKey = keyof typeof en;
 export type Dictionary = Record<TranslationKey, string>;
 
 /** Nigerian Pidgin. Nav verbs read fine in English for this audience; copy is localized. */
-export const pcm: Dictionary = {
+const pcm: Dictionary = {
   "nav.home": "Home",
   "nav.save": "Save",
   "nav.pick": "Pick",
@@ -121,7 +121,7 @@ export const pcm: Dictionary = {
   "achievements.unlocked": "[PCM] {{count}} of {{total}} achievements unlocked",
 };
 
-export const sw: Dictionary = {
+const sw: Dictionary = {
   "nav.home": "Nyumbani",
   "nav.save": "Weka",
   "nav.pick": "Chagua",
@@ -172,7 +172,7 @@ export const sw: Dictionary = {
   "achievements.unlocked": "[SW] {{count}} of {{total}} achievements unlocked",
 };
 
-export const fr: Dictionary = {
+const fr: Dictionary = {
   "nav.home": "Accueil",
   "nav.save": "Épargner",
   "nav.pick": "Choisir",
@@ -223,7 +223,7 @@ export const fr: Dictionary = {
   "achievements.unlocked": "{{count}} sur {{total}} succès débloqués",
 };
 
-export const es: Dictionary = {
+const es: Dictionary = {
   "nav.home": "Inicio",
   "nav.save": "Ahorrar",
   "nav.pick": "Elegir",

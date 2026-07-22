@@ -7,14 +7,14 @@
 const W = 1080;
 const H = 1080;
 
-export interface WinCardData {
+interface WinCardData {
   kind: "win";
   amountCusd: string; // formatted, e.g. "2.40"
   streakDays: number;
   refCode?: string;
 }
 
-export interface MilestoneCardData {
+interface MilestoneCardData {
   kind: "milestone";
   streakDays: number; // 7 / 30 / 90
   multiplier: string; // e.g. "1.5x"

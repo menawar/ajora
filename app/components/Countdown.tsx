@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /** "2h 05m", then "4m 32s" inside the final hour — precision when it matters. */
-export function formatRemaining(seconds: number): string {
+function formatRemaining(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds));
   const h = Math.floor(s / 3600);
   const m = Math.floor((s % 3600) / 60);

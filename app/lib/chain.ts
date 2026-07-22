@@ -11,7 +11,7 @@ const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 42220);
 
 export const chain = CHAIN_ID === celoAlfajores.id ? celoAlfajores : celo;
 
-export const isTestnet = chain.id === celoAlfajores.id;
+const isTestnet = chain.id === celoAlfajores.id;
 
 /** cUSD — used both as the savings token and as the gas fee currency. */
 export const CUSD_ADDRESS = (
