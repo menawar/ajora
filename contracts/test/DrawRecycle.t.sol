@@ -9,7 +9,19 @@ import { MockERC20 } from "./mocks/MockERC20.sol";
 
 /// @notice Claim window + unclaimed-prize recycling (spec §6 sink): winners have
 ///         CLAIM_WINDOW after resolution; whatever they leave rolls into the live pot.
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+import { VRFCoordinatorV2Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol";
+
 contract DrawRecycleTest is Test {
+    VRFCoordinatorV2Mock internal vrfMock;
+    uint256 internal nextRequestId = 1;
+
+    Treasury internal treasury;
+
     PotVault internal vault;
     DrawManager internal draw;
     MockERC20 internal cusd;
@@ -25,10 +37,18 @@ contract DrawRecycleTest is Test {
     bytes32 internal constant ANCHOR_HASH = keccak256("test-anchor");
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        draw = new DrawManager(vault, keeper);
+        
+        vrfMock = new VRFCoordinatorV2Mock(0.1e18, 1e9);
+        uint64 subId = vrfMock.createSubscription();
+        vrfMock.fundSubscription(subId, 100e18);
+        
+        draw = new DrawManager(vault, keeper, address(vrfMock), subId, bytes32(0));
+        vrfMock.addConsumer(subId, address(draw));
+        
         vault.setDrawManager(address(draw));
 
         cusd.mint(amara, 100e18);
@@ -52,23 +72,14 @@ contract DrawRecycleTest is Test {
 
     function _resolveWithNumber(uint256 periodId, uint8 target) internal {
         uint256 periodEnd = (periodId + 1) * DAY;
+        vm.warp(periodEnd + 1);
 
-        bytes32 secret;
-        for (uint256 i = 0;; i++) {
-            secret = bytes32(i);
-            uint256 seed = uint256(keccak256(abi.encode(secret, ANCHOR_HASH)));
-            if (uint8(seed % 9) + 1 == target) break;
-        }
-
-        vm.warp(periodEnd - 5 minutes);
         vm.prank(keeper);
-        draw.commitSeed(periodId, keccak256(abi.encode(secret)));
-        (, uint64 anchor) = draw.seedCommits(periodId);
+        draw.resolveDraw(periodId);
 
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(uint256(anchor) + 10);
-        vm.setBlockhash(anchor, ANCHOR_HASH);
-        draw.revealAndResolve(periodId, secret);
+        uint256[] memory words = new uint256[](1);
+        words[0] = target - 1; // target = (word % 9) + 1 => target - 1 gives target
+        vrfMock.fulfillRandomWordsWithOverride(nextRequestId++, address(draw), words);
     }
 
     /// @dev Winning setup: amara and kevin both on 7; 10 cUSD pot.
@@ -163,17 +174,12 @@ contract DrawRecycleTest is Test {
 
         vm.warp(block.timestamp + 9 days); // way past periodEnd + CLAIM_WINDOW anchor on periodEnd
 
-        bytes32 secret;
-        for (uint256 i = 0;; i++) {
-            secret = bytes32(i);
-            if (uint8(uint256(keccak256(abi.encode(secret, ANCHOR_HASH))) % 9) + 1 == 7) break;
-        }
+        // The window runs from resolution, not from the period end.
         vm.prank(keeper);
-        draw.recommitSeed(periodId, keccak256(abi.encode(secret)));
-        (, uint64 anchor) = draw.seedCommits(periodId);
-        vm.roll(uint256(anchor) + 10);
-        vm.setBlockhash(anchor, ANCHOR_HASH);
-        draw.revealAndResolve(periodId, secret);
+        draw.resolveDraw(periodId);
+        uint256[] memory words = new uint256[](1);
+        words[0] = 6; // 6 % 9 + 1 = 7
+        vrfMock.fulfillRandomWordsWithOverride(nextRequestId++, address(draw), words);
 
         // The window runs from resolution, not from the period end.
         vm.warp(block.timestamp + draw.CLAIM_WINDOW() - 1 hours);

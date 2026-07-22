@@ -12,7 +12,15 @@ import { IYieldAdapter } from "../src/interfaces/IYieldAdapter.sol";
 ///         chosen for launch (audited, instant-liquidity, cUSD-native).
 /// @dev Skipped unless CELO_FORK_RPC is set, e.g.:
 ///      CELO_FORK_RPC=https://forno.celo.org forge test --match-contract Fork
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { IPoolAddressesProvider } from "../src/interfaces/IPoolAddressesProvider.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract YieldAdapterForkTest is Test {
+    Treasury internal treasury;
+
     // Celo mainnet (bgd-labs address book / verified on-chain).
     address internal constant CUSD = 0x765DE816845861e75A25fCA122bb6898B8B1282a;
     address internal constant AAVE_POOL = 0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402;
@@ -25,6 +33,7 @@ contract YieldAdapterForkTest is Test {
     bool internal forked;
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         string memory rpc = vm.envOr("CELO_FORK_RPC", string(""));
         if (bytes(rpc).length == 0) return;
         vm.createSelectFork(rpc);
@@ -32,7 +41,7 @@ contract YieldAdapterForkTest is Test {
 
         vault = new PotVault(IERC20(CUSD), 0.1e18);
         adapter = new YieldAdapter(
-            IERC20(CUSD), vault, IAaveV3Pool(AAVE_POOL), IERC20(A_CUSD), 1_000e18
+            IERC20(CUSD), vault, IPoolAddressesProvider(address(new MockPoolAddressesProvider(address(IAaveV3Pool(AAVE_POOL))))), IERC20(A_CUSD), treasury, 1_000e18
         );
         vault.proposeYieldAdapter(IYieldAdapter(address(adapter)));
         vm.warp(block.timestamp + vault.ADAPTER_TIMELOCK());

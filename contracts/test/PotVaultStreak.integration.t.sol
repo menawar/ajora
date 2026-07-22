@@ -9,7 +9,14 @@ import { IStreakSBT } from "../src/interfaces/IStreakSBT.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 
 /// @notice End-to-end: the real StreakSBT drives PotVault ticket weighting (no mocks).
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract PotVaultStreakIntegrationTest is Test {
+    Treasury internal treasury;
+
     PotVault internal vault;
     StreakSBT internal sbt;
     MockERC20 internal cusd;
@@ -21,10 +28,11 @@ contract PotVaultStreakIntegrationTest is Test {
     uint256 internal constant DAY = 1 days;
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        sbt = new StreakSBT();
+        sbt = new StreakSBT(IERC20(address(cusd)), treasury);
         vault.setStreakSBT(IStreakSBT(address(sbt)));
 
         cusd.mint(amara, 100e18);

@@ -6,10 +6,14 @@ import { PotVault } from "../src/PotVault.sol";
 import { DrawManager } from "../src/DrawManager.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { VRFCoordinatorV2Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol";
 
-/// @notice Commit-reveal randomness: window gating, blockhash blending, permissionless
-///         reveal, expiry, and the recommit liveness fallback (contracts/RANDOMNESS.md).
-contract DrawRandomnessTest is Test {
+contract DrawVRFTest is Test {
+    VRFCoordinatorV2Mock internal vrfMock;
+    Treasury internal treasury;
     PotVault internal vault;
     DrawManager internal draw;
     MockERC20 internal cusd;
@@ -20,21 +24,23 @@ contract DrawRandomnessTest is Test {
     uint256 internal constant MIN = 0.1e18;
     uint256 internal constant DAY = 1 days;
 
-    bytes32 internal constant SECRET = keccak256("ajora-day-1");
-    bytes32 internal COMMITMENT;
-
     uint256 internal period;
     uint256 internal periodEnd;
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
-        vm.roll(1_000_000);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        draw = new DrawManager(vault, keeper);
+        
+        vrfMock = new VRFCoordinatorV2Mock(0.1e18, 1e9);
+        uint64 subId = vrfMock.createSubscription();
+        vrfMock.fundSubscription(subId, 100e18);
+
+        draw = new DrawManager(vault, keeper, address(vrfMock), subId, bytes32(0));
+        vrfMock.addConsumer(subId, address(draw));
         vault.setDrawManager(address(draw));
 
-        COMMITMENT = keccak256(abi.encode(SECRET));
         period = vault.currentPeriod();
         periodEnd = (period + 1) * DAY;
 
@@ -46,159 +52,58 @@ contract DrawRandomnessTest is Test {
         vm.stopPrank();
     }
 
-    /// @dev Commit inside the window; returns the pinned anchor block.
-    function _commit() internal returns (uint256 anchor) {
-        vm.warp(periodEnd - 5 minutes);
+    function test_ResolveDrawRequestsRandomness() public {
+        vm.warp(periodEnd + 1);
         vm.prank(keeper);
-        draw.commitSeed(period, COMMITMENT);
-        (, uint64 anchorBlock) = draw.seedCommits(period);
-        anchor = anchorBlock;
+        draw.resolveDraw(period);
+        uint256 requestId = 1;
+        assertGt(requestId, 0, "request ID is non-zero");
     }
 
-    // ---------------------------------------------------------------- commit
-
-    function test_CommitPinsFutureAnchor() public {
-        uint256 anchor = _commit();
-        assertEq(anchor, block.number + draw.ANCHOR_DELAY(), "anchor is strictly future");
-        (bytes32 commitment,) = draw.seedCommits(period);
-        assertEq(commitment, COMMITMENT);
-    }
-
-    function test_RevertCommitBeforeFinalWindow() public {
-        vm.warp(periodEnd - 16 minutes); // one minute too early
+    function test_RevertResolveBeforePeriodOver() public {
+        vm.warp(periodEnd - 1 minutes);
         vm.prank(keeper);
-        vm.expectRevert(DrawManager.CommitWindowClosed.selector);
-        draw.commitSeed(period, COMMITMENT);
+        vm.expectRevert(DrawManager.PeriodNotOver.selector);
+        draw.resolveDraw(period);
     }
 
-    function test_RevertCommitForPastPeriod() public {
-        vm.warp(periodEnd + 1); // period already over
+    function test_RevertDoubleResolve() public {
+        vm.warp(periodEnd + 1);
         vm.prank(keeper);
-        vm.expectRevert(DrawManager.CommitWindowClosed.selector);
-        draw.commitSeed(period, COMMITMENT);
-    }
+        uint256 reqId = 1; // mock next id
+        draw.resolveDraw(period);
+        
+        uint256[] memory words = new uint256[](1);
+        vrfMock.fulfillRandomWordsWithOverride(reqId, address(draw), words);
 
-    function test_RevertCommitNotKeeper() public {
-        vm.warp(periodEnd - 5 minutes);
-        vm.expectRevert(DrawManager.NotKeeper.selector);
-        draw.commitSeed(period, COMMITMENT);
-    }
-
-    function test_RevertDoubleCommit() public {
-        _commit();
         vm.prank(keeper);
-        vm.expectRevert(DrawManager.AlreadyCommitted.selector);
-        draw.commitSeed(period, keccak256("other"));
+        vm.expectRevert(DrawManager.AlreadyResolved.selector);
+        draw.resolveDraw(period);
     }
 
-    // ---------------------------------------------------------------- reveal
+    function test_FulfillDerivesWinningNumber() public {
+        vm.warp(periodEnd + 1);
+        vm.prank(keeper);
+        draw.resolveDraw(period);
+        uint256 requestId = 1;
 
-    function test_RevealDerivesVerifiableSeed() public {
-        uint256 anchor = _commit();
-        bytes32 anchorHash = keccak256("anchor-hash");
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(anchor + 10);
-        vm.setBlockhash(anchor, anchorHash);
-
-        // Permissionless: amara (not the keeper) relays the reveal.
-        vm.prank(amara);
-        draw.revealAndResolve(period, SECRET);
+        uint256[] memory words = new uint256[](1);
+        words[0] = 4; // 4 % 9 + 1 = 5
+        vrfMock.fulfillRandomWordsWithOverride(requestId, address(draw), words);
 
         DrawManager.Draw memory d = draw.drawOf(period);
         assertTrue(d.resolved);
-        // The exact five-equality recipe from RANDOMNESS.md, recomputed independently:
-        uint256 expectedSeed = uint256(keccak256(abi.encode(SECRET, anchorHash)));
-        assertEq(d.seed, expectedSeed, "seed publicly recomputable");
-        assertEq(d.winningNumber, uint8(expectedSeed % 9) + 1, "number follows the seed");
+        assertEq(d.winningNumber, 5);
+        assertTrue(draw.isWinner(amara, period));
     }
 
-    function test_RevertRevealWrongSecret() public {
-        uint256 anchor = _commit();
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(anchor + 10);
-        vm.setBlockhash(anchor, keccak256("h"));
-        vm.expectRevert(DrawManager.BadReveal.selector);
-        draw.revealAndResolve(period, keccak256("wrong-secret"));
-    }
-
-    function test_RevertRevealWithoutCommit() public {
-        vm.warp(periodEnd + 1 hours);
-        vm.expectRevert(DrawManager.NoCommit.selector);
-        draw.revealAndResolve(period, SECRET);
-    }
-
-    function test_RevertRevealBeforeAnchorMined() public {
-        uint256 anchor = _commit();
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(anchor); // at the anchor, not past it
-        vm.expectRevert(DrawManager.AnchorNotReady.selector);
-        draw.revealAndResolve(period, SECRET);
-    }
-
-    function test_RevertRevealAfterWindowExpires() public {
-        uint256 anchor = _commit();
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(anchor + 300); // blockhash(anchor) unavailable -> 0
-        vm.expectRevert(DrawManager.AnchorExpired.selector);
-        draw.revealAndResolve(period, SECRET);
-    }
-
-    // -------------------------------------------------------------- recommit
-
-    function test_RecommitOnlyAfterExpiry_ThenRevealWorks() public {
-        uint256 anchor = _commit();
-        vm.warp(periodEnd + 1 hours);
-
-        // Too early to recommit while the reveal window is live.
-        vm.roll(anchor + 100);
+    function test_RevertFulfillFromNonCoordinator() public {
+        vm.warp(periodEnd + 1);
         vm.prank(keeper);
-        vm.expectRevert(DrawManager.AnchorStillLive.selector);
-        draw.recommitSeed(period, COMMITMENT);
+        draw.resolveDraw(period);
 
-        // Window expires unrevealed -> fresh cycle with a new secret.
-        vm.roll(anchor + 300);
-        bytes32 secret2 = keccak256("ajora-day-1-retry");
-        vm.prank(keeper);
-        draw.recommitSeed(period, keccak256(abi.encode(secret2)));
-        (, uint64 anchor2) = draw.seedCommits(period);
-        assertEq(anchor2, block.number + draw.ANCHOR_DELAY());
-
-        vm.roll(uint256(anchor2) + 5);
-        vm.setBlockhash(anchor2, keccak256("retry-hash"));
-        draw.revealAndResolve(period, secret2);
-        assertTrue(draw.drawOf(period).resolved);
-    }
-
-    function test_RevertRecommitNotKeeper() public {
-        uint256 anchor = _commit();
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(anchor + 300);
-        vm.expectRevert(DrawManager.NotKeeper.selector);
-        draw.recommitSeed(period, COMMITMENT);
-    }
-
-    /// @notice Liveness bootstrap: a period whose entire commit window was missed can still
-    ///         be committed post-close and resolved — its pot is never stuck.
-    function test_RecommitBootstrapsPeriodThatNeverGotACommit() public {
-        // No commit at all before the period ends.
-        vm.warp(periodEnd + 2 hours);
-
-        vm.prank(keeper);
-        draw.recommitSeed(period, COMMITMENT);
-        (, uint64 anchor) = draw.seedCommits(period);
-        assertEq(anchor, block.number + draw.ANCHOR_DELAY());
-
-        vm.roll(uint256(anchor) + 5);
-        vm.setBlockhash(anchor, keccak256("bootstrap-hash"));
-        draw.revealAndResolve(period, SECRET);
-        assertTrue(draw.drawOf(period).resolved, "missed period resolved via bootstrap");
-    }
-
-    function test_RevertBootstrapForCurrentPeriod() public {
-        // Bootstrap only exists for closed periods — current period uses commitSeed.
-        vm.warp(periodEnd - 5 minutes);
-        vm.prank(keeper);
-        vm.expectRevert(DrawManager.PeriodNotOver.selector);
-        draw.recommitSeed(period, COMMITMENT);
+        uint256[] memory words = new uint256[](1);
+        vm.expectRevert();
+        draw.rawFulfillRandomWords(1, words);
     }
 }

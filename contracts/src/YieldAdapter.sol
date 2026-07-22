@@ -114,7 +114,7 @@ contract YieldAdapter is IYieldAdapter {
     /// @inheritdoc IYieldAdapter
     /// @dev Restricted to the current or a future period: funding a resolved period's pot
     ///      would strand the money (its draw snapshot is already taken).
-    function harvest(uint256 periodId) external returns (uint256 yieldAmount) {
+    function harvest(uint256 periodId) external returns (uint256 netYield) {
         if (periodId < vault.currentPeriod()) revert StalePeriod();
 
         uint256 balance = aToken.balanceOf(address(this));
@@ -122,17 +122,18 @@ contract YieldAdapter is IYieldAdapter {
         if (balance <= deployed) return 0;
 
         IAaveV3Pool pool = IAaveV3Pool(addressesProvider.getPool());
-        yieldAmount = pool.withdraw(address(token), balance - deployed, address(this));
+        uint256 yieldAmount = pool.withdraw(address(token), balance - deployed, address(this));
 
         uint256 fee = (yieldAmount * protocolFeeBps) / 10000;
-        uint256 toPot = yieldAmount - fee;
+        netYield = yieldAmount - fee;
 
         if (fee > 0) {
+            token.approve(address(treasury), fee);
             treasury.collectYieldFee(fee, periodId);
         }
 
-        if (!token.approve(address(vault), toPot)) revert TransferFailed();
-        vault.fundJara(periodId, toPot);
+        if (!token.approve(address(vault), netYield)) revert TransferFailed();
+        vault.fundJara(periodId, netYield);
         emit Harvested(yieldAmount, periodId);
     }
 }

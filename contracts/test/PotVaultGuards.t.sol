@@ -12,7 +12,17 @@ import { MockAaveV3Pool } from "./mocks/MockAaveV3Pool.sol";
 
 /// @notice Circuit breaker + deposit caps (spec §13): pause stops money-in instantly but
 ///         never money-out; unpause waits a day; caps bound month-1 blast radius.
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+
+
 contract PotVaultGuardsTest is Test {
+    Treasury internal treasury;
+    MockPoolAddressesProvider internal provider;
+
     PotVault internal vault;
     MockERC20 internal cusd;
 
@@ -26,6 +36,9 @@ contract PotVaultGuardsTest is Test {
         vm.warp(20_000 days + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
+        
+        treasury = Treasury(address(new MockTreasury()));
+        
         vault.setDrawManager(drawManager);
         cusd.mint(alice, 1_000e18);
         cusd.mint(bob, 1_000e18);
@@ -51,11 +64,13 @@ contract PotVaultGuardsTest is Test {
 
     function test_PauseBlocksDeployIdle() public {
         MockAaveV3Pool pool = new MockAaveV3Pool(cusd);
+        provider = new MockPoolAddressesProvider(address(pool));
         YieldAdapter adapter = new YieldAdapter(
             IERC20(address(cusd)),
             vault,
-            IAaveV3Pool(address(pool)),
+            provider,
             IERC20(address(pool.aToken())),
+            treasury,
             1_000e18
         );
         vault.proposeYieldAdapter(IYieldAdapter(address(adapter)));

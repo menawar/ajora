@@ -7,7 +7,19 @@ import { DrawManager } from "../src/DrawManager.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+import { VRFCoordinatorV2Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol";
+
 contract DrawManagerTest is Test {
+    VRFCoordinatorV2Mock internal vrfMock;
+    uint256 internal nextRequestId = 1;
+
+    Treasury internal treasury;
+
     PotVault internal vault;
     DrawManager internal draw;
     MockERC20 internal cusd;
@@ -22,10 +34,18 @@ contract DrawManagerTest is Test {
     uint256 internal constant DAY = 1 days;
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        draw = new DrawManager(vault, keeper);
+        
+        vrfMock = new VRFCoordinatorV2Mock(0.1e18, 1e9);
+        uint64 subId = vrfMock.createSubscription();
+        vrfMock.fundSubscription(subId, 100e18);
+        
+        draw = new DrawManager(vault, keeper, address(vrfMock), subId, bytes32(0));
+        vrfMock.addConsumer(subId, address(draw));
+        
         vault.setDrawManager(address(draw));
 
         for (uint160 i = 0; i < 3; i++) {
@@ -51,28 +71,17 @@ contract DrawManagerTest is Test {
 
     bytes32 internal constant ANCHOR_HASH = keccak256("test-anchor");
 
-    /// @dev Resolve `periodId` so that `target` wins, via the real commit->reveal flow:
-    ///      brute-force a secret whose blended seed lands on `target`, commit it inside the
-    ///      final window, mine past the anchor, pin the anchor hash, and reveal.
+    /// @dev Resolve `periodId` so that `target` wins, via the VRF flow.
     function _resolveWithNumber(uint256 periodId, uint8 target) internal {
         uint256 periodEnd = (periodId + 1) * DAY;
+        vm.warp(periodEnd + 1);
 
-        bytes32 secret;
-        for (uint256 i = 0;; i++) {
-            secret = bytes32(i);
-            uint256 seed = uint256(keccak256(abi.encode(secret, ANCHOR_HASH)));
-            if (uint8(seed % 9) + 1 == target) break;
-        }
-
-        vm.warp(periodEnd - 5 minutes);
         vm.prank(keeper);
-        draw.commitSeed(periodId, keccak256(abi.encode(secret)));
-        (, uint64 anchor) = draw.seedCommits(periodId);
+        draw.resolveDraw(periodId);
 
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(uint256(anchor) + 10);
-        vm.setBlockhash(anchor, ANCHOR_HASH);
-        draw.revealAndResolve(periodId, secret);
+        uint256[] memory words = new uint256[](1);
+        words[0] = target - 1; // target = (word % 9) + 1 => target - 1 gives target
+        vrfMock.fulfillRandomWordsWithOverride(nextRequestId++, address(draw), words);
     }
 
     // ----------------------------------------------------------------- picks
@@ -142,39 +151,25 @@ contract DrawManagerTest is Test {
         assertTrue(draw.isWinner(amara, period));
     }
 
-    function test_RevertRevealBeforePeriodOver() public {
-        // Defense in depth: even a mined anchor can't resolve a period still in flight.
+    function test_RevertResolveBeforePeriodOver() public {
         uint256 period = vault.currentPeriod();
         uint256 periodEnd = (period + 1) * DAY;
         vm.warp(periodEnd - 5 minutes);
-        bytes32 secret = bytes32(uint256(42));
         vm.prank(keeper);
-        draw.commitSeed(period, keccak256(abi.encode(secret)));
-        (, uint64 anchor) = draw.seedCommits(period);
-
-        vm.roll(uint256(anchor) + 10); // anchor mined but period NOT over
-        vm.setBlockhash(anchor, ANCHOR_HASH);
         vm.expectRevert(DrawManager.PeriodNotOver.selector);
-        draw.revealAndResolve(period, secret);
+        draw.resolveDraw(period);
     }
 
-    function test_RevertSecondRevealAlreadyResolved() public {
+    function test_RevertSecondResolveAlreadyResolved() public {
         uint256 period = vault.currentPeriod();
         _save(amara, 1e18);
         vm.prank(amara);
         draw.pickNumber(4);
         _resolveWithNumber(period, 4);
 
-        // Replaying the same reveal can't resolve twice.
-        (bytes32 commitment,) = draw.seedCommits(period);
-        bytes32 secret;
-        for (uint256 i = 0;; i++) {
-            secret = bytes32(i);
-            if (keccak256(abi.encode(secret)) == commitment) break;
-            if (i > 1000) revert("secret not found");
-        }
+        vm.prank(keeper);
         vm.expectRevert(DrawManager.AlreadyResolved.selector);
-        draw.revealAndResolve(period, secret);
+        draw.resolveDraw(period);
     }
 
     function test_NoWinnerRecyclesPotToCurrentPeriod() public {

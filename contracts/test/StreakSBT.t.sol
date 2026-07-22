@@ -4,14 +4,27 @@ pragma solidity ^0.8.24;
 import { Test } from "forge-std/Test.sol";
 import { StreakSBT } from "../src/StreakSBT.sol";
 
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+import { MockERC20 } from "./mocks/MockERC20.sol";
+import { IERC20 } from "../src/interfaces/IERC20.sol";
+
 contract StreakSBTTest is Test {
+    Treasury internal treasury;
+    MockERC20 internal cusd;
+
     StreakSBT internal sbt;
     address internal alice = address(0xA11CE);
 
     uint256 internal constant DAY = 1 days;
 
     function setUp() public {
-        sbt = new StreakSBT();
+        treasury = Treasury(address(new MockTreasury()));
+        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        sbt = new StreakSBT(IERC20(address(cusd)), treasury);
         // Start at a known, non-zero day so day-index arithmetic is realistic.
         vm.warp(20_000 * DAY + 9 hours);
     }

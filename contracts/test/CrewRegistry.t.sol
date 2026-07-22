@@ -9,7 +9,14 @@ import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { ICrewRegistry } from "../src/interfaces/ICrewRegistry.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract CrewRegistryTest is Test {
+    Treasury internal treasury;
+
     PotVault internal vault;
     CrewRegistry internal registry;
     SprayFaucet internal faucet;
@@ -29,10 +36,11 @@ contract CrewRegistryTest is Test {
     bytes32 internal constant KWAME_CODE = "kwame-1";
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        faucet = new SprayFaucet(vault, verifier);
+        faucet = new SprayFaucet(vault, verifier, treasury);
         registry = new CrewRegistry();
 
         vault.setSprayFaucet(address(faucet));

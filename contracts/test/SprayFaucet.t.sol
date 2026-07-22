@@ -7,7 +7,14 @@ import { SprayFaucet } from "../src/SprayFaucet.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract SprayFaucetTest is Test {
+    Treasury internal treasury;
+
     PotVault internal vault;
     SprayFaucet internal faucet;
     MockERC20 internal cusd;
@@ -22,10 +29,11 @@ contract SprayFaucetTest is Test {
     bytes32 internal constant SAFARICOM = "safaricom-launch";
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 days + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        faucet = new SprayFaucet(vault, verifier);
+        faucet = new SprayFaucet(vault, verifier, treasury);
         vault.setSprayFaucet(address(faucet));
 
         cusd.mint(sponsor, 1000e18);
@@ -47,7 +55,7 @@ contract SprayFaucetTest is Test {
 
     function test_FundSponsorPoolAccruesToCampaign() public {
         _fund(MTN, 10e18);
-        assertEq(faucet.campaignBalance(MTN), 10e18);
+        assertEq(faucet.campaignBalance(MTN), 9.5e18);
         assertEq(cusd.balanceOf(address(faucet)), 10e18);
     }
 
@@ -57,7 +65,7 @@ contract SprayFaucetTest is Test {
     }
 
     function test_CampaignBudgetsAreIsolated() public {
-        _fund(MTN, 1e18);
+        _fund(MTN, 1.1e18); // 1.1 - 5% = 1.045
         _fund(SAFARICOM, 5e18);
         assertEq(faucet.activeCampaign(), MTN, "first campaign stays active");
 
@@ -69,8 +77,8 @@ contract SprayFaucetTest is Test {
             faucet.setVerified(user, true);
             faucet.welcomeTicket(user);
         }
-        assertEq(faucet.campaignBalance(MTN), 0);
-        assertEq(faucet.campaignBalance(SAFARICOM), 5e18, "isolated");
+        assertEq(faucet.campaignBalance(MTN), 0.045e18);
+        assertEq(faucet.campaignBalance(SAFARICOM), 4.75e18, "isolated");
 
         vm.expectRevert(SprayFaucet.InsufficientCampaignBudget.selector);
         faucet.welcomeTicket(amara);
@@ -103,7 +111,7 @@ contract SprayFaucetTest is Test {
         assertEq(vault.ticketsOf(amara, period), 1, "1 ticket of odds");
         assertEq(vault.principalOf(amara, period), 0, "no principal claim");
         assertEq(vault.periodInfo(period).jaraPot, MIN, "backing moved to jara pot");
-        assertEq(faucet.campaignBalance(MTN), 10e18 - MIN, "campaign debited");
+        assertEq(faucet.campaignBalance(MTN), 9.5e18 - MIN, "campaign debited");
     }
 
     function test_RevertWelcomeUnverified() public {
@@ -186,7 +194,7 @@ contract SprayFaucetTest is Test {
 
     /// @notice Even a ring of verified accounts can't extract more than the campaign holds.
     function test_DrainResistance_SpendNeverExceedsFunding() public {
-        _fund(MTN, 1e18); // backs exactly 10 free tickets
+        _fund(MTN, 1e18); // 0.95e18 net, backs exactly 9 free tickets
         address[] memory ring = new address[](5);
         for (uint256 i = 0; i < 5; i++) {
             ring[i] = address(uint160(0x2000 + i));
@@ -208,9 +216,9 @@ contract SprayFaucetTest is Test {
             }
         }
 
-        assertEq(issued, 10, "exactly the funded ticket count issued");
-        assertEq(faucet.campaignBalance(MTN), 0);
+        assertEq(issued, 9, "exactly the funded ticket count issued");
+        assertEq(faucet.campaignBalance(MTN), 0.05e18); // 0.95e18 - 9*0.1e18 = 0.05e18
         uint256 period = vault.currentPeriod();
-        assertEq(vault.periodInfo(period).jaraPot, 1e18, "every issued ticket fully backed");
+        assertEq(vault.periodInfo(period).jaraPot, 0.9e18, "every issued ticket fully backed");
     }
 }
