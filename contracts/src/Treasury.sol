@@ -77,6 +77,11 @@ contract Treasury is ITreasury {
     }
 
     /// @inheritdoc ITreasury
+    function totalProtocolFees() external view returns (uint256) {
+        return totalRake + totalYieldFees + totalSponsorFees + totalRescueFees;
+    }
+
+    /// @inheritdoc ITreasury
     /// @dev Thin passthrough: DrawManager.recycleUnclaimed is already permissionless after
     ///      the claim window; this keeps the spec's Treasury surface for the sweep keeper.
     function sweepUnclaimed(uint256 periodId) external returns (uint256 amount) {

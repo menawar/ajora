@@ -24,6 +24,9 @@ interface ITreasury {
     /// @notice Collect rescue fee from StreakSBT.
     function collectRescueFee(uint256 amount, address user) external;
 
+    /// @notice Returns the total protocol fees collected from all sources.
+    function totalProtocolFees() external view returns (uint256);
+
     /// @notice Recycle a resolved period's unclaimed prize remainder forward. Permissionless
     ///         once the claim window has passed. Returns the amount recycled.
     function sweepUnclaimed(uint256 periodId) external returns (uint256 amount);
