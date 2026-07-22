@@ -9,12 +9,12 @@ import { useWallet } from "./useWallet";
 const POLL_MS = 20_000;
 
 /** Human code <-> bytes32 on-chain code. */
-export const toCode = (s: string) => stringToHex(s.trim().toLowerCase().slice(0, 31), { size: 32 });
-export const fromCode = (b: `0x${string}`) => hexToString(b, { size: 32 }).replace(/\0+$/, "");
+const toCode = (s: string) => stringToHex(s.trim().toLowerCase().slice(0, 31), { size: 32 });
+const fromCode = (b: `0x${string}`) => hexToString(b, { size: 32 }).replace(/\0+$/, "");
 
 const INDEXER_URL = process.env.NEXT_PUBLIC_INDEXER_URL ?? "";
 
-export interface CrewMember {
+interface CrewMember {
   address: string;
   joinedAt: number;
 }

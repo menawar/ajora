@@ -12,7 +12,7 @@ interface RippleOptions {
  * Returns a click handler that injects a Material-style ripple effect
  * into the target element. Usage: `<button {...getRippleProps()}>…</button>`
  */
-export function useRipple(options: RippleOptions = {}) {
+function useRipple(options: RippleOptions = {}) {
   const { color = "rgba(255,255,255,0.35)", duration = 500 } = options;
   const sfx = useSFX();
 
