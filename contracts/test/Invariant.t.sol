@@ -11,10 +11,17 @@ import { IYieldAdapter } from "../src/interfaces/IYieldAdapter.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 import { MockAaveV3Pool } from "./mocks/MockAaveV3Pool.sol";
 
+
 /// @notice Randomized action handler with exact ghost accounting. Every cUSD that enters
 ///         the vault is tagged principal / jara / winnings; the invariant demands the
 ///         vault's token balance equals the sum at all times.
+
+import { Treasury } from "../src/Treasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
 contract VaultHandler is Test {
+    Treasury internal treasury;
+
     PotVault public immutable vault;
     MockERC20 public immutable cusd;
     YieldAdapter public immutable adapter;
@@ -175,13 +182,17 @@ contract VaultInvariantTest is StdInvariant, Test {
         vault = new PotVault(IERC20(address(cusd)), 0.1e18);
         vault.setDrawManager(drawManager);
         vault.setSprayFaucet(faucet);
+        
+        Treasury treasury = Treasury(address(new MockTreasury()));
 
         pool = new MockAaveV3Pool(cusd);
+        MockPoolAddressesProvider provider = new MockPoolAddressesProvider(address(pool));
         adapter = new YieldAdapter(
             IERC20(address(cusd)),
             vault,
-            IAaveV3Pool(address(pool)),
+            provider,
             IERC20(address(pool.aToken())),
+            treasury,
             type(uint256).max
         );
         vault.proposeYieldAdapter(IYieldAdapter(address(adapter)));

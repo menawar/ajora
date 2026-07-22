@@ -9,7 +9,14 @@ import { MockERC20 } from "./mocks/MockERC20.sol";
 
 /// @notice Per-human free-value caps (spec §13): a verified ring must not be able to
 ///         funnel unbounded sponsor budget into one account.
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract SprayFaucetCapsTest is Test {
+    Treasury internal treasury;
+
     PotVault internal vault;
     SprayFaucet internal faucet;
     MockERC20 internal cusd;
@@ -24,10 +31,11 @@ contract SprayFaucetCapsTest is Test {
     uint256 internal constant MIN = 0.1e18;
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 days + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        faucet = new SprayFaucet(vault, verifier);
+        faucet = new SprayFaucet(vault, verifier, treasury);
         vault.setSprayFaucet(address(faucet));
 
         cusd.mint(sponsor, 1_000e18);

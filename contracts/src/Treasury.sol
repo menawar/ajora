@@ -20,6 +20,9 @@ contract Treasury is ITreasury {
 
     /// @notice Lifetime rake collected, for the §6 "prizes come from real revenue" ledger.
     uint256 public totalRake;
+    uint256 public totalYieldFees;
+    uint256 public totalSponsorFees;
+    uint256 public totalRescueFees;
 
     mapping(uint256 periodId => uint256) public rakeOf;
 
@@ -50,6 +53,32 @@ contract Treasury is ITreasury {
         rakeOf[periodId] += amount;
         totalRake += amount;
         emit RakeCollected(amount, periodId);
+    }
+
+    /// @inheritdoc ITreasury
+    function collectYieldFee(uint256 amount, uint256 periodId) external {
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+        totalYieldFees += amount;
+        emit YieldFeeCollected(amount, periodId);
+    }
+
+    /// @inheritdoc ITreasury
+    function collectSponsorFee(uint256 amount, bytes32 campaignId) external {
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+        totalSponsorFees += amount;
+        emit SponsorFeeCollected(amount, campaignId);
+    }
+
+    /// @inheritdoc ITreasury
+    function collectRescueFee(uint256 amount, address user) external {
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+        totalRescueFees += amount;
+        emit RescueFeeCollected(amount, user);
+    }
+
+    /// @inheritdoc ITreasury
+    function totalProtocolFees() external view returns (uint256) {
+        return totalRake + totalYieldFees + totalSponsorFees + totalRescueFees;
     }
 
     /// @inheritdoc ITreasury

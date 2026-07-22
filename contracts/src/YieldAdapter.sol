@@ -3,7 +3,9 @@ pragma solidity ^0.8.24;
 
 import { IERC20 } from "./interfaces/IERC20.sol";
 import { IAaveV3Pool } from "./interfaces/IAaveV3Pool.sol";
+import { IPoolAddressesProvider } from "./interfaces/IPoolAddressesProvider.sol";
 import { IYieldAdapter } from "./interfaces/IYieldAdapter.sol";
+import { ITreasury } from "./interfaces/ITreasury.sol";
 import { PotVault } from "./PotVault.sol";
 
 /// @title YieldAdapter
@@ -17,10 +19,12 @@ import { PotVault } from "./PotVault.sol";
 contract YieldAdapter is IYieldAdapter {
     IERC20 public immutable token;
     PotVault public immutable vault;
-    IAaveV3Pool public immutable pool;
+    IPoolAddressesProvider public immutable addressesProvider;
     IERC20 public immutable aToken;
+    ITreasury public immutable treasury;
 
     address public admin;
+    uint256 public protocolFeeBps = 1000; // 10%
 
     /// @notice Max principal deployable into the venue — limits blast radius while the
     ///         venue earns trust (spec §13 deposit caps).
@@ -39,17 +43,28 @@ contract YieldAdapter is IYieldAdapter {
 
     event DepositCapSet(uint256 cap);
 
-    constructor(IERC20 _token, PotVault _vault, IAaveV3Pool _pool, IERC20 _aToken, uint256 _cap) {
+    constructor(
+        IERC20 _token, 
+        PotVault _vault, 
+        IPoolAddressesProvider _addressesProvider, 
+        IERC20 _aToken, 
+        ITreasury _treasury,
+        uint256 _cap
+    ) {
         if (
             address(_token) == address(0) || address(_vault) == address(0)
-                || address(_pool) == address(0) || address(_aToken) == address(0)
+                || address(_addressesProvider) == address(0) || address(_aToken) == address(0)
+                || address(_treasury) == address(0)
         ) revert ZeroAddress();
         token = _token;
         vault = _vault;
-        pool = _pool;
+        addressesProvider = _addressesProvider;
         aToken = _aToken;
+        treasury = _treasury;
         depositCap = _cap;
         admin = msg.sender;
+        
+        token.approve(address(_treasury), type(uint256).max);
     }
 
     modifier onlyVault() {
@@ -65,6 +80,13 @@ contract YieldAdapter is IYieldAdapter {
         emit DepositCapSet(cap);
     }
 
+    /// @notice Set the protocol fee basis points. Admin only.
+    function setProtocolFeeBps(uint256 bps) external {
+        if (msg.sender != admin) revert NotAdmin();
+        require(bps <= 10000, "Invalid bps");
+        protocolFeeBps = bps;
+    }
+
     /// @inheritdoc IYieldAdapter
     function deposit(uint256 amount) external onlyVault {
         if (totalDeployed + amount > depositCap) revert CapExceeded();
@@ -72,6 +94,7 @@ contract YieldAdapter is IYieldAdapter {
 
         // msg.sender == vault (onlyVault), spelled that way so the pull is visibly self-approved
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+        IAaveV3Pool pool = IAaveV3Pool(addressesProvider.getPool());
         if (!token.approve(address(pool), amount)) revert TransferFailed();
         pool.supply(address(token), amount, address(this), 0);
         emit Deposited(amount);
@@ -82,6 +105,7 @@ contract YieldAdapter is IYieldAdapter {
     ///      for more principal than was ever deployed — that's a caller bug, so revert.
     function withdraw(uint256 amount) external onlyVault {
         totalDeployed -= amount;
+        IAaveV3Pool pool = IAaveV3Pool(addressesProvider.getPool());
         uint256 got = pool.withdraw(address(token), amount, address(vault));
         if (got != amount) revert VenueShort();
         emit Withdrawn(amount);
@@ -90,16 +114,26 @@ contract YieldAdapter is IYieldAdapter {
     /// @inheritdoc IYieldAdapter
     /// @dev Restricted to the current or a future period: funding a resolved period's pot
     ///      would strand the money (its draw snapshot is already taken).
-    function harvest(uint256 periodId) external returns (uint256 yieldAmount) {
+    function harvest(uint256 periodId) external returns (uint256 netYield) {
         if (periodId < vault.currentPeriod()) revert StalePeriod();
 
         uint256 balance = aToken.balanceOf(address(this));
         uint256 deployed = totalDeployed;
         if (balance <= deployed) return 0;
 
-        yieldAmount = pool.withdraw(address(token), balance - deployed, address(this));
-        if (!token.approve(address(vault), yieldAmount)) revert TransferFailed();
-        vault.fundJara(periodId, yieldAmount);
+        IAaveV3Pool pool = IAaveV3Pool(addressesProvider.getPool());
+        uint256 yieldAmount = pool.withdraw(address(token), balance - deployed, address(this));
+
+        uint256 fee = (yieldAmount * protocolFeeBps) / 10000;
+        netYield = yieldAmount - fee;
+
+        if (fee > 0) {
+            token.approve(address(treasury), fee);
+            treasury.collectYieldFee(fee, periodId);
+        }
+
+        if (!token.approve(address(vault), netYield)) revert TransferFailed();
+        vault.fundJara(periodId, netYield);
         emit Harvested(yieldAmount, periodId);
     }
 }

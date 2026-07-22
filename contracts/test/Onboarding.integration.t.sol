@@ -12,7 +12,14 @@ import { MockERC20 } from "./mocks/MockERC20.sol";
 /// @notice End-to-end zero-deposit onboarding (AJORA_SPEC.md §2, §4): a brand-new verified
 ///         user receives a sponsored welcome ticket, gets sprayed by a friend, wins the
 ///         draw, and claims real stablecoin — having never deposited a cent.
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract OnboardingIntegrationTest is Test {
+    Treasury internal treasury;
+
     PotVault internal vault;
     SprayFaucet internal faucet;
     StreakSBT internal sbt;
@@ -27,11 +34,12 @@ contract OnboardingIntegrationTest is Test {
     uint256 internal constant MIN = 0.1e18;
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 days + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        sbt = new StreakSBT();
-        faucet = new SprayFaucet(vault, verifier);
+        sbt = new StreakSBT(IERC20(address(cusd)), treasury);
+        faucet = new SprayFaucet(vault, verifier, treasury);
         vault.setStreakSBT(IStreakSBT(address(sbt)));
         vault.setSprayFaucet(address(faucet));
         vault.setDrawManager(drawManager);

@@ -13,7 +13,15 @@ import { MockERC20 } from "./mocks/MockERC20.sol";
 /// @notice The complete Ajora daily loop across all four core contracts (AJORA_SPEC.md §4):
 ///         save -> check in -> pick -> 8 PM resolve -> claim winnings -> principal always
 ///         withdrawable. Runs two consecutive days including a no-winner rollover.
+
+import { Treasury } from "../src/Treasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+import { VRFCoordinatorV2Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol";
 contract CoreLoopIntegrationTest is Test {
+    Treasury internal treasury;
+    VRFCoordinatorV2Mock internal vrfMock;
+    uint256 internal nextRequestId = 1;
+
     PotVault internal vault;
     DrawManager internal draw;
     SprayFaucet internal faucet;
@@ -33,9 +41,18 @@ contract CoreLoopIntegrationTest is Test {
         vm.warp(20_000 * DAY + 9 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        sbt = new StreakSBT();
-        faucet = new SprayFaucet(vault, verifier);
-        draw = new DrawManager(vault, keeper);
+        
+        vrfMock = new VRFCoordinatorV2Mock(0.1e18, 1e9);
+        uint64 subId = vrfMock.createSubscription();
+        vrfMock.fundSubscription(subId, 100e18);
+        
+        draw = new DrawManager(vault, keeper, address(vrfMock), subId, bytes32(0));
+        vrfMock.addConsumer(subId, address(draw));
+        
+        treasury = new Treasury(IERC20(address(cusd)), vault, draw);
+        sbt = new StreakSBT(IERC20(address(cusd)), treasury);
+        faucet = new SprayFaucet(vault, verifier, treasury);
+        
         vault.setStreakSBT(IStreakSBT(address(sbt)));
         vault.setSprayFaucet(address(faucet));
         vault.setDrawManager(address(draw));
@@ -55,25 +72,17 @@ contract CoreLoopIntegrationTest is Test {
         vm.stopPrank();
     }
 
-    bytes32 internal constant ANCHOR_HASH = keccak256("test-anchor");
-
-    /// @dev Resolve via the real commit->reveal flow so that `target` wins.
+    /// @dev Resolve via VRF flow so that `target` wins.
     function _resolveWithNumber(uint256 periodId, uint8 target) internal {
         uint256 periodEnd = (periodId + 1) * DAY;
-        bytes32 secret;
-        for (uint256 i = 0;; i++) {
-            secret = bytes32(i);
-            uint256 seed = uint256(keccak256(abi.encode(secret, ANCHOR_HASH)));
-            if (uint8(seed % 9) + 1 == target) break;
-        }
-        vm.warp(periodEnd - 5 minutes);
+        vm.warp(periodEnd + 1);
+        
         vm.prank(keeper);
-        draw.commitSeed(periodId, keccak256(abi.encode(secret)));
-        (, uint64 anchor) = draw.seedCommits(periodId);
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(uint256(anchor) + 10);
-        vm.setBlockhash(anchor, ANCHOR_HASH);
-        draw.revealAndResolve(periodId, secret);
+        draw.resolveDraw(periodId);
+        
+        uint256[] memory words = new uint256[](1);
+        words[0] = target - 1; // target = (word % 9) + 1 => target - 1 gives target
+        vrfMock.fulfillRandomWordsWithOverride(nextRequestId++, address(draw), words);
     }
 
     /// @dev One user session: check in, save, pick — the 40-second loop.

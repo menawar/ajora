@@ -12,7 +12,17 @@ import { MockAaveV3Pool } from "./mocks/MockAaveV3Pool.sol";
 
 /// @notice End-to-end vault<->adapter routing: timelocked wiring, buffer-gated deployment,
 ///         and the no-loss guarantee holding while principal sits in the venue.
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
+
+
 contract PotVaultYieldIntegrationTest is Test {
+    Treasury internal treasury;
+    MockPoolAddressesProvider internal provider;
+
     PotVault internal vault;
     MockERC20 internal cusd;
     MockAaveV3Pool internal pool;
@@ -27,13 +37,18 @@ contract PotVaultYieldIntegrationTest is Test {
         vm.warp(20_000 days + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
+        
+        treasury = Treasury(address(new MockTreasury()));
+
         vault.setDrawManager(drawManager);
         pool = new MockAaveV3Pool(cusd);
+        provider = new MockPoolAddressesProvider(address(pool));
         adapter = new YieldAdapter(
             IERC20(address(cusd)),
             vault,
-            IAaveV3Pool(address(pool)),
+            provider,
             IERC20(address(pool.aToken())),
+            treasury,
             1_000e18
         );
 
@@ -196,8 +211,9 @@ contract PotVaultYieldIntegrationTest is Test {
 
         adapter.harvest(periodId);
 
-        // Yield became jara; principal claim still pays out exactly 100.
-        assertEq(vault.periodInfo(periodId).jaraPot, 5e18);
+        // Yield became jara (90%); principal claim still pays out exactly 100.
+        assertEq(vault.periodInfo(periodId).jaraPot, 4.5e18);
+        assertEq(treasury.totalYieldFees(), 0.5e18);
         vm.warp(block.timestamp + 1 days);
         vm.prank(alice);
         uint256 got = vault.claimPrincipal(periodId);

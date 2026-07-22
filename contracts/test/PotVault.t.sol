@@ -8,7 +8,14 @@ import { MockERC20 } from "./mocks/MockERC20.sol";
 import { MockStreakSBT } from "./mocks/MockStreakSBT.sol";
 import { IStreakSBT } from "../src/interfaces/IStreakSBT.sol";
 
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract PotVaultTest is Test {
+    Treasury internal treasury;
+
     PotVault internal vault;
     MockERC20 internal cusd;
 
@@ -18,6 +25,7 @@ contract PotVaultTest is Test {
     uint256 internal constant MIN = 0.1e18; // 0.10 cUSD
 
     function setUp() public {
+        treasury = Treasury(address(new MockTreasury()));
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
 

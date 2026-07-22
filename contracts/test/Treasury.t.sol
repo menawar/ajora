@@ -7,8 +7,12 @@ import { DrawManager } from "../src/DrawManager.sol";
 import { Treasury } from "../src/Treasury.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
+import { VRFCoordinatorV2Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol";
 
 contract TreasuryTest is Test {
+    VRFCoordinatorV2Mock internal vrfMock;
+    uint256 internal nextRequestId = 1;
+
     PotVault internal vault;
     DrawManager internal draw;
     Treasury internal treasury;
@@ -27,7 +31,14 @@ contract TreasuryTest is Test {
         vm.warp(20_000 * DAY + 12 hours);
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
-        draw = new DrawManager(vault, keeper);
+        
+        vrfMock = new VRFCoordinatorV2Mock(0.1e18, 1e9);
+        uint64 subId = vrfMock.createSubscription();
+        vrfMock.fundSubscription(subId, 100e18);
+        
+        draw = new DrawManager(vault, keeper, address(vrfMock), subId, bytes32(0));
+        vrfMock.addConsumer(subId, address(draw));
+        
         vault.setDrawManager(address(draw));
         treasury = new Treasury(IERC20(address(cusd)), vault, draw);
 
@@ -133,23 +144,13 @@ contract TreasuryTest is Test {
 
     function _resolveWithNumber(uint256 periodId, uint8 target) internal {
         uint256 periodEnd = (periodId + 1) * DAY;
+        vm.warp(periodEnd + 1);
 
-        bytes32 secret;
-        for (uint256 i = 0;; i++) {
-            secret = bytes32(i);
-            if (uint8(uint256(keccak256(abi.encode(secret, ANCHOR_HASH))) % 9) + 1 == target) {
-                break;
-            }
-        }
-
-        vm.warp(periodEnd - 5 minutes);
         vm.prank(keeper);
-        draw.commitSeed(periodId, keccak256(abi.encode(secret)));
-        (, uint64 anchor) = draw.seedCommits(periodId);
+        draw.resolveDraw(periodId);
 
-        vm.warp(periodEnd + 1 hours);
-        vm.roll(uint256(anchor) + 10);
-        vm.setBlockhash(anchor, ANCHOR_HASH);
-        draw.revealAndResolve(periodId, secret);
+        uint256[] memory words = new uint256[](1);
+        words[0] = target - 1; // target = (word % 9) + 1 => target - 1 gives target
+        vrfMock.fulfillRandomWordsWithOverride(nextRequestId++, address(draw), words);
     }
 }

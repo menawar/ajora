@@ -17,6 +17,8 @@ contract MockStreakSBT is IStreakSBT {
         emit CheckedIn(msg.sender, streak[msg.sender], mult[msg.sender]);
     }
 
+    function rescueStreak() external {}
+
     function streakOf(address user) external view returns (uint256) {
         return streak[user];
     }

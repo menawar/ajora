@@ -9,7 +9,16 @@ import { IAaveV3Pool } from "../src/interfaces/IAaveV3Pool.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 import { MockAaveV3Pool } from "./mocks/MockAaveV3Pool.sol";
 
+
+
+import { Treasury }
+from "../src/Treasury.sol";
+import { MockTreasury } from "./mocks/MockTreasury.sol";
+import { MockPoolAddressesProvider } from "./mocks/MockPoolAddressesProvider.sol";
 contract YieldAdapterTest is Test {
+    MockPoolAddressesProvider internal provider;
+    Treasury internal treasury;
+
     PotVault internal vault;
     MockERC20 internal cusd;
     MockAaveV3Pool internal pool;
@@ -25,11 +34,23 @@ contract YieldAdapterTest is Test {
         cusd = new MockERC20("Celo Dollar", "cUSD", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         pool = new MockAaveV3Pool(cusd);
+        provider = new MockPoolAddressesProvider(address(pool));
+        
+        // Mock Treasury for testing (it needs vault but we can pass vault directly)
+        // Wait, treasury needs draw. Just mock treasury or instantiate it properly.
+        // Or we can just use address(0) for treasury in YieldAdapterTest since it only takes fees?
+        // Actually treasury needs draw. So we just pass address(0) or deploy a mock.
+        // Let's deploy a fake treasury for this test since YieldAdapter only calls collectYieldFee.
+        // Wait, we can't deploy Treasury without DrawManager.
+        // I'll just deploy a DrawManager too.
+        treasury = Treasury(address(new MockTreasury()));
+
         adapter = new YieldAdapter(
             IERC20(address(cusd)),
             vault,
-            IAaveV3Pool(address(pool)),
+            provider,
             IERC20(address(pool.aToken())),
+            treasury,
             CAP
         );
 
@@ -121,8 +142,9 @@ contract YieldAdapterTest is Test {
         vm.prank(rando); // permissionless
         uint256 got = adapter.harvest(periodId);
 
-        assertEq(got, 3e18);
-        assertEq(vault.periodInfo(periodId).jaraPot, 3e18, "yield lands in the prize pot");
+        assertEq(got, 2.7e18);
+        assertEq(vault.periodInfo(periodId).jaraPot, 2.7e18, "yield lands in the prize pot");
+        assertEq(treasury.totalYieldFees(), 0.3e18, "treasury gets rake");
         assertEq(adapter.totalDeployed(), 100e18, "principal untouched");
         assertEq(pool.aToken().balanceOf(address(adapter)), 100e18);
     }
@@ -147,6 +169,6 @@ contract YieldAdapterTest is Test {
         pool.accrue(address(adapter), 1e18);
         uint256 future = vault.currentPeriod() + 1;
         adapter.harvest(future);
-        assertEq(vault.periodInfo(future).jaraPot, 1e18);
+        assertEq(vault.periodInfo(future).jaraPot, 0.9e18);
     }
 }

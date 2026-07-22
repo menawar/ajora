@@ -2,6 +2,8 @@
 pragma solidity ^0.8.24;
 
 import { IStreakSBT } from "./interfaces/IStreakSBT.sol";
+import { IERC20 } from "./interfaces/IERC20.sol";
+import { ITreasury } from "./interfaces/ITreasury.sol";
 
 /// @title StreakSBT
 /// @notice Soulbound daily check-in record. A live streak boosts the holder's PotVault ticket
@@ -17,8 +19,41 @@ contract StreakSBT is IStreakSBT {
     mapping(address user => StreakData) internal _streaks;
     mapping(address user => mapping(uint256 badgeId => bool)) internal _badges;
 
+    IERC20 public immutable token;
+    ITreasury public immutable treasury;
+    address public admin;
+
+    uint256 public rescueFee = 1e18; // Default 1 token
+    uint256 public constant RESCUE_WINDOW = 3; // days
+
     error AlreadyCheckedIn();
     error Soulbound();
+    error ZeroAddress();
+    error NotAdmin();
+    error NotDead();
+    error TooDead();
+
+    event StreakRescued(address indexed user, uint256 streakDays, uint256 feePaid);
+    event RescueFeeSet(uint256 fee);
+
+    constructor(IERC20 _token, ITreasury _treasury) {
+        if (address(_token) == address(0) || address(_treasury) == address(0)) revert ZeroAddress();
+        token = _token;
+        treasury = _treasury;
+        admin = msg.sender;
+        
+        token.approve(address(_treasury), type(uint256).max);
+    }
+
+    modifier onlyAdmin() {
+        if (msg.sender != admin) revert NotAdmin();
+        _;
+    }
+
+    function setRescueFee(uint256 fee) external onlyAdmin {
+        rescueFee = fee;
+        emit RescueFeeSet(fee);
+    }
 
     /// @dev Multiplier scale: 10 = 1.0x.
     uint256 internal constant SCALE = 10;
@@ -45,6 +80,28 @@ contract StreakSBT is IStreakSBT {
 
         emit CheckedIn(msg.sender, s.streakDays, multiplierOf(msg.sender));
         _maybeMintBadge(msg.sender, s.streakDays);
+    }
+
+    function rescueStreak() external {
+        uint256 today = currentDay();
+        StreakData storage s = _streaks[msg.sender];
+
+        // Must actually have a streak to rescue
+        if (s.streakDays == 0) revert NotDead();
+
+        // Must be dead (missed yesterday)
+        if (s.lastCheckInDay + 1 >= today) revert NotDead();
+
+        // Must be within rescue window
+        if (s.lastCheckInDay + RESCUE_WINDOW < today) revert TooDead();
+
+        require(token.transferFrom(msg.sender, address(this), rescueFee), "transfer failed");
+        if (rescueFee > 0) {
+            treasury.collectRescueFee(rescueFee, msg.sender);
+        }
+
+        s.lastCheckInDay = uint64(today);
+        emit StreakRescued(msg.sender, s.streakDays, rescueFee);
     }
 
     /// @dev Milestone badges at the tier boundaries. badgeId == the streak-day milestone.
