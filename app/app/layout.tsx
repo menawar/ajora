@@ -42,10 +42,23 @@ export const metadata: Metadata = {
     title: "Ajora — Save small, chop jara",
     description: "No-loss prize-linked savings game on Celo.",
   },
-  // Talent Protocol (Proof of Ship) project-ownership verification tag.
   other: {
     "talentapp:project_verification":
       "99eaa36dba6294d4109782b53f8b7d9ac2708fa0acfb322e4d1dd3db7c6631cb3c7c0b509971d6fd6dd98c05d76c659046c5894e17cbde20b18ea83808d8076d",
+    "fc:frame": JSON.stringify({
+      version: "next",
+      imageUrl: "https://ajora-4ewr.vercel.app/icon-512.png",
+      button: {
+        title: "Launch Ajora",
+        action: {
+          type: "launch_frame",
+          name: "Ajora",
+          url: "https://ajora-4ewr.vercel.app/",
+          splashImageUrl: "https://ajora-4ewr.vercel.app/icon-512.png",
+          splashBackgroundColor: "#ffffff",
+        },
+      },
+    }),
   },
 };
 
