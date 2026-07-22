@@ -14,6 +14,9 @@ interface IStreakSBT {
     /// @dev Reverts if the user already checked in during the current day window.
     function checkIn() external;
 
+    /// @notice Rescues a broken streak by paying a micro-transaction fee.
+    function rescueStreak() external;
+
     /// @notice Current live streak in days. 0 if the streak is broken (no check-in yesterday/today).
     function streakOf(address user) external view returns (uint256);
 

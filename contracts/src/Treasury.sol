@@ -22,6 +22,7 @@ contract Treasury is ITreasury {
     uint256 public totalRake;
     uint256 public totalYieldFees;
     uint256 public totalSponsorFees;
+    uint256 public totalRescueFees;
 
     mapping(uint256 periodId => uint256) public rakeOf;
 
@@ -66,6 +67,13 @@ contract Treasury is ITreasury {
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
         totalSponsorFees += amount;
         emit SponsorFeeCollected(amount, campaignId);
+    }
+
+    /// @inheritdoc ITreasury
+    function collectRescueFee(uint256 amount, address user) external {
+        if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
+        totalRescueFees += amount;
+        emit RescueFeeCollected(amount, user);
     }
 
     /// @inheritdoc ITreasury

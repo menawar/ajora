@@ -8,6 +8,7 @@ interface ITreasury {
     event RakeCollected(uint256 amount, uint256 indexed periodId);
     event YieldFeeCollected(uint256 amount, uint256 indexed periodId);
     event SponsorFeeCollected(uint256 amount, bytes32 indexed campaignId);
+    event RescueFeeCollected(uint256 amount, address indexed user);
     event FeeWithdrawn(address indexed to, uint256 amount);
     event JaraFunded(uint256 amount, uint256 indexed periodId);
 
@@ -19,6 +20,9 @@ interface ITreasury {
 
     /// @notice Collect sponsor fee from SprayFaucet.
     function collectSponsorFee(uint256 amount, bytes32 campaignId) external;
+
+    /// @notice Collect rescue fee from StreakSBT.
+    function collectRescueFee(uint256 amount, address user) external;
 
     /// @notice Recycle a resolved period's unclaimed prize remainder forward. Permissionless
     ///         once the claim window has passed. Returns the amount recycled.
