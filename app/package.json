@@ -19,6 +19,7 @@
     "metrics": "node scripts/collect-metrics.mjs"
   },
   "dependencies": {
+    "@farcaster/miniapp-sdk": "^0.3.0",
     "@supabase/supabase-js": "^2.110.7",
     "canvas-confetti": "^1.9.4",
     "framer-motion": "^12.42.2",

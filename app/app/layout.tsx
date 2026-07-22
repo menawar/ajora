@@ -10,6 +10,7 @@ import { PageTransition } from "../components/PageTransition";
 import { AnalyticsProvider } from "../components/AnalyticsProvider";
 import { SkipToMain } from "../components/SkipToMain";
 import { OnboardingModal } from "../components/ui/OnboardingModal";
+import { FarcasterProvider } from "../components/FarcasterProvider";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -67,15 +68,17 @@ export default function RootLayout({
             <WalletProvider>
               <AnalyticsProvider>
                 <ToastProvider>
-                  <SkipToMain />
-                  <OfflineBanner />
-                  <OnboardingModal />
-                  <main id="main-content">
-                    <PageTransition>
-                      {children}
-                    </PageTransition>
-                  </main>
-                  <TabBar />
+                  <FarcasterProvider>
+                    <SkipToMain />
+                    <OfflineBanner />
+                    <OnboardingModal />
+                    <main id="main-content">
+                      <PageTransition>
+                        {children}
+                      </PageTransition>
+                    </main>
+                    <TabBar />
+                  </FarcasterProvider>
                 </ToastProvider>
               </AnalyticsProvider>
             </WalletProvider>

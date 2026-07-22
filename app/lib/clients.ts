@@ -24,9 +24,11 @@ export function isMiniPay(): boolean {
   return typeof window !== "undefined" && Boolean(window.ethereum?.isMiniPay);
 }
 
-/** Any injected EIP-1193 provider: MiniPay in production, MetaMask etc. in dev. */
+/** Any injected EIP-1193 provider: Farcaster MiniApp, MiniPay in production, MetaMask etc. in dev. */
 export function injectedProvider(): (EIP1193Provider & { isMiniPay?: boolean }) | undefined {
-  return typeof window === "undefined" ? undefined : window.ethereum;
+  if (typeof window === "undefined") return undefined;
+  if ((window as any).farcasterProvider) return (window as any).farcasterProvider as EIP1193Provider;
+  return window.ethereum;
 }
 
 // ---- EIP-6963 multi-provider discovery (#113) ----------------------------------
