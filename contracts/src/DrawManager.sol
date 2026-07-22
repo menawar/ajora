@@ -3,6 +3,8 @@ pragma solidity ^0.8.24;
 
 import { IDrawManager } from "./interfaces/IDrawManager.sol";
 import { PotVault } from "./PotVault.sol";
+import { VRFConsumerBaseV2 } from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import { VRFCoordinatorV2Interface } from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
 /// @title DrawManager
 /// @notice Daily lucky-number draw over PotVault tickets. Picks are weighted by the
@@ -10,7 +12,7 @@ import { PotVault } from "./PotVault.sol";
 ///         time; unwon pots roll forward. See AJORA_SPEC.md §8.2.
 /// @dev Prize money only ever moves via PotVault.settleWinnings, which is capped by the
 ///      period's jaraPot — principal is structurally out of reach of this contract.
-contract DrawManager is IDrawManager {
+contract DrawManager is IDrawManager, VRFConsumerBaseV2 {
     struct Pick {
         uint8 number; // 1-9; 0 = no pick
         uint248 weight; // ticket count snapshotted at pick time
@@ -25,11 +27,6 @@ contract DrawManager is IDrawManager {
         uint256 totalWinningWeight; // sum of weights on the winning number
     }
 
-    struct SeedCommit {
-        bytes32 commitment; // keccak256(abi.encode(secret))
-        uint64 anchorBlock; // future block whose hash blends into the seed
-    }
-
     PotVault public immutable vault;
 
     address public admin;
@@ -37,19 +34,18 @@ contract DrawManager is IDrawManager {
     /// @notice Address allowed to resolve draws (the keeper service).
     address public keeper;
 
+    VRFCoordinatorV2Interface public immutable vrfCoordinator;
+    uint64 public immutable subscriptionId;
+    bytes32 public immutable keyHash;
+    uint32 public constant CALLBACK_GAS_LIMIT = 500000;
+    uint16 public constant REQUEST_CONFIRMATIONS = 3;
+    uint32 public constant NUM_WORDS = 1;
+
     mapping(address user => mapping(uint256 periodId => Pick)) internal _picks;
     mapping(uint256 periodId => mapping(uint8 number => uint256)) public weightOnNumber;
     mapping(uint256 periodId => Draw) internal _draws;
     mapping(address user => mapping(uint256 periodId => bool)) public claimed;
-    mapping(uint256 periodId => SeedCommit) public seedCommits;
-
-    /// @notice Commits are only accepted in the final window of a period, keeping the
-    ///         keeper's knowledge horizon as short as possible.
-    uint256 public constant COMMIT_WINDOW = 15 minutes;
-
-    /// @notice Blocks between commit and anchor (~20 min on Celo's ~1s blocks), placing the
-    ///         anchor safely after the period closes.
-    uint256 public constant ANCHOR_DELAY = 1200;
+    mapping(uint256 requestId => uint256 periodId) public requestToPeriod;
 
     /// @notice How long winners have to claim after resolution before the remainder is
     ///         recycled into the current pot (spec §6 sink).
@@ -76,11 +72,20 @@ contract DrawManager is IDrawManager {
     error WindowStillOpen();
     error NothingToRecycle();
 
-    constructor(PotVault _vault, address _keeper) {
-        if (_keeper == address(0)) revert ZeroAddress();
+    constructor(
+        PotVault _vault, 
+        address _keeper, 
+        address _vrfCoordinator, 
+        uint64 _subscriptionId, 
+        bytes32 _keyHash
+    ) VRFConsumerBaseV2(_vrfCoordinator) {
+        if (_keeper == address(0) || _vrfCoordinator == address(0)) revert ZeroAddress();
         vault = _vault;
         admin = msg.sender;
         keeper = _keeper;
+        vrfCoordinator = VRFCoordinatorV2Interface(_vrfCoordinator);
+        subscriptionId = _subscriptionId;
+        keyHash = _keyHash;
     }
 
     modifier onlyAdmin() {
@@ -146,59 +151,27 @@ contract DrawManager is IDrawManager {
     // ------------------------------------------------------------ resolution
 
     /// @inheritdoc IDrawManager
-    function commitSeed(uint256 periodId, bytes32 commitment) external {
-        if (msg.sender != keeper) revert NotKeeper();
-        // Only the current period, and only inside its final window.
-        if (periodId != vault.currentPeriod()) revert CommitWindowClosed();
-        uint256 periodEnd = (periodId + 1) * 1 days;
-        if (periodEnd - block.timestamp > COMMIT_WINDOW) revert CommitWindowClosed();
-
-        SeedCommit storage c = seedCommits[periodId];
-        if (c.commitment != bytes32(0)) revert AlreadyCommitted();
-        c.commitment = commitment;
-        c.anchorBlock = uint64(block.number + ANCHOR_DELAY);
-        emit SeedCommitted(periodId, commitment, c.anchorBlock);
-    }
-
-    /// @inheritdoc IDrawManager
-    function revealAndResolve(uint256 periodId, bytes32 secret) external {
-        SeedCommit storage c = seedCommits[periodId];
-        if (c.commitment == bytes32(0)) revert NoCommit();
-        if (keccak256(abi.encode(secret)) != c.commitment) revert BadReveal();
-        if (block.number <= c.anchorBlock) revert AnchorNotReady();
-
-        bytes32 anchorHash = _anchorHash(c.anchorBlock);
-        if (anchorHash == bytes32(0)) revert AnchorExpired();
-
-        uint256 seed = uint256(keccak256(abi.encode(secret, anchorHash)));
-        _resolve(periodId, seed);
-    }
-
-    /// @inheritdoc IDrawManager
-    /// @dev Two liveness cases: (a) the previous anchor's reveal window was missed, or
-    ///      (b) the period never received a commit at all (keeper outage across its final
-    ///      window) — without a bootstrap path that period's jaraPot would be stuck forever.
-    ///      Post-close commits can't steer the outcome: picks are frozen and the seed still
-    ///      blends a future blockhash, so grinding secrets at commit time buys nothing.
-    ///      A live, unexpired anchor can never be replaced.
-    function recommitSeed(uint256 periodId, bytes32 commitment) external {
+    function resolveDraw(uint256 periodId) external {
         if (msg.sender != keeper) revert NotKeeper();
         if (periodId >= vault.currentPeriod()) revert PeriodNotOver();
         if (_draws[periodId].resolved) revert AlreadyResolved();
 
-        SeedCommit storage c = seedCommits[periodId];
-        if (c.commitment != bytes32(0) && block.number <= uint256(c.anchorBlock) + 256) {
-            revert AnchorStillLive();
-        }
-
-        c.commitment = commitment;
-        c.anchorBlock = uint64(block.number + ANCHOR_DELAY);
-        emit SeedRecommitted(periodId, commitment, c.anchorBlock);
+        uint256 requestId = vrfCoordinator.requestRandomWords(
+            keyHash,
+            subscriptionId,
+            REQUEST_CONFIRMATIONS,
+            CALLBACK_GAS_LIMIT,
+            NUM_WORDS
+        );
+        requestToPeriod[requestId] = periodId;
+        emit DrawRequestSent(periodId, requestId);
     }
 
-    /// @dev Seam for tests; EVM blockhash returns 0 outside the trailing 256 blocks.
-    function _anchorHash(uint256 blockNumber) internal view virtual returns (bytes32) {
-        return blockhash(blockNumber);
+    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
+        uint256 periodId = requestToPeriod[requestId];
+        if (_draws[periodId].resolved) return;
+
+        _resolve(periodId, randomWords[0]);
     }
 
     /// @dev Shared resolution: derive the number, snapshot the pot, recycle when unwon.
