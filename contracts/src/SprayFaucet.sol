@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import { IERC20 } from "./interfaces/IERC20.sol";
 import { ISprayFaucet } from "./interfaces/ISprayFaucet.sol";
+import { ITreasury } from "./interfaces/ITreasury.sol";
 import { PotVault } from "./PotVault.sol";
 
 /// @title SprayFaucet
@@ -15,6 +16,10 @@ import { PotVault } from "./PotVault.sol";
 contract SprayFaucet is ISprayFaucet {
     PotVault public immutable vault;
     IERC20 public immutable token;
+    ITreasury public immutable treasury;
+
+    /// @notice Sponsor fee taken from pool deposits.
+    uint256 public sponsorFeeBps = 500; // 5% default
 
     /// @notice Value backing each free ticket (= the vault's minContribution).
     uint256 public immutable ticketValue;
@@ -65,10 +70,11 @@ contract SprayFaucet is ISprayFaucet {
 
     event FreeValueCapSet(uint256 cap);
 
-    constructor(PotVault _vault, address _verifier) {
-        if (_verifier == address(0)) revert ZeroAddress();
+    constructor(PotVault _vault, address _verifier, ITreasury _treasury) {
+        if (_verifier == address(0) || address(_treasury) == address(0)) revert ZeroAddress();
         vault = _vault;
         token = _vault.token();
+        treasury = _treasury;
         ticketValue = _vault.minContribution();
         admin = msg.sender;
         verifier = _verifier;
@@ -88,13 +94,22 @@ contract SprayFaucet is ISprayFaucet {
     /// @inheritdoc ISprayFaucet
     function fundSponsorPool(uint256 amount, bytes32 campaignId) external {
         require(token.transferFrom(msg.sender, address(this), amount), "transfer failed");
-        _campaignBalance[campaignId] += amount;
+
+        uint256 fee = (amount * sponsorFeeBps) / 10000;
+        uint256 netAmount = amount - fee;
+
+        if (fee > 0) {
+            require(token.approve(address(treasury), fee), "approve failed");
+            treasury.collectSponsorFee(fee, campaignId);
+        }
+
+        _campaignBalance[campaignId] += netAmount;
         // First funded campaign auto-activates so the faucet works without an admin step.
         if (activeCampaign == bytes32(0)) {
             activeCampaign = campaignId;
             emit CampaignActivated(campaignId);
         }
-        emit SponsorFunded(msg.sender, amount, campaignId);
+        emit SponsorFunded(msg.sender, netAmount, campaignId);
     }
 
     /// @notice One-time wiring of the CrewRegistry allowed to pay referral bonuses.
@@ -114,6 +129,12 @@ contract SprayFaucet is ISprayFaucet {
     function setFreeValueCap(uint256 cap) external onlyAdmin {
         maxFreeValuePerUser = cap;
         emit FreeValueCapSet(cap);
+    }
+
+    /// @notice Set sponsor fee. Admin only.
+    function setSponsorFeeBps(uint256 bps) external onlyAdmin {
+        require(bps <= 10000, "Invalid bps");
+        sponsorFeeBps = bps;
     }
 
     // ----------------------------------------------------------- verification

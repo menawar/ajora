@@ -7,6 +7,7 @@ pragma solidity ^0.8.24;
 interface ITreasury {
     event RakeCollected(uint256 amount, uint256 indexed periodId);
     event YieldFeeCollected(uint256 amount, uint256 indexed periodId);
+    event SponsorFeeCollected(uint256 amount, bytes32 indexed campaignId);
     event FeeWithdrawn(address indexed to, uint256 amount);
     event JaraFunded(uint256 amount, uint256 indexed periodId);
 
@@ -15,6 +16,9 @@ interface ITreasury {
 
     /// @notice Collect yield rake from YieldAdapter.
     function collectYieldFee(uint256 amount, uint256 periodId) external;
+
+    /// @notice Collect sponsor fee from SprayFaucet.
+    function collectSponsorFee(uint256 amount, bytes32 campaignId) external;
 
     /// @notice Recycle a resolved period's unclaimed prize remainder forward. Permissionless
     ///         once the claim window has passed. Returns the amount recycled.
