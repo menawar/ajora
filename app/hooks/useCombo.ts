@@ -94,7 +94,14 @@ export function useCombo() {
       setStep("success");
       setProgress(100);
     } catch (e) {
-      const message = e instanceof Error ? e.message.split("\n")[0] : "Transaction failed";
+      let message = "Transaction failed";
+      if (e instanceof Error) {
+        if (e.message.includes("User rejected") || e.message.includes("denied transaction signature")) {
+          message = "Transaction was rejected in your wallet. Please try again.";
+        } else {
+          message = e.message.split("\n")[0];
+        }
+      }
       setError(message);
       setStep("error");
     }
