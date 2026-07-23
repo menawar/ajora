@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(data);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[profile] Failed to load profile:", err);
     return NextResponse.json({ error: "Failed to load profile" }, { status: 500 });
   }
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     if (error) throw error;
 
     return NextResponse.json(data);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[profile] Failed to update profile:", err);
     return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
   }
