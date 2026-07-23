@@ -283,7 +283,7 @@ export default function DrawPage() {
       <section className="glass-panel rounded-3xl p-6">
         <div className="text-sm font-bold text-text-primary mb-1">Sponsor tonight&apos;s pot</div>
         <p className="text-xs text-text-secondary leading-relaxed">
-          Anyone can add jara — every cent goes to tonight&apos;s winners.
+          Anyone can add to the prize pot — every cent goes to tonight&apos;s winners.
         </p>
         <div className="mt-4 flex gap-2">
           <input
@@ -311,7 +311,7 @@ export default function DrawPage() {
         </div>
         {sponsorStatus.step === "success" && (
           <p className="mt-3 text-sm font-bold text-celo-green bg-celo-green/10 p-3 rounded-xl text-center">
-            Jara added — tonight&apos;s winners chop your love 🎉
+            Prize pot boosted — tonight&apos;s winners thank you 🎉
           </p>
         )}
         {sponsorStatus.step === "error" && (

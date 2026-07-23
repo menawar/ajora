@@ -66,7 +66,7 @@ export function Onboarding() {
               />
               <OnboardingStep
                 title="Win every night"
-                subtitle="If your number hits, you win a share of the jara pot! Real Celo Dollars paid daily."
+                subtitle="If your number hits, you win a share of the prize pot! Real Celo Dollars paid daily."
                 icon={<Trophy className="w-16 h-16" strokeWidth={1.5} />}
                 highlightColor="gold"
               />

@@ -25,7 +25,7 @@ const FAQ_DATA = [
     q: "How are prizes funded?",
     a: (
       <>
-        The <GlossaryTooltip term="jara pot" definition="The daily prize pool available to be won." /> is funded 
+        The <GlossaryTooltip term="prize pot" definition="The daily prize pool available to be won." /> is funded 
         by yield earned on pooled savings across DeFi protocols, sponsor campaigns, and small fees from optional paid pots. 
         It is never funded by later savers&apos; deposits.
       </>

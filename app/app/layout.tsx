@@ -17,7 +17,7 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ajora-4ewr.vercel.app"),
-  title: "Ajora — Save small, chop jara",
+  title: "Ajora — Save small, win big",
   description:
     "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
   manifest: "/manifest.json",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Ajora — Save small, chop jara",
+    title: "Ajora — Save small, win big",
     description: "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
     url: "https://ajora-4ewr.vercel.app",
     siteName: "Ajora",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ajora — Save small, chop jara",
+    title: "Ajora — Save small, win big",
     description: "No-loss prize-linked savings game on Celo.",
   },
   other: {
