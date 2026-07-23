@@ -19,7 +19,7 @@ export function Skeleton({ className = "", variant = "rectangular", ...props }: 
       className={`bg-bg-secondary ${variantStyles[variant]} ${className}`}
       animate={{ opacity: [0.4, 0.8, 0.4] }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-      {...(props as any)}
+      {...props}
     />
   );
 }

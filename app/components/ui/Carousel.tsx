@@ -45,7 +45,7 @@ export function Carousel({ children, onComplete, onSkip, className = "" }: Carou
     setPage([next, newDirection]);
   };
 
-  const handleDragEnd = (e: any, { offset, velocity }: PanInfo) => {
+  const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, { offset, velocity }: PanInfo) => {
     const swipe = Math.abs(offset.x) * velocity.x;
     if (swipe < -10000 || offset.x < -100) {
       paginate(1);

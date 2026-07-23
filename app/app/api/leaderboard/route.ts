@@ -33,8 +33,8 @@ export async function GET(request: Request) {
         avatar_url: r.avatar_url
       }))
     });
-  } catch (err: any) {
-    console.error("[leaderboard] Failed to load XP leaderboard:", err);
+  } catch (err: unknown) {
+    console.error("Leaderboard fetch error:", err);
     return NextResponse.json({ error: "Failed to load leaderboard" }, { status: 500 });
   }
 }

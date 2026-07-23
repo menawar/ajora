@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { PartyPopper, TrendingUp, Users, ChevronRight } from "lucide-react";
 import { useOnboarding } from "../../hooks/useOnboarding";
 import { useTranslation } from "../../lib/i18n";
@@ -46,7 +46,7 @@ export function OnboardingModal() {
     }
   };
 
-  const handleDragEnd = (e: any, { offset, velocity }: any) => {
+  const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, { offset, velocity }: PanInfo) => {
     const swipe = Math.abs(offset.x) * velocity.x;
     if (swipe < -1000) {
       nextSlide();

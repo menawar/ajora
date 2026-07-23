@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     if (error) throw error;
 
-    const mapped = data.map((n: any) => ({
+    const mapped = data.map((n: { id: string, type: string, title: string, message: string, created_at: string, is_read: boolean }) => ({
       id: n.id,
       type: n.type,
       title: n.title,
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     }));
 
     return NextResponse.json(mapped);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Notifications API Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     if (error) throw error;
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Notifications POST Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

@@ -14,11 +14,11 @@ export function FarcasterProvider({ children }: { children: React.ReactNode }) {
         // If context resolves, we are in a Farcaster MiniApp
         if (context) {
           // Set the ethereum provider globally so clients.ts can pick it up synchronously
-          (window as any).farcasterProvider = sdk.wallet.ethProvider;
+          const win = window as unknown as { farcasterProvider?: typeof sdk.wallet.ethProvider };
+          win.farcasterProvider = sdk.wallet.ethProvider;
           
           // Signal Farcaster that the app is ready to display
           await sdk.actions.ready();
-          console.log("Farcaster MiniApp SDK initialized");
         }
       } catch (e) {
         // Not in a MiniApp, continue as normal web app

@@ -28,7 +28,7 @@ export function useTopEarners(limit = 100) {
         if (!res.ok) throw new Error(`API Error: ${res.status}`);
         
         const data = await res.json();
-        const parsedRows = data.rows.map((r: any) => ({
+        const parsedRows = data.rows.map((r: Omit<EarnerRow, "total"> & { total: string | number }) => ({
           ...r,
           total: BigInt(r.total)
         }));
@@ -36,12 +36,12 @@ export function useTopEarners(limit = 100) {
         setRows(parsedRows);
         writeCache(cacheKey, parsedRows);
         setLoading(false);
-      } catch (e: any) {
+      } catch (e: unknown) {
         const cached = readCache<EarnerRow[]>(cacheKey);
         if (cached) {
           setRows(cached.value);
         } else {
-          setError(e.message || "Failed to load XP leaderboard");
+          setError(e instanceof Error ? e.message : "Failed to load XP leaderboard");
         }
         setLoading(false);
       }

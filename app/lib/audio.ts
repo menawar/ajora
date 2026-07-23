@@ -8,7 +8,8 @@ let audioCtx: AudioContext | null = null;
 function getContext() {
   if (typeof window === "undefined") return null;
   if (!audioCtx) {
-    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const webkitAudioContext = (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    audioCtx = new (window.AudioContext || webkitAudioContext)();
   }
   return audioCtx;
 }
