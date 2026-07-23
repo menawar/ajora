@@ -1,12 +1,12 @@
-export const trackEvent = (eventName: string, properties?: Record<string, any>) => {
+export const trackEvent = (eventName: string, properties?: Record<string, unknown>) => {
   // In a real app, this would send data to Mixpanel, Amplitude, or Google Analytics
   if (typeof window !== "undefined") {
-    console.log(`[Analytics] ${eventName}`, properties || {});
+    // console.log(`[Analytics] ${eventName}`, properties || {});
     
     // Simulate generic datalayer push if it existed
-    const dataLayer = (window as any).dataLayer || [];
+    const dataLayer = (window as unknown as { dataLayer: unknown[] }).dataLayer || [];
     dataLayer.push({ event: eventName, ...properties });
-    (window as any).dataLayer = dataLayer;
+    (window as unknown as { dataLayer: unknown[] }).dataLayer = dataLayer;
   }
 };
 
