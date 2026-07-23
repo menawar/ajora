@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createPublicClient, http, formatUnits, parseAbiItem } from "viem";
 import { celo } from "viem/chains";
 
+export const dynamic = "force-dynamic";
+
 // ── Supabase (optional) ────────────────────────────────────────────────────────
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
