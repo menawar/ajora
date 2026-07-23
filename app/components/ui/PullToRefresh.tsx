@@ -30,7 +30,7 @@ export function PullToRefresh({ onRefresh, children, pullThreshold = 80 }: PullT
     }
   }, []);
 
-  const handleDragEnd = async (e: any, info: PanInfo) => {
+  const handleDragEnd = async (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (!canPull) return;
     
     if (info.offset.y >= pullThreshold) {
