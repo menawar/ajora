@@ -76,7 +76,7 @@ export default function ThemesPage() {
         setXpBalance(prev => prev - price);
         setUnlockedThemes(prev => [...prev, themeId]);
         sfx.click();
-        setTheme(themeId as any);
+        setTheme(themeId);
       } else {
         sfx.pop();
       }
@@ -127,7 +127,7 @@ export default function ThemesPage() {
                 onClick={() => {
                   if (isUnlocked) {
                     sfx.click();
-                    setTheme(t.id as any);
+                    setTheme(t.id);
                   } else if (xpBalance >= t.price) {
                     handleUnlock(t.id, t.price);
                   } else {
