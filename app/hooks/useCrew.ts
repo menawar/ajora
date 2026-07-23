@@ -89,7 +89,7 @@ export function useCrew() {
               if (res.ok) {
                 const data = await res.json();
                 if (data.members) {
-                  members = data.members.map((m: any) => ({
+                  members = data.members.map((m: { address: string; joinedAt: string | number }) => ({
                     address: m.address,
                     joinedAt: Number(m.joinedAt),
                   }));
