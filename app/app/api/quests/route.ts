@@ -178,8 +178,8 @@ async function fetchFromSupabase(address: string) {
     .eq("user_address", address.toLowerCase());
   if (pErr) throw pErr;
 
-  return questRows.map((q: any) => {
-    const up = userProgress.find((u: any) => u.quest_id === q.id);
+  return questRows.map((q: { id: string, name: string, description: string, type: string, target: number, reward_xp: number }) => {
+    const up = userProgress.find((u: { quest_id: string, progress: number, claimed: boolean }) => u.quest_id === q.id);
     return {
       id: q.id,
       title: q.title,
@@ -217,7 +217,7 @@ export async function GET(request: Request) {
   try {
     const data = await deriveQuestsFromChain(address as `0x${string}`);
     return NextResponse.json(data);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[quests] Chain derivation failed:", err);
     return NextResponse.json({ error: "Failed to load quests" }, { status: 500 });
   }
@@ -266,7 +266,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: "Quest not ready to claim" }, { status: 400 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[quests POST]", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
