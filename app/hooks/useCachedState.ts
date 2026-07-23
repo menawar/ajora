@@ -11,7 +11,7 @@ function replacer(_key: string, value: unknown) {
 // Reviver for BigInt
 function reviver(_key: string, value: unknown) {
   if (value && typeof value === "object" && "_isBigInt" in value) {
-    return BigInt((value as any).value);
+    return BigInt((value as { value: string }).value);
   }
   return value;
 }
