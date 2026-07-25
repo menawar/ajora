@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * StakingCard Props Interface
+ */
 export interface StakingCardProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * StakingCard component providing responsive interactive state and styling.
+ */
 export function StakingCard({ title = "StakingCard", className = "", onSelect }: StakingCardProps) {
   const [active, setActive] = useState(false);
   return (
