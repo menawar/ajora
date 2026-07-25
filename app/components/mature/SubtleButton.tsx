@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * SubtleButton Props
+ */
 export interface SubtleButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible SubtleButton component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function SubtleButton({ title = "SubtleButton", className = "", ...props }: SubtleButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
