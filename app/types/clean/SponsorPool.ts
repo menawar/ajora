@@ -3,4 +3,5 @@ export interface SponsorPool {
   createdAt: string;
   status: 'active' | 'inactive';
   metadata?: Record<string, unknown>;
+  tags?: string[];
 }
