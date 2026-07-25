@@ -3,4 +3,5 @@ export interface AppSettings {
   createdAt: string;
   status: 'active' | 'inactive';
   metadata?: Record<string, unknown>;
+  tags?: string[];
 }
