@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * TooltipWrapper Props Interface
+ */
 export interface TooltipWrapperProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * TooltipWrapper component providing responsive interactive state and styling.
+ */
 export function TooltipWrapper({ title = "TooltipWrapper", className = "", onSelect }: TooltipWrapperProps) {
   const [active, setActive] = useState(false);
   return (
