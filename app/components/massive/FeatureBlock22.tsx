@@ -1,0 +1,1 @@
+export function FeatureBlock22() { return <div></div>; }
