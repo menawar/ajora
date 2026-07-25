@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * VaultStatusPill Props Interface
+ */
 export interface VaultStatusPillProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * VaultStatusPill component providing responsive interactive state and styling.
+ */
 export function VaultStatusPill({ title = "VaultStatusPill", className = "", onSelect }: VaultStatusPillProps) {
   const [active, setActive] = useState(false);
   return (
