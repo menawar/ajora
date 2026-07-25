@@ -1,4 +1,5 @@
-export function encodeQueryParameters(input: string | number | bigint | null | undefined): string {
-  if (input === null || input === undefined) return '';
-  return String(input).trim();
+export function encodeQueryParameters(input: string | number | bigint | null | undefined, fallback = '0'): string {
+  if (input === null || input === undefined) return fallback;
+  const str = String(input).trim();
+  return str.length > 0 ? str : fallback;
 }
