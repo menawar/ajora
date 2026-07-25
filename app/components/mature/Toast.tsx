@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Toast Props
+ */
 export interface ToastProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Toast component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Toast({ title = "Toast", className = "", ...props }: ToastProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
