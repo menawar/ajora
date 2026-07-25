@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * DatePicker Props
+ */
 export interface DatePickerProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible DatePicker component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function DatePicker({ title = "DatePicker", className = "", ...props }: DatePickerProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
