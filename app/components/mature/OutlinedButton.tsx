@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * OutlinedButton Props
+ */
 export interface OutlinedButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible OutlinedButton component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function OutlinedButton({ title = "OutlinedButton", className = "", ...props }: OutlinedButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
