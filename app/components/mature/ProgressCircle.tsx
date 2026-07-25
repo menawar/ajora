@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * ProgressCircle Props
+ */
 export interface ProgressCircleProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible ProgressCircle component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function ProgressCircle({ title = "ProgressCircle", className = "", ...props }: ProgressCircleProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
