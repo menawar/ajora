@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * GhostButton Props
+ */
 export interface GhostButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible GhostButton component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function GhostButton({ title = "GhostButton", className = "", ...props }: GhostButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
