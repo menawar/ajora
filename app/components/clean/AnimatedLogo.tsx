@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * AnimatedLogo Props Interface
+ */
 export interface AnimatedLogoProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * AnimatedLogo component providing responsive interactive state and styling.
+ */
 export function AnimatedLogo({ title = "AnimatedLogo", className = "", onSelect }: AnimatedLogoProps) {
   const [active, setActive] = useState(false);
   return (
