@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * MiniPayWalletPill Props Interface
+ */
 export interface MiniPayWalletPillProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * MiniPayWalletPill component providing responsive interactive state and styling.
+ */
 export function MiniPayWalletPill({ title = "MiniPayWalletPill", className = "", onSelect }: MiniPayWalletPillProps) {
   const [active, setActive] = useState(false);
   return (
