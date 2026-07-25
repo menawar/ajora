@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * StatWidget Props Interface
+ */
 export interface StatWidgetProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * StatWidget component providing responsive interactive state and styling.
+ */
 export function StatWidget({ title = "StatWidget", className = "", onSelect }: StatWidgetProps) {
   const [active, setActive] = useState(false);
   return (
