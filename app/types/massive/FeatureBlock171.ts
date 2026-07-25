@@ -1,0 +1,1 @@
+export interface FeatureBlock171 { id: string; value: number; createdAt: Date; }
