@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * StatCard Props
+ */
 export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible StatCard component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function StatCard({ title = "StatCard", className = "", ...props }: StatCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
