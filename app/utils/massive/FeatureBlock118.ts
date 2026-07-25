@@ -1,1 +1,1 @@
-export function formatFeatureBlock118() { return ''; }
+export function formatFeatureBlock118(val: string) { return val; }
