@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Typography Props
+ */
 export interface TypographyProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Typography component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Typography({ title = "Typography", className = "", ...props }: TypographyProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
