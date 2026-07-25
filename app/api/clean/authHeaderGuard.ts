@@ -1,4 +1,7 @@
-export function authHeaderGuard(headers: Record<string, string>) {
+/**
+ * Header authorization token validator function.
+ */
+export function authHeaderGuard(headers: Record<string, string>): boolean {
   if (!headers) return false;
   const auth = headers['authorization'] || headers['Authorization'];
   if (typeof auth !== 'string' || !auth.startsWith('Bearer ')) return false;
