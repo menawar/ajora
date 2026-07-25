@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * AvatarGroup Props
+ */
 export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible AvatarGroup component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function AvatarGroup({ title = "AvatarGroup", className = "", ...props }: AvatarGroupProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
