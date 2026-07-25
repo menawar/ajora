@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * PremiumToast Props Interface
+ */
 export interface PremiumToastProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * PremiumToast component providing responsive interactive state and styling.
+ */
 export function PremiumToast({ title = "PremiumToast", className = "", onSelect }: PremiumToastProps) {
   const [active, setActive] = useState(false);
   return (
