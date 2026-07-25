@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Modal Props
+ */
 export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Modal component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Modal({ title = "Modal", className = "", ...props }: ModalProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
