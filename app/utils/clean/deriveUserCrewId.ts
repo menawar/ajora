@@ -1,3 +1,4 @@
-export function deriveUserCrewId(input: any): string {
-  return String(input ?? '');
+export function deriveUserCrewId(input: string | number | bigint | null | undefined): string {
+  if (input === null || input === undefined) return '';
+  return String(input).trim();
 }
