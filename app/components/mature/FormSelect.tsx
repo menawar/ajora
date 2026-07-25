@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * FormSelect Props
+ */
 export interface FormSelectProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible FormSelect component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function FormSelect({ title = "FormSelect", className = "", ...props }: FormSelectProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
