@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * ActivityTimeline Props
+ */
 export interface ActivityTimelineProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible ActivityTimeline component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function ActivityTimeline({ title = "ActivityTimeline", className = "", ...props }: ActivityTimelineProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
