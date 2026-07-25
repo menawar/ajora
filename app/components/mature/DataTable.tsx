@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * DataTable Props
+ */
 export interface DataTableProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible DataTable component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function DataTable({ title = "DataTable", className = "", ...props }: DataTableProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
