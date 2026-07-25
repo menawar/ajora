@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
 
+/**
+ * useCrewRegistry hook for managing async operations and state transitions.
+ */
 export function useCrewRegistry<T = any>(initial: T | null = null) {
   const [data, setData] = useState<T | null>(initial);
   const [loading, setLoading] = useState(false);
