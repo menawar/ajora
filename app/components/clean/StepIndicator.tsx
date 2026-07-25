@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * StepIndicator Props Interface
+ */
 export interface StepIndicatorProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * StepIndicator component providing responsive interactive state and styling.
+ */
 export function StepIndicator({ title = "StepIndicator", className = "", onSelect }: StepIndicatorProps) {
   const [active, setActive] = useState(false);
   return (
