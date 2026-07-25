@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * ToggleSwitch Props Interface
+ */
 export interface ToggleSwitchProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * ToggleSwitch component providing responsive interactive state and styling.
+ */
 export function ToggleSwitch({ title = "ToggleSwitch", className = "", onSelect }: ToggleSwitchProps) {
   const [active, setActive] = useState(false);
   return (
