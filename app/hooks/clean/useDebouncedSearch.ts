@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
-export function useDebouncedSearch() {
-  const [data, setData] = useState(null);
-  return { data };
+export function useDebouncedSearch<T = any>(initial: T | null = null) {
+  const [data, setData] = useState<T | null>(initial);
+  const reset = useCallback(() => setData(initial), [initial]);
+  return { data, setData, reset };
 }
