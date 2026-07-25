@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * HoverCard Props Interface
+ */
 export interface HoverCardProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * HoverCard component providing responsive interactive state and styling.
+ */
 export function HoverCard({ title = "HoverCard", className = "", onSelect }: HoverCardProps) {
   const [active, setActive] = useState(false);
   return (
