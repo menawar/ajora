@@ -1,1 +1,1 @@
-export type FeatureBlock171 = any;
+export type FeatureBlock171 = string | number;
