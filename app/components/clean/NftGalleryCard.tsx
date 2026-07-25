@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * NftGalleryCard Props Interface
+ */
 export interface NftGalleryCardProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * NftGalleryCard component providing responsive interactive state and styling.
+ */
 export function NftGalleryCard({ title = "NftGalleryCard", className = "", onSelect }: NftGalleryCardProps) {
   const [active, setActive] = useState(false);
   return (
