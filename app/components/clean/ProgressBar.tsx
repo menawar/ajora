@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * ProgressBar Props Interface
+ */
 export interface ProgressBarProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * ProgressBar component providing responsive interactive state and styling.
+ */
 export function ProgressBar({ title = "ProgressBar", className = "", onSelect }: ProgressBarProps) {
   const [active, setActive] = useState(false);
   return (
