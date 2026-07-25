@@ -1,2 +1,2 @@
 import { useState, useEffect } from 'react';
-export function useFeatureBlock77() { const [state, setState] = useState(null); useEffect(() => { setState(true) }, []); return state; }
+export function useFeatureBlock77(initialValue: any) { const [state, setState] = useState(initialValue); useEffect(() => { setState(true) }, []); return state; }
