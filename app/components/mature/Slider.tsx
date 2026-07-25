@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Slider Props
+ */
 export interface SliderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Slider component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Slider({ title = "Slider", className = "", ...props }: SliderProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
