@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * AirDropBanner Props Interface
+ */
 export interface AirDropBannerProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * AirDropBanner component providing responsive interactive state and styling.
+ */
 export function AirDropBanner({ title = "AirDropBanner", className = "", onSelect }: AirDropBannerProps) {
   const [active, setActive] = useState(false);
   return (
