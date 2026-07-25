@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * FormRadio Props
+ */
 export interface FormRadioProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible FormRadio component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function FormRadio({ title = "FormRadio", className = "", ...props }: FormRadioProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
