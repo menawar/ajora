@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * DropdownMenu Props
+ */
 export interface DropdownMenuProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible DropdownMenu component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function DropdownMenu({ title = "DropdownMenu", className = "", ...props }: DropdownMenuProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
