@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * GlassCard Props Interface
+ */
 export interface GlassCardProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * GlassCard component providing responsive interactive state and styling.
+ */
 export function GlassCard({ title = "GlassCard", className = "", onSelect }: GlassCardProps) {
   const [active, setActive] = useState(false);
   return (
