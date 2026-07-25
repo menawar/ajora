@@ -1,0 +1,1 @@
+export function useFeatureBlock70() { return null; }
