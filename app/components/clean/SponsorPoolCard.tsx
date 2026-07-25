@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * SponsorPoolCard Props Interface
+ */
 export interface SponsorPoolCardProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * SponsorPoolCard component providing responsive interactive state and styling.
+ */
 export function SponsorPoolCard({ title = "SponsorPoolCard", className = "", onSelect }: SponsorPoolCardProps) {
   const [active, setActive] = useState(false);
   return (
