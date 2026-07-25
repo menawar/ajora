@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * FloatingMenu Props Interface
+ */
 export interface FloatingMenuProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * FloatingMenu component providing responsive interactive state and styling.
+ */
 export function FloatingMenu({ title = "FloatingMenu", className = "", onSelect }: FloatingMenuProps) {
   const [active, setActive] = useState(false);
   return (
