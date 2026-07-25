@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Pagination Props
+ */
 export interface PaginationProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Pagination component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Pagination({ title = "Pagination", className = "", ...props }: PaginationProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
