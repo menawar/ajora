@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * HeroSection Props Interface
+ */
 export interface HeroSectionProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * HeroSection component providing responsive interactive state and styling.
+ */
 export function HeroSection({ title = "HeroSection", className = "", onSelect }: HeroSectionProps) {
   const [active, setActive] = useState(false);
   return (
