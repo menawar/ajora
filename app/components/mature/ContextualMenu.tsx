@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * ContextualMenu Props
+ */
 export interface ContextualMenuProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible ContextualMenu component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function ContextualMenu({ title = "ContextualMenu", className = "", ...props }: ContextualMenuProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
