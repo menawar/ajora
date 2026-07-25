@@ -1,1 +1,1 @@
-export function formatFeatureBlock125(val: string) { return val; }
+export function formatFeatureBlock125(val: string) { return val.trim(); }
