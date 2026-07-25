@@ -3,4 +3,5 @@ export interface Web3Provider {
   createdAt: string;
   status: 'active' | 'inactive';
   metadata?: Record<string, unknown>;
+  tags?: string[];
 }
