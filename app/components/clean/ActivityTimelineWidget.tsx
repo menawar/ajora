@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * ActivityTimelineWidget Props Interface
+ */
 export interface ActivityTimelineWidgetProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * ActivityTimelineWidget component providing responsive interactive state and styling.
+ */
 export function ActivityTimelineWidget({ title = "ActivityTimelineWidget", className = "", onSelect }: ActivityTimelineWidgetProps) {
   const [active, setActive] = useState(false);
   return (
