@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * EmptyState Props
+ */
 export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible EmptyState component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function EmptyState({ title = "EmptyState", className = "", ...props }: EmptyStateProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
