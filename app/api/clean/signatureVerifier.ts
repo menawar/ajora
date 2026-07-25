@@ -1,3 +1,4 @@
 export function signatureVerifier(headers: Record<string, string>) {
-  return headers != null;
+  if (!headers) return false;
+  return 'authorization' in headers || 'Authorization' in headers;
 }
