@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * GovernanceVoteCard Props Interface
+ */
 export interface GovernanceVoteCardProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * GovernanceVoteCard component providing responsive interactive state and styling.
+ */
 export function GovernanceVoteCard({ title = "GovernanceVoteCard", className = "", onSelect }: GovernanceVoteCardProps) {
   const [active, setActive] = useState(false);
   return (
