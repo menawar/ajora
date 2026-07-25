@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * GradientButton Props Interface
+ */
 export interface GradientButtonProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * GradientButton component providing responsive interactive state and styling.
+ */
 export function GradientButton({ title = "GradientButton", className = "", onSelect }: GradientButtonProps) {
   const [active, setActive] = useState(false);
   return (
