@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Breadcrumbs Props
+ */
 export interface BreadcrumbsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Breadcrumbs component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Breadcrumbs({ title = "Breadcrumbs", className = "", ...props }: BreadcrumbsProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
