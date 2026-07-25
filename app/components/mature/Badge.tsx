@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Badge Props
+ */
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Badge component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Badge({ title = "Badge", className = "", ...props }: BadgeProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
