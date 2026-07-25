@@ -1,1 +1,1 @@
-export interface FeatureBlock168 { id: string; value: number; }
+export interface FeatureBlock168 { id: string; value: number; createdAt: Date; }
