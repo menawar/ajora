@@ -1,1 +1,1 @@
-export function formatFeatureBlock144(val: string) { return val.trim(); }
+export function formatFeatureBlock144(val: string) { return val ? val.trim().toLowerCase() : ''; }
