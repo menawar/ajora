@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * FormCheckbox Props
+ */
 export interface FormCheckboxProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible FormCheckbox component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function FormCheckbox({ title = "FormCheckbox", className = "", ...props }: FormCheckboxProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
