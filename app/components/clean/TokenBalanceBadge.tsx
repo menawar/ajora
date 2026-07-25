@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * TokenBalanceBadge Props Interface
+ */
 export interface TokenBalanceBadgeProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * TokenBalanceBadge component providing responsive interactive state and styling.
+ */
 export function TokenBalanceBadge({ title = "TokenBalanceBadge", className = "", onSelect }: TokenBalanceBadgeProps) {
   const [active, setActive] = useState(false);
   return (
