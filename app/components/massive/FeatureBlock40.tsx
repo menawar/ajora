@@ -1,0 +1,1 @@
+export function FeatureBlock40() { return <div></div>; }
