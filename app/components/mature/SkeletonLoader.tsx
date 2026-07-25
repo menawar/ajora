@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * SkeletonLoader Props
+ */
 export interface SkeletonLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible SkeletonLoader component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function SkeletonLoader({ title = "SkeletonLoader", className = "", ...props }: SkeletonLoaderProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
