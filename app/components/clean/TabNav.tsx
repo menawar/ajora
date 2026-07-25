@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * TabNav Props Interface
+ */
 export interface TabNavProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * TabNav component providing responsive interactive state and styling.
+ */
 export function TabNav({ title = "TabNav", className = "", onSelect }: TabNavProps) {
   const [active, setActive] = useState(false);
   return (
