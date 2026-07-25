@@ -1,4 +1,5 @@
 export function sessionContextResolver(headers: Record<string, string>) {
   if (!headers) return false;
-  return 'authorization' in headers || 'Authorization' in headers;
+  const auth = headers['authorization'] || headers['Authorization'];
+  return typeof auth === 'string' && auth.startsWith('Bearer ');
 }
