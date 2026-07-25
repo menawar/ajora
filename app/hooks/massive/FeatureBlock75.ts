@@ -1,2 +1,2 @@
-import { useState } from 'react';
-export function useFeatureBlock75() { const [state, setState] = useState(null); return state; }
+import { useState, useEffect } from 'react';
+export function useFeatureBlock75() { const [state, setState] = useState(null); useEffect(() => { setState(true) }, []); return state; }
