@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Switch Props
+ */
 export interface SwitchProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Switch component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Switch({ title = "Switch", className = "", ...props }: SwitchProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
