@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
 
+/**
+ * useAudioEffects hook for managing async operations and state transitions.
+ */
 export function useAudioEffects<T = any>(initial: T | null = null) {
   const [data, setData] = useState<T | null>(initial);
   const [loading, setLoading] = useState(false);
