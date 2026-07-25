@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 
+/**
+ * AgnesWidget005 Component Props
+ */
 export interface AgnesWidget005Props {
+  /** Optional HTML element ID */
   id?: string;
+  /** Display title */
   title?: string;
+  /** Current execution status */
   status?: 'active' | 'pending' | 'completed';
+  /** Action callback handler */
   onAction?: () => void;
 }
 
+/**
+ * AgnesWidget005 presents an interactive GameFi card module created by agenes01.
+ */
 export function AgnesWidget005({ id = "AgnesWidget005", title = "AgnesWidget005 Widget", status = 'active', onAction }: AgnesWidget005Props) {
   const [loading, setLoading] = useState(false);
 
