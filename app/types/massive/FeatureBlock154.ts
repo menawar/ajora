@@ -1,1 +1,1 @@
-export type FeatureBlock154 = string | number;
+export interface FeatureBlock154 { id: string; }
