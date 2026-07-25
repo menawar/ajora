@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Drawer Props
+ */
 export interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Drawer component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Drawer({ title = "Drawer", className = "", ...props }: DrawerProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
