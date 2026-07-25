@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * StreakFlameIcon Props Interface
+ */
 export interface StreakFlameIconProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * StreakFlameIcon component providing responsive interactive state and styling.
+ */
 export function StreakFlameIcon({ title = "StreakFlameIcon", className = "", onSelect }: StreakFlameIconProps) {
   const [active, setActive] = useState(false);
   return (
