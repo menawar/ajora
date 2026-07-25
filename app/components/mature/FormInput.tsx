@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * FormInput Props
+ */
 export interface FormInputProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible FormInput component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function FormInput({ title = "FormInput", className = "", ...props }: FormInputProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
