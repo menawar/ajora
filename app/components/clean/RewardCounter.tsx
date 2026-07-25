@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * RewardCounter Props Interface
+ */
 export interface RewardCounterProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * RewardCounter component providing responsive interactive state and styling.
+ */
 export function RewardCounter({ title = "RewardCounter", className = "", onSelect }: RewardCounterProps) {
   const [active, setActive] = useState(false);
   return (
