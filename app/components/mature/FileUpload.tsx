@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * FileUpload Props
+ */
 export interface FileUploadProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible FileUpload component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function FileUpload({ title = "FileUpload", className = "", ...props }: FileUploadProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
