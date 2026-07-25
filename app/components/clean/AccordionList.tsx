@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * AccordionList Props Interface
+ */
 export interface AccordionListProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * AccordionList component providing responsive interactive state and styling.
+ */
 export function AccordionList({ title = "AccordionList", className = "", onSelect }: AccordionListProps) {
   const [active, setActive] = useState(false);
   return (
