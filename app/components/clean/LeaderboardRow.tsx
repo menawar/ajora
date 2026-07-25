@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * LeaderboardRow Props Interface
+ */
 export interface LeaderboardRowProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * LeaderboardRow component providing responsive interactive state and styling.
+ */
 export function LeaderboardRow({ title = "LeaderboardRow", className = "", onSelect }: LeaderboardRowProps) {
   const [active, setActive] = useState(false);
   return (
