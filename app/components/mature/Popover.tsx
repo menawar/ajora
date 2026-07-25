@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Popover Props
+ */
 export interface PopoverProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Popover component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Popover({ title = "Popover", className = "", ...props }: PopoverProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
