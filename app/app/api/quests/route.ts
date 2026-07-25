@@ -180,19 +180,35 @@ async function fetchFromSupabase(address: string) {
     .eq("user_address", address.toLowerCase());
   if (pErr) throw pErr;
 
-  return questRows.map((q: { id: string, name: string, description: string, type: string, target: number, reward_xp: number }) => {
-    const up = userProgress.find((u: { quest_id: string, progress: number, claimed: boolean }) => u.quest_id === q.id);
-    return {
-      id: q.id,
-      title: q.title,
-      description: q.description,
-      xpReward: q.xp_reward,
-      progress: up?.progress ?? 0,
-      total: q.target_count,
-      completed: up?.completed ?? false,
-      type: q.quest_type,
-    };
-  });
+  return questRows.map(
+    (q: {
+      id: string;
+      title?: string;
+      name?: string;
+      description: string;
+      type?: string;
+      quest_type?: string;
+      target?: number;
+      target_count?: number;
+      reward_xp?: number;
+      xp_reward?: number;
+    }) => {
+      const up = userProgress.find(
+        (u: { quest_id: string; progress: number; claimed?: boolean; completed?: boolean }) =>
+          u.quest_id === q.id,
+      );
+      return {
+        id: q.id,
+        title: q.title || q.name || "",
+        description: q.description,
+        xpReward: q.xp_reward ?? q.reward_xp ?? 0,
+        progress: up?.progress ?? 0,
+        total: q.target_count ?? q.target ?? 1,
+        completed: up?.completed ?? false,
+        type: q.quest_type || q.type || "daily",
+      };
+    },
+  );
 }
 
 // ── Route handler ──────────────────────────────────────────────────────────────

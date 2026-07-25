@@ -3,7 +3,7 @@
 import { HTMLAttributes } from "react";
 import { motion } from "framer-motion";
 
-export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
+export interface SkeletonProps extends Omit<HTMLAttributes<HTMLDivElement>, "onAnimationStart" | "onDrag" | "onDragStart" | "onDragEnd"> {
   variant?: "circular" | "rectangular" | "text";
 }
 
