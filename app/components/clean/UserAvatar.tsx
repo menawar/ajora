@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * UserAvatar Props Interface
+ */
 export interface UserAvatarProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * UserAvatar component providing responsive interactive state and styling.
+ */
 export function UserAvatar({ title = "UserAvatar", className = "", onSelect }: UserAvatarProps) {
   const [active, setActive] = useState(false);
   return (
