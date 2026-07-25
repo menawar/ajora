@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * AnimatedBadge Props Interface
+ */
 export interface AnimatedBadgeProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * AnimatedBadge component providing responsive interactive state and styling.
+ */
 export function AnimatedBadge({ title = "AnimatedBadge", className = "", onSelect }: AnimatedBadgeProps) {
   const [active, setActive] = useState(false);
   return (
