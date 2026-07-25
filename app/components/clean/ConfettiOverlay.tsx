@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * ConfettiOverlay Props Interface
+ */
 export interface ConfettiOverlayProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * ConfettiOverlay component providing responsive interactive state and styling.
+ */
 export function ConfettiOverlay({ title = "ConfettiOverlay", className = "", onSelect }: ConfettiOverlayProps) {
   const [active, setActive] = useState(false);
   return (
