@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * AlertMessage Props
+ */
 export interface AlertMessageProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible AlertMessage component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function AlertMessage({ title = "AlertMessage", className = "", ...props }: AlertMessageProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
