@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Tooltip Props
+ */
 export interface TooltipProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Tooltip component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Tooltip({ title = "Tooltip", className = "", ...props }: TooltipProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
