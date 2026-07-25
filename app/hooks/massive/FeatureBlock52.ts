@@ -1,2 +1,2 @@
-import { useState, useEffect } from 'react';
-export function useFeatureBlock52(initialValue: any) { const [state, setState] = useState(initialValue); useEffect(() => { setState(true) }, []); return state; }
+import { useState, useEffect, useCallback } from 'react';
+export function useFeatureBlock52(initialValue: any) { const [state, setState] = useState(initialValue); const toggle = useCallback(() => setState(!state), [state]); return { state, toggle }; }
