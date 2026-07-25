@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface ConfettiOverlayProps {
   title?: string;
   className?: string;
+  onSelect?: () => void;
 }
 
-export function ConfettiOverlay({ title = "ConfettiOverlay", className = "" }: ConfettiOverlayProps) {
-  return <div className={`p-4 rounded-xl border border-gray-200 bg-white shadow-sm ${className}`}>{title}</div>;
+export function ConfettiOverlay({ title = "ConfettiOverlay", className = "", onSelect }: ConfettiOverlayProps) {
+  const [active, setActive] = useState(false);
+  return (
+    <div onClick={() => { setActive(!active); onSelect?.(); }} className={`p-4 rounded-xl border transition-all cursor-pointer ${active ? 'border-green-500 bg-green-50/50' : 'border-gray-200 bg-white'} ${className}`}>
+      <h4 className="font-semibold text-gray-900">{title}</h4>
+    </div>
+  );
 }
