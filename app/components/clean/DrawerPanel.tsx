@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 
+/**
+ * DrawerPanel Props Interface
+ */
 export interface DrawerPanelProps {
+  /** Optional card header title */
   title?: string;
+  /** Custom Tailwind CSS classes */
   className?: string;
+  /** Selection action callback */
   onSelect?: () => void;
 }
 
+/**
+ * DrawerPanel component providing responsive interactive state and styling.
+ */
 export function DrawerPanel({ title = "DrawerPanel", className = "", onSelect }: DrawerPanelProps) {
   const [active, setActive] = useState(false);
   return (
