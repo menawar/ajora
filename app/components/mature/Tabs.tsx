@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 
+/**
+ * Tabs Props
+ */
 export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The title to display */
   title?: string;
 }
 
+/**
+ * A mature, accessible Tabs component designed for enterprise interfaces.
+ * Focuses on clean typography and subtle interactive states.
+ */
 export function Tabs({ title = "Tabs", className = "", ...props }: TabsProps) {
   const [isHovered, setIsHovered] = useState(false);
   return (
