@@ -1,2 +1,0 @@
-/** Formats FeatureBlock139 */
-export function formatFeatureBlock139(val: string) { return val ? val.trim().toLowerCase() : ''; }
