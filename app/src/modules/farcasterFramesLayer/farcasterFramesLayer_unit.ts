@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadata(options?: Partial<IFarcasterF
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add state snapshot persistence helpers
+ */
+export interface IFarcasterFramesLayeraddStateSnapshotPersistenceHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStateSnapshotPersistenceHelpers(options?: Partial<IFarcasterFramesLayeraddStateSnapshotPersistenceHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add state snapshot persistence helpers',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
