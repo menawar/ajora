@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(options?: Partial<IDashboar
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure final module integration exports
+ */
+export interface IDashboardLayoutsconfigureFinalModuleIntegrationExportsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFinalModuleIntegrationExports(options?: Partial<IDashboardLayoutsconfigureFinalModuleIntegrationExportsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure final module integration exports',
+    module: 'dashboardLayouts',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
