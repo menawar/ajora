@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipelineRules(config?: Partial<ISubgrap
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add type assertion guard functions
+ */
+export interface ISubgraphIndexingSpecsaddTypeAssertionGuardFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeAssertionGuardFunctions(config?: Partial<ISubgraphIndexingSpecsaddTypeAssertionGuardFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add type assertion guard functions',
+    module: 'subgraphIndexingSpecs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
