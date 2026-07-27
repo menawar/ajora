@@ -604,3 +604,23 @@ export function addDataTransformerMappingFunctions(config?: Partial<IShimmerSkel
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface IShimmerSkeletonLoaderCardsimplementMockDataProviderGeneratorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(config?: Partial<IShimmerSkeletonLoaderCardsimplementMockDataProviderGeneratorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement mock data provider generators',
+    module: 'shimmerSkeletonLoaderCards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
