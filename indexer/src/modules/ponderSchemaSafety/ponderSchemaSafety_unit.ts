@@ -384,3 +384,23 @@ export function implementBatchRequestChunkingLogic(options?: Partial<IPonderSche
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata
+ */
+export interface IPonderSchemaSafetyconfigureContextualLoggingMetadataOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadata(options?: Partial<IPonderSchemaSafetyconfigureContextualLoggingMetadataOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure contextual logging metadata',
+    module: 'ponderSchemaSafety',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
