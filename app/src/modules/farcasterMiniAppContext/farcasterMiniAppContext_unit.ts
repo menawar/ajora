@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(config?: Partial<IFarcaster
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure module exports and index
+ */
+export interface IFarcasterMiniAppContextconfigureModuleExportsAndIndexConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureModuleExportsAndIndex(config?: Partial<IFarcasterMiniAppContextconfigureModuleExportsAndIndexConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure module exports and index',
+    module: 'farcasterMiniAppContext',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
