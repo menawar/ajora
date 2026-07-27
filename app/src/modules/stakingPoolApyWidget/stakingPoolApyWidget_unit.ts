@@ -304,3 +304,23 @@ export function implementJSONResponsePayloadFormatters(config?: Partial<IStaking
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add retry policy for remote RPC calls
+ */
+export interface IStakingPoolApyWidgetaddRetryPolicyForRemoteRPCCallsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IStakingPoolApyWidgetaddRetryPolicyForRemoteRPCCallsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add retry policy for remote RPC calls',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
