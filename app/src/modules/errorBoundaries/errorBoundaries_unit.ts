@@ -144,3 +144,23 @@ export function addStructuredErrorHandlingLogic(options?: Partial<IErrorBoundari
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event dispatchers
+ */
+export interface IErrorBoundariesimplementTelemetryEventDispatchersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventDispatchers(options?: Partial<IErrorBoundariesimplementTelemetryEventDispatchersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement telemetry event dispatchers',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
