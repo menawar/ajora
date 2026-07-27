@@ -324,3 +324,23 @@ export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IMultiEndpointR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback RPC provider resolver
+ */
+export interface IMultiEndpointRpcBalancerconfigureFallbackRPCProviderResolverConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackRPCProviderResolver(config?: Partial<IMultiEndpointRpcBalancerconfigureFallbackRPCProviderResolverConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure fallback RPC provider resolver',
+    module: 'multiEndpointRpcBalancer',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
