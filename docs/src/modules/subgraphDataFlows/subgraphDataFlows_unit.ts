@@ -324,3 +324,23 @@ export function addRetryStrategyForRemoteRequests(options?: Partial<ISubgraphDat
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback service provider
+ */
+export interface ISubgraphDataFlowsconfigureFallbackServiceProviderOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackServiceProvider(options?: Partial<ISubgraphDataFlowsconfigureFallbackServiceProviderOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure fallback service provider',
+    module: 'subgraphDataFlows',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
