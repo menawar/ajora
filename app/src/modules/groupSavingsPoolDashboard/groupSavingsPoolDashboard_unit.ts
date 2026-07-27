@@ -904,3 +904,23 @@ export function addBuildBundleCompressionChecks(config?: Partial<IGroupSavingsPo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC endpoint health monitors
+ */
+export interface IGroupSavingsPoolDashboardimplementRPCEndpointHealthMonitorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCEndpointHealthMonitors(config?: Partial<IGroupSavingsPoolDashboardimplementRPCEndpointHealthMonitorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement RPC endpoint health monitors',
+    module: 'groupSavingsPoolDashboard',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
