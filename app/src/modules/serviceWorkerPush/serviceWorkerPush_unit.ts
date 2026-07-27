@@ -724,3 +724,23 @@ export function addToastNotificationTriggers(config?: Partial<IServiceWorkerPush
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement modal dialog focus traps
+ */
+export interface IServiceWorkerPushimplementModalDialogFocusTrapsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementModalDialogFocusTraps(config?: Partial<IServiceWorkerPushimplementModalDialogFocusTrapsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement modal dialog focus traps',
+    module: 'serviceWorkerPush',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
