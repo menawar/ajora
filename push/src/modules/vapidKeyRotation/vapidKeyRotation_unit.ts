@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionStrategy(config?: Partial<IVapidKeyR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add background async queue processor
+ */
+export interface IVapidKeyRotationaddBackgroundAsyncQueueProcessorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBackgroundAsyncQueueProcessor(config?: Partial<IVapidKeyRotationaddBackgroundAsyncQueueProcessorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add background async queue processor',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
