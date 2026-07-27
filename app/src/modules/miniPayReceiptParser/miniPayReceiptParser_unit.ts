@@ -724,3 +724,23 @@ export function addToastNotificationTriggers(config?: Partial<IMiniPayReceiptPar
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement modal dialog focus traps
+ */
+export interface IMiniPayReceiptParserimplementModalDialogFocusTrapsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementModalDialogFocusTraps(config?: Partial<IMiniPayReceiptParserimplementModalDialogFocusTrapsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement modal dialog focus traps',
+    module: 'miniPayReceiptParser',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
