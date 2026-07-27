@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionPolicies(options?: Partial<INotifica
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add asynchronous task queue processors
+ */
+export interface INotificationRetryaddAsynchronousTaskQueueProcessorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAsynchronousTaskQueueProcessors(options?: Partial<INotificationRetryaddAsynchronousTaskQueueProcessorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add asynchronous task queue processors',
+    module: 'notificationRetry',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
