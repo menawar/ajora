@@ -384,3 +384,23 @@ export function implementBatchRequestChunkingLogic(options?: Partial<IBundleBudg
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata
+ */
+export interface IBundleBudgetMonitorsconfigureContextualLoggingMetadataOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadata(options?: Partial<IBundleBudgetMonitorsconfigureContextualLoggingMetadataOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure contextual logging metadata',
+    module: 'bundleBudgetMonitors',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
