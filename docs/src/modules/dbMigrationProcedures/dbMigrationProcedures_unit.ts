@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipeline(options?: Partial<IDbMigration
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add type guard utility functions
+ */
+export interface IDbMigrationProceduresaddTypeGuardUtilityFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeGuardUtilityFunctions(options?: Partial<IDbMigrationProceduresaddTypeGuardUtilityFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add type guard utility functions',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
