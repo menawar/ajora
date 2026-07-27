@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(options?: Partial<ICeloRpcResilie
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily metric rollup aggregators
+ */
+export interface ICeloRpcResilienceimplementDailyMetricRollupAggregatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyMetricRollupAggregators(options?: Partial<ICeloRpcResilienceimplementDailyMetricRollupAggregatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement daily metric rollup aggregators',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
