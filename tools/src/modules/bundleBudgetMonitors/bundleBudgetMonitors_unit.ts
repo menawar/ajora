@@ -504,3 +504,23 @@ export function implementRateLimiterTokenBucket(options?: Partial<IBundleBudgetM
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delays
+ */
+export interface IBundleBudgetMonitorsconfigureExponentialBackoffDelaysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelays(options?: Partial<IBundleBudgetMonitorsconfigureExponentialBackoffDelaysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure exponential backoff delays',
+    module: 'bundleBudgetMonitors',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
