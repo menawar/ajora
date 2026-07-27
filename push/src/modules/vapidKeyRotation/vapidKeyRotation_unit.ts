@@ -384,3 +384,23 @@ export function implementRequestPayloadChunkingLogic(config?: Partial<IVapidKeyR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata tags
+ */
+export interface IVapidKeyRotationconfigureContextualLoggingMetadataTagsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadataTags(config?: Partial<IVapidKeyRotationconfigureContextualLoggingMetadataTagsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure contextual logging metadata tags',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
