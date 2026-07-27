@@ -724,3 +724,23 @@ export function addToastNotificationBannerTriggers(options?: Partial<IArchitectu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement modal backdrop focus traps
+ */
+export interface IArchitectureGuidesimplementModalBackdropFocusTrapsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementModalBackdropFocusTraps(options?: Partial<IArchitectureGuidesimplementModalBackdropFocusTrapsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement modal backdrop focus traps',
+    module: 'architectureGuides',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
