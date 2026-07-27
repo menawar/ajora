@@ -344,3 +344,23 @@ export function configureFallbackServiceProvider(options?: Partial<IDailyGoalCal
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add performance metrics timer metrics
+ */
+export interface IDailyGoalCalculatoraddPerformanceMetricsTimerMetricsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPerformanceMetricsTimerMetrics(options?: Partial<IDailyGoalCalculatoraddPerformanceMetricsTimerMetricsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add performance metrics timer metrics',
+    module: 'dailyGoalCalculator',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
