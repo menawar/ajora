@@ -764,3 +764,23 @@ export function configureCustomReactReducerHooks(config?: Partial<ISupabaseRealt
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add local storage encryption helpers
+ */
+export interface ISupabaseRealtimeFiltersaddLocalStorageEncryptionHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addLocalStorageEncryptionHelpers(config?: Partial<ISupabaseRealtimeFiltersaddLocalStorageEncryptionHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add local storage encryption helpers',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
