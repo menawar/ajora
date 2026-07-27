@@ -824,3 +824,23 @@ export function configureSupabaseRowPolicyValidators(options?: Partial<IArchitec
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface IArchitectureGuidesaddPonderIndexerLogFilterRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(options?: Partial<IArchitectureGuidesaddPonderIndexerLogFilterRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add Ponder indexer log filter rules',
+    module: 'architectureGuides',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
