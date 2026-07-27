@@ -764,3 +764,23 @@ export function configureCustomReactHookStateReducers(options?: Partial<IOffline
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add web storage encryption wrappers
+ */
+export interface IOfflineStorageSyncaddWebStorageEncryptionWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addWebStorageEncryptionWrappers(options?: Partial<IOfflineStorageSyncaddWebStorageEncryptionWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add web storage encryption wrappers',
+    module: 'offlineStorageSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
