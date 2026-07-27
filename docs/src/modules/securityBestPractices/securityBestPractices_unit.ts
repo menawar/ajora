@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluationRules(options?: Partial<ISecurityB
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformation mapping functions
+ */
+export interface ISecurityBestPracticesaddDataTransformationMappingFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformationMappingFunctions(options?: Partial<ISecurityBestPracticesaddDataTransformationMappingFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add data transformation mapping functions',
+    module: 'securityBestPractices',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
