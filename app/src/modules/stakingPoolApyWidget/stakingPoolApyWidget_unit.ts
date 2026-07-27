@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionStrategy(config?: Partial<IStakingPo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add background async queue processor
+ */
+export interface IStakingPoolApyWidgetaddBackgroundAsyncQueueProcessorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBackgroundAsyncQueueProcessor(config?: Partial<IStakingPoolApyWidgetaddBackgroundAsyncQueueProcessorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add background async queue processor',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
