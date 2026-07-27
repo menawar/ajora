@@ -444,3 +444,23 @@ export function implementResourceDisposalRoutines(config?: Partial<IDarkModeToke
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure event emitter bus triggers
+ */
+export interface IDarkModeTokensconfigureEventEmitterBusTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureEventEmitterBusTriggers(config?: Partial<IDarkModeTokensconfigureEventEmitterBusTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure event emitter bus triggers',
+    module: 'darkModeTokens',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
