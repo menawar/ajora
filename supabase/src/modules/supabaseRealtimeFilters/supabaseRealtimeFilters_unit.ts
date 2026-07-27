@@ -304,3 +304,23 @@ export function implementJSONResponsePayloadFormatters(config?: Partial<ISupabas
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add retry policy for remote RPC calls
+ */
+export interface ISupabaseRealtimeFiltersaddRetryPolicyForRemoteRPCCallsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRetryPolicyForRemoteRPCCalls(config?: Partial<ISupabaseRealtimeFiltersaddRetryPolicyForRemoteRPCCallsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add retry policy for remote RPC calls',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
