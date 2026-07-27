@@ -64,3 +64,23 @@ export function configureReactiveStateStorageGetters(config?: Partial<ISupabaseR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add default configuration fallbacks
+ */
+export interface ISupabaseRealtimeFiltersaddDefaultConfigurationFallbacksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultConfigurationFallbacks(config?: Partial<ISupabaseRealtimeFiltersaddDefaultConfigurationFallbacksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add default configuration fallbacks',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
