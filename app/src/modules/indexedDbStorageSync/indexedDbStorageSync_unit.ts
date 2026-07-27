@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(config?: Partial<IIndexedDb
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure module exports and index
+ */
+export interface IIndexedDbStorageSyncconfigureModuleExportsAndIndexConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureModuleExportsAndIndex(config?: Partial<IIndexedDbStorageSyncconfigureModuleExportsAndIndexConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure module exports and index',
+    module: 'indexedDbStorageSync',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
