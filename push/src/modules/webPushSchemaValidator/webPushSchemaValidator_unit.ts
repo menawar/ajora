@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(config?: Partial<IWebPushS
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add build bundle compression checks
+ */
+export interface IWebPushSchemaValidatoraddBuildBundleCompressionChecksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildBundleCompressionChecks(config?: Partial<IWebPushSchemaValidatoraddBuildBundleCompressionChecksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add build bundle compression checks',
+    module: 'webPushSchemaValidator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
