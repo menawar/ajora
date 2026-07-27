@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadata(options?: Partial<IErrorBound
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add state snapshot persistence helpers
+ */
+export interface IErrorBoundariesaddStateSnapshotPersistenceHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStateSnapshotPersistenceHelpers(options?: Partial<IErrorBoundariesaddStateSnapshotPersistenceHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add state snapshot persistence helpers',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
