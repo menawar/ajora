@@ -484,3 +484,23 @@ export function addContractABIDecoderWrappers(options?: Partial<IContributingCod
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement rate limiter token bucket
+ */
+export interface IContributingCodeStyleimplementRateLimiterTokenBucketOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRateLimiterTokenBucket(options?: Partial<IContributingCodeStyleimplementRateLimiterTokenBucketOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement rate limiter token bucket',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
