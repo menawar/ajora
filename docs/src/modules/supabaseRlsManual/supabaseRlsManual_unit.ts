@@ -144,3 +144,23 @@ export function addRobustExceptionHandlingRoutines(config?: Partial<ISupabaseRls
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event logger
+ */
+export interface ISupabaseRlsManualimplementTelemetryEventLoggerConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventLogger(config?: Partial<ISupabaseRlsManualimplementTelemetryEventLoggerConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement telemetry event logger',
+    module: 'supabaseRlsManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
