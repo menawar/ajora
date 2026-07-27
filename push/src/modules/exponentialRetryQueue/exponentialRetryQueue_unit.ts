@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipelineRules(config?: Partial<IExponen
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add type assertion guard functions
+ */
+export interface IExponentialRetryQueueaddTypeAssertionGuardFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeAssertionGuardFunctions(config?: Partial<IExponentialRetryQueueaddTypeAssertionGuardFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add type assertion guard functions',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
