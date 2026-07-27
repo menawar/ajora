@@ -44,3 +44,23 @@ export function implementCoreServiceInitialization(options?: Partial<IContributi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure runtime state management getters
+ */
+export interface IContributingCodeStyleconfigureRuntimeStateManagementGettersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureRuntimeStateManagementGetters(options?: Partial<IContributingCodeStyleconfigureRuntimeStateManagementGettersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure runtime state management getters',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
