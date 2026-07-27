@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionStrategy(config?: Partial<IWalletDep
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add background async queue processor
+ */
+export interface IWalletDepositQrViewaddBackgroundAsyncQueueProcessorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBackgroundAsyncQueueProcessor(config?: Partial<IWalletDepositQrViewaddBackgroundAsyncQueueProcessorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add background async queue processor',
+    module: 'walletDepositQrView',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
