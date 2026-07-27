@@ -604,3 +604,23 @@ export function addDataTransformerMappingFunctions(config?: Partial<IYieldApyRol
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface IYieldApyRollupsimplementMockDataProviderGeneratorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(config?: Partial<IYieldApyRollupsimplementMockDataProviderGeneratorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement mock data provider generators',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
