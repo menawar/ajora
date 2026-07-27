@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(options?: Partial<IDeployme
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure final module integration exports
+ */
+export interface IDeploymentMonitoringManualconfigureFinalModuleIntegrationExportsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFinalModuleIntegrationExports(options?: Partial<IDeploymentMonitoringManualconfigureFinalModuleIntegrationExportsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure final module integration exports',
+    module: 'deploymentMonitoringManual',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
