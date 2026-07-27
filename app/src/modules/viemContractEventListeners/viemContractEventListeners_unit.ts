@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(config?: Partial<IViemContractEve
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily yield rollup aggregators
+ */
+export interface IViemContractEventListenersimplementDailyYieldRollupAggregatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyYieldRollupAggregators(config?: Partial<IViemContractEventListenersimplementDailyYieldRollupAggregatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement daily yield rollup aggregators',
+    module: 'viemContractEventListeners',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
