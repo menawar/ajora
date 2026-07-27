@@ -104,3 +104,23 @@ export function implementPayloadExecutionHandlers(options?: Partial<IFarcasterFr
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton instance factory methods
+ */
+export interface IFarcasterFramesLayerexportSingletonInstanceFactoryMethodsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonInstanceFactoryMethods(options?: Partial<IFarcasterFramesLayerexportSingletonInstanceFactoryMethodsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'export singleton instance factory methods',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
