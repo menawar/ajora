@@ -304,3 +304,23 @@ export function implementResponsePayloadFormatters(options?: Partial<IActivityFe
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add retry strategy for remote requests
+ */
+export interface IActivityFeedaddRetryStrategyForRemoteRequestsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRetryStrategyForRemoteRequests(options?: Partial<IActivityFeedaddRetryStrategyForRemoteRequestsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add retry strategy for remote requests',
+    module: 'activityFeed',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
