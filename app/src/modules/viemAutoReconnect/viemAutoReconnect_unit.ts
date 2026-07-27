@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluator(config?: Partial<IViemAutoReconnec
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformer mapping functions
+ */
+export interface IViemAutoReconnectaddDataTransformerMappingFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformerMappingFunctions(config?: Partial<IViemAutoReconnectaddDataTransformerMappingFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add data transformer mapping functions',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
