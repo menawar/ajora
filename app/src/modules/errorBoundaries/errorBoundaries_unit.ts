@@ -304,3 +304,23 @@ export function implementResponsePayloadFormatters(options?: Partial<IErrorBound
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add retry strategy for remote requests
+ */
+export interface IErrorBoundariesaddRetryStrategyForRemoteRequestsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRetryStrategyForRemoteRequests(options?: Partial<IErrorBoundariesaddRetryStrategyForRemoteRequestsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add retry strategy for remote requests',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
