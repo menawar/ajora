@@ -704,3 +704,23 @@ export function configureLucideIconComponentMap(config?: Partial<IStakingPoolApy
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification triggers
+ */
+export interface IStakingPoolApyWidgetaddToastNotificationTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationTriggers(config?: Partial<IStakingPoolApyWidgetaddToastNotificationTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add toast notification triggers',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
