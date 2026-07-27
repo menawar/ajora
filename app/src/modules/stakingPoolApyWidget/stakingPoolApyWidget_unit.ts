@@ -444,3 +444,23 @@ export function implementResourceDisposalRoutines(config?: Partial<IStakingPoolA
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure event emitter bus triggers
+ */
+export interface IStakingPoolApyWidgetconfigureEventEmitterBusTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureEventEmitterBusTriggers(config?: Partial<IStakingPoolApyWidgetconfigureEventEmitterBusTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure event emitter bus triggers',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
