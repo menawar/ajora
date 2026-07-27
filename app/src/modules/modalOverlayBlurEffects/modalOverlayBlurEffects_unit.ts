@@ -344,3 +344,23 @@ export function configureFallbackRPCProviderResolver(config?: Partial<IModalOver
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add performance timer tracking metrics
+ */
+export interface IModalOverlayBlurEffectsaddPerformanceTimerTrackingMetricsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPerformanceTimerTrackingMetrics(config?: Partial<IModalOverlayBlurEffectsaddPerformanceTimerTrackingMetricsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add performance timer tracking metrics',
+    module: 'modalOverlayBlurEffects',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
