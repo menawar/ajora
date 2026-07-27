@@ -544,3 +544,23 @@ export function addRequestHeaderAuthorizationHelpers(options?: Partial<IArchitec
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement user preference storage hooks
+ */
+export interface IArchitectureGuidesimplementUserPreferenceStorageHooksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementUserPreferenceStorageHooks(options?: Partial<IArchitectureGuidesimplementUserPreferenceStorageHooksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement user preference storage hooks',
+    module: 'architectureGuides',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
