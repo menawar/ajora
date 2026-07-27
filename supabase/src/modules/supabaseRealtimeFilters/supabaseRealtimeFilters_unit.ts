@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(config?: Partial<ISupabase
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add build bundle compression checks
+ */
+export interface ISupabaseRealtimeFiltersaddBuildBundleCompressionChecksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildBundleCompressionChecks(config?: Partial<ISupabaseRealtimeFiltersaddBuildBundleCompressionChecksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add build bundle compression checks',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
