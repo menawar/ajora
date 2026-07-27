@@ -284,3 +284,23 @@ export function addTypeAssertionGuardFunctions(config?: Partial<ISubgraphIndexin
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement JSON response payload formatters
+ */
+export interface ISubgraphIndexingSpecsimplementJSONResponsePayloadFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementJSONResponsePayloadFormatters(config?: Partial<ISubgraphIndexingSpecsimplementJSONResponsePayloadFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement JSON response payload formatters',
+    module: 'subgraphIndexingSpecs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
