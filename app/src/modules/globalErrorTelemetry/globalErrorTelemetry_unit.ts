@@ -744,3 +744,23 @@ export function implementModalDialogFocusTraps(config?: Partial<IGlobalErrorTele
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React reducer hooks
+ */
+export interface IGlobalErrorTelemetryconfigureCustomReactReducerHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactReducerHooks(config?: Partial<IGlobalErrorTelemetryconfigureCustomReactReducerHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom React reducer hooks',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
