@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionStrategy(config?: Partial<IViemAutoR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add background async queue processor
+ */
+export interface IViemAutoReconnectaddBackgroundAsyncQueueProcessorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBackgroundAsyncQueueProcessor(config?: Partial<IViemAutoReconnectaddBackgroundAsyncQueueProcessorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add background async queue processor',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
