@@ -484,3 +484,23 @@ export function addSmartContractABIDecoderHelpers(config?: Partial<ITelemetryEve
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement token bucket rate limiter
+ */
+export interface ITelemetryEventBatchingimplementTokenBucketRateLimiterConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTokenBucketRateLimiter(config?: Partial<ITelemetryEventBatchingimplementTokenBucketRateLimiterConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement token bucket rate limiter',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
