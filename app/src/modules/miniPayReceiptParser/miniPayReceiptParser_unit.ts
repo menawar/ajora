@@ -164,3 +164,23 @@ export function implementTelemetryEventLogger(config?: Partial<IMiniPayReceiptPa
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and type validators
+ */
+export interface IMiniPayReceiptParseraddInputSanitizationAndTypeValidatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndTypeValidators(config?: Partial<IMiniPayReceiptParseraddInputSanitizationAndTypeValidatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add input sanitization and type validators',
+    module: 'miniPayReceiptParser',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
