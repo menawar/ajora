@@ -864,3 +864,23 @@ export function implementDailyYieldRollupAggregators(config?: Partial<ISubgraphI
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface ISubgraphIndexingSpecsconfigureVAPIDWebPushNotificationKeysConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(config?: Partial<ISubgraphIndexingSpecsconfigureVAPIDWebPushNotificationKeysConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure VAPID web push notification keys',
+    module: 'subgraphIndexingSpecs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
