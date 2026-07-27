@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(config?: Partial<IMiniPayRe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure module exports and index
+ */
+export interface IMiniPayReceiptParserconfigureModuleExportsAndIndexConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureModuleExportsAndIndex(config?: Partial<IMiniPayReceiptParserconfigureModuleExportsAndIndexConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure module exports and index',
+    module: 'miniPayReceiptParser',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
