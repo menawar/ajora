@@ -104,3 +104,23 @@ export function implementPayloadExecutionHandlers(options?: Partial<IMiniPayWrap
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton instance factory methods
+ */
+export interface IMiniPayWrappersexportSingletonInstanceFactoryMethodsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonInstanceFactoryMethods(options?: Partial<IMiniPayWrappersexportSingletonInstanceFactoryMethodsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'export singleton instance factory methods',
+    module: 'miniPayWrappers',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
