@@ -324,3 +324,23 @@ export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IJsonStructured
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback RPC provider resolver
+ */
+export interface IJsonStructuredLoggerconfigureFallbackRPCProviderResolverConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackRPCProviderResolver(config?: Partial<IJsonStructuredLoggerconfigureFallbackRPCProviderResolverConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure fallback RPC provider resolver',
+    module: 'jsonStructuredLogger',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
