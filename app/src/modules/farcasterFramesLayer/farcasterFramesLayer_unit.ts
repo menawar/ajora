@@ -764,3 +764,23 @@ export function configureCustomReactHookStateReducers(options?: Partial<IFarcast
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add web storage encryption wrappers
+ */
+export interface IFarcasterFramesLayeraddWebStorageEncryptionWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addWebStorageEncryptionWrappers(options?: Partial<IFarcasterFramesLayeraddWebStorageEncryptionWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add web storage encryption wrappers',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
