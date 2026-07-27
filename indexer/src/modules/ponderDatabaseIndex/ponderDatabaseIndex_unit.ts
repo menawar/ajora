@@ -24,3 +24,23 @@ export function initializeCoreModuleInterfaces(config?: Partial<IPonderDatabaseI
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement primary service constructor
+ */
+export interface IPonderDatabaseIndeximplementPrimaryServiceConstructorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementPrimaryServiceConstructor(config?: Partial<IPonderDatabaseIndeximplementPrimaryServiceConstructorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement primary service constructor',
+    module: 'ponderDatabaseIndex',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
