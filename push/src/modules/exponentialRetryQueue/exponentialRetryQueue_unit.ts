@@ -144,3 +144,23 @@ export function addRobustExceptionHandlingRoutines(config?: Partial<IExponential
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event logger
+ */
+export interface IExponentialRetryQueueimplementTelemetryEventLoggerConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventLogger(config?: Partial<IExponentialRetryQueueimplementTelemetryEventLoggerConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement telemetry event logger',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
