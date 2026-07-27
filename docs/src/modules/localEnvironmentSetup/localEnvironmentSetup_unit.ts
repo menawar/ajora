@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionStrategy(config?: Partial<ILocalEnvi
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add background async queue processor
+ */
+export interface ILocalEnvironmentSetupaddBackgroundAsyncQueueProcessorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBackgroundAsyncQueueProcessor(config?: Partial<ILocalEnvironmentSetupaddBackgroundAsyncQueueProcessorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add background async queue processor',
+    module: 'localEnvironmentSetup',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
