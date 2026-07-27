@@ -144,3 +144,23 @@ export function addStructuredErrorHandlingLogic(options?: Partial<IVapidSubscrip
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event dispatchers
+ */
+export interface IVapidSubscriptionStoreimplementTelemetryEventDispatchersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventDispatchers(options?: Partial<IVapidSubscriptionStoreimplementTelemetryEventDispatchersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement telemetry event dispatchers',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
