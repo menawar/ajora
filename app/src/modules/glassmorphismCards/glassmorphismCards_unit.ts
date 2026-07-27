@@ -184,3 +184,23 @@ export function addInputSanitizationAndValidation(options?: Partial<IGlassmorphi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state change listeners
+ */
+export interface IGlassmorphismCardsconfigureReactiveStateChangeListenersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateChangeListeners(options?: Partial<IGlassmorphismCardsconfigureReactiveStateChangeListenersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure reactive state change listeners',
+    module: 'glassmorphismCards',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
