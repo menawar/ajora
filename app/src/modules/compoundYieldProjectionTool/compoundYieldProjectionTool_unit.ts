@@ -784,3 +784,23 @@ export function addLocalStorageEncryptionHelpers(config?: Partial<ICompoundYield
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement web socket reconnect handlers
+ */
+export interface ICompoundYieldProjectionToolimplementWebSocketReconnectHandlersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementWebSocketReconnectHandlers(config?: Partial<ICompoundYieldProjectionToolimplementWebSocketReconnectHandlersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement web socket reconnect handlers',
+    module: 'compoundYieldProjectionTool',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
