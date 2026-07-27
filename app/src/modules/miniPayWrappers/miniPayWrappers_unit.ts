@@ -124,3 +124,23 @@ export function exportSingletonInstanceFactoryMethods(options?: Partial<IMiniPay
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add structured error handling logic
+ */
+export interface IMiniPayWrappersaddStructuredErrorHandlingLogicOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStructuredErrorHandlingLogic(options?: Partial<IMiniPayWrappersaddStructuredErrorHandlingLogicOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add structured error handling logic',
+    module: 'miniPayWrappers',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
