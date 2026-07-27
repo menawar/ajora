@@ -484,3 +484,23 @@ export function addContractABIDecoderWrappers(options?: Partial<ISecurityBestPra
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement rate limiter token bucket
+ */
+export interface ISecurityBestPracticesimplementRateLimiterTokenBucketOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRateLimiterTokenBucket(options?: Partial<ISecurityBestPracticesimplementRateLimiterTokenBucketOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement rate limiter token bucket',
+    module: 'securityBestPractices',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
