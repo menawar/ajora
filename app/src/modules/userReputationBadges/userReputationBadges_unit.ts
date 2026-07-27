@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(options?: Partial<IUserReput
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase row policy validators
+ */
+export interface IUserReputationBadgesconfigureSupabaseRowPolicyValidatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseRowPolicyValidators(options?: Partial<IUserReputationBadgesconfigureSupabaseRowPolicyValidatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Supabase row policy validators',
+    module: 'userReputationBadges',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
