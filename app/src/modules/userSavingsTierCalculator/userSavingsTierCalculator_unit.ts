@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(config?: Partial<IUserSaving
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluator
+ */
+export interface IUserSavingsTierCalculatorconfigureFeatureFlagEvaluatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluator(config?: Partial<IUserSavingsTierCalculatorconfigureFeatureFlagEvaluatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure feature flag evaluator',
+    module: 'userSavingsTierCalculator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
