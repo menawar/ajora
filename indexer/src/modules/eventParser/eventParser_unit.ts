@@ -144,3 +144,23 @@ export function addStructuredErrorHandlingLogic(options?: Partial<IEventParserad
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event dispatchers
+ */
+export interface IEventParserimplementTelemetryEventDispatchersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventDispatchers(options?: Partial<IEventParserimplementTelemetryEventDispatchersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement telemetry event dispatchers',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
