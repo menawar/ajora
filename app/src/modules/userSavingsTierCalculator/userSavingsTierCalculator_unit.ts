@@ -904,3 +904,23 @@ export function addBuildBundleCompressionChecks(config?: Partial<IUserSavingsTie
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC endpoint health monitors
+ */
+export interface IUserSavingsTierCalculatorimplementRPCEndpointHealthMonitorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCEndpointHealthMonitors(config?: Partial<IUserSavingsTierCalculatorimplementRPCEndpointHealthMonitorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement RPC endpoint health monitors',
+    module: 'userSavingsTierCalculator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
