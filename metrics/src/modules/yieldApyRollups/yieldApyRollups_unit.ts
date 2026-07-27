@@ -384,3 +384,23 @@ export function implementRequestPayloadChunkingLogic(config?: Partial<IYieldApyR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata tags
+ */
+export interface IYieldApyRollupsconfigureContextualLoggingMetadataTagsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadataTags(config?: Partial<IYieldApyRollupsconfigureContextualLoggingMetadataTagsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure contextual logging metadata tags',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
