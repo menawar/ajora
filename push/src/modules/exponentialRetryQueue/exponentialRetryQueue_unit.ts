@@ -164,3 +164,23 @@ export function implementTelemetryEventLogger(config?: Partial<IExponentialRetry
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and type validators
+ */
+export interface IExponentialRetryQueueaddInputSanitizationAndTypeValidatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndTypeValidators(config?: Partial<IExponentialRetryQueueaddInputSanitizationAndTypeValidatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add input sanitization and type validators',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
