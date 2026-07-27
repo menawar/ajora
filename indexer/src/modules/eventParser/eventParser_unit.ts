@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(options?: Partial<IEventPars
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluation rules
+ */
+export interface IEventParserconfigureFeatureFlagEvaluationRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluationRules(options?: Partial<IEventParserconfigureFeatureFlagEvaluationRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure feature flag evaluation rules',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
