@@ -24,3 +24,23 @@ export function initializeCoreModuleInterfaces(config?: Partial<IWebPushSchemaVa
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement primary service constructor
+ */
+export interface IWebPushSchemaValidatorimplementPrimaryServiceConstructorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementPrimaryServiceConstructor(config?: Partial<IWebPushSchemaValidatorimplementPrimaryServiceConstructorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement primary service constructor',
+    module: 'webPushSchemaValidator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
