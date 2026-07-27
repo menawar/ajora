@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadataTags(config?: Partial<ICodeRev
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add persistent state storage helpers
+ */
+export interface ICodeReviewCommitStandardsaddPersistentStateStorageHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPersistentStateStorageHelpers(config?: Partial<ICodeReviewCommitStandardsaddPersistentStateStorageHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add persistent state storage helpers',
+    module: 'codeReviewCommitStandards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
