@@ -684,3 +684,23 @@ export function implementFramerMotionTransitionCurves(config?: Partial<ITelemetr
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Lucide icon component map
+ */
+export interface ITelemetryEventBatchingconfigureLucideIconComponentMapConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureLucideIconComponentMap(config?: Partial<ITelemetryEventBatchingconfigureLucideIconComponentMapConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Lucide icon component map',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
