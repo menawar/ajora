@@ -244,3 +244,23 @@ export function addBackgroundAsyncQueueProcessor(config?: Partial<IWalletDeposit
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline rules
+ */
+export interface IWalletDepositQrViewconfigureCustomMiddlewarePipelineRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipelineRules(config?: Partial<IWalletDepositQrViewconfigureCustomMiddlewarePipelineRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom middleware pipeline rules',
+    module: 'walletDepositQrView',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
