@@ -784,3 +784,23 @@ export function addLocalStorageEncryptionHelpers(config?: Partial<IVapidKeyRotat
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement web socket reconnect handlers
+ */
+export interface IVapidKeyRotationimplementWebSocketReconnectHandlersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementWebSocketReconnectHandlers(config?: Partial<IVapidKeyRotationimplementWebSocketReconnectHandlersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement web socket reconnect handlers',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
