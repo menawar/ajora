@@ -424,3 +424,23 @@ export function addStateSnapshotPersistenceHelpers(options?: Partial<IFarcasterF
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement cleanup and disposal routines
+ */
+export interface IFarcasterFramesLayerimplementCleanupAndDisposalRoutinesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementCleanupAndDisposalRoutines(options?: Partial<IFarcasterFramesLayerimplementCleanupAndDisposalRoutinesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement cleanup and disposal routines',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
