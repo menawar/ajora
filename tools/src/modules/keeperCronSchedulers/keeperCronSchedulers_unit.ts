@@ -484,3 +484,23 @@ export function addContractABIDecoderWrappers(options?: Partial<IKeeperCronSched
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement rate limiter token bucket
+ */
+export interface IKeeperCronSchedulersimplementRateLimiterTokenBucketOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRateLimiterTokenBucket(options?: Partial<IKeeperCronSchedulersimplementRateLimiterTokenBucketOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement rate limiter token bucket',
+    module: 'keeperCronSchedulers',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
