@@ -44,3 +44,23 @@ export function implementPrimaryServiceConstructor(config?: Partial<IModalOverla
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state storage getters
+ */
+export interface IModalOverlayBlurEffectsconfigureReactiveStateStorageGettersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateStorageGetters(config?: Partial<IModalOverlayBlurEffectsconfigureReactiveStateStorageGettersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure reactive state storage getters',
+    module: 'modalOverlayBlurEffects',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
