@@ -644,3 +644,23 @@ export function configureUIThemeTokenOverrides(config?: Partial<IShimmerSkeleton
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint helpers
+ */
+export interface IShimmerSkeletonLoaderCardsaddResponsiveLayoutBreakpointHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IShimmerSkeletonLoaderCardsaddResponsiveLayoutBreakpointHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add responsive layout breakpoint helpers',
+    module: 'shimmerSkeletonLoaderCards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
