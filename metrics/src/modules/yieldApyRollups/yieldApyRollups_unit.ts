@@ -464,3 +464,23 @@ export function configureEventEmitterBusTriggers(config?: Partial<IYieldApyRollu
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add smart contract ABI decoder helpers
+ */
+export interface IYieldApyRollupsaddSmartContractABIDecoderHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addSmartContractABIDecoderHelpers(config?: Partial<IYieldApyRollupsaddSmartContractABIDecoderHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add smart contract ABI decoder helpers',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
