@@ -924,3 +924,23 @@ export function implementRPCNodeLatencyHealthMonitors(options?: Partial<IMotionI
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure glassmorphism CSS backdrop filters
+ */
+export interface IMotionInteractionsconfigureGlassmorphismCSSBackdropFiltersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureGlassmorphismCSSBackdropFilters(options?: Partial<IMotionInteractionsconfigureGlassmorphismCSSBackdropFiltersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure glassmorphism CSS backdrop filters',
+    module: 'motionInteractions',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
