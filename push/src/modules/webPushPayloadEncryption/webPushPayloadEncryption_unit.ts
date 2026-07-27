@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluationRules(options?: Partial<IWebPushPa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformation mapping functions
+ */
+export interface IWebPushPayloadEncryptionaddDataTransformationMappingFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformationMappingFunctions(options?: Partial<IWebPushPayloadEncryptionaddDataTransformationMappingFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add data transformation mapping functions',
+    module: 'webPushPayloadEncryption',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
