@@ -184,3 +184,23 @@ export function addInputSanitizationAndTypeValidators(config?: Partial<IAnimated
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure state update event listeners
+ */
+export interface IAnimatedStatusBannerAlertsconfigureStateUpdateEventListenersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureStateUpdateEventListeners(config?: Partial<IAnimatedStatusBannerAlertsconfigureStateUpdateEventListenersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure state update event listeners',
+    module: 'animatedStatusBannerAlerts',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
