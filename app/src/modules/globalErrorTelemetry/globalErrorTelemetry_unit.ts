@@ -824,3 +824,23 @@ export function configureSupabaseDatabasePolicies(config?: Partial<IGlobalErrorT
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface IGlobalErrorTelemetryaddPonderIndexerLogFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(config?: Partial<IGlobalErrorTelemetryaddPonderIndexerLogFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add Ponder indexer log filter rules',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
