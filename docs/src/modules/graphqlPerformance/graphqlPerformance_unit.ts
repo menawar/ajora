@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(config?: Partial<IGraphqlPer
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure UI theme token overrides
+ */
+export interface IGraphqlPerformanceconfigureUIThemeTokenOverridesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureUIThemeTokenOverrides(config?: Partial<IGraphqlPerformanceconfigureUIThemeTokenOverridesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure UI theme token overrides',
+    module: 'graphqlPerformance',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
