@@ -744,3 +744,23 @@ export function implementModalBackdropFocusTraps(options?: Partial<ICeloRpcResil
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React hook state reducers
+ */
+export interface ICeloRpcResilienceconfigureCustomReactHookStateReducersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactHookStateReducers(options?: Partial<ICeloRpcResilienceconfigureCustomReactHookStateReducersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom React hook state reducers',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
