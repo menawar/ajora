@@ -904,3 +904,23 @@ export function addBuildAssetCompressionThresholdChecks(options?: Partial<IDeplo
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC node latency health monitors
+ */
+export interface IDeploymentMonitoringManualimplementRPCNodeLatencyHealthMonitorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCNodeLatencyHealthMonitors(options?: Partial<IDeploymentMonitoringManualimplementRPCNodeLatencyHealthMonitorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement RPC node latency health monitors',
+    module: 'deploymentMonitoringManual',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
