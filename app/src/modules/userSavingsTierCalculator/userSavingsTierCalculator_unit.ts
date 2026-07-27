@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(config?: Partial<IUserSaving
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase database policies
+ */
+export interface IUserSavingsTierCalculatorconfigureSupabaseDatabasePoliciesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseDatabasePolicies(config?: Partial<IUserSavingsTierCalculatorconfigureSupabaseDatabasePoliciesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Supabase database policies',
+    module: 'userSavingsTierCalculator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
