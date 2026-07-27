@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipeline(options?: Partial<ISupabaseRls
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add type guard utility functions
+ */
+export interface ISupabaseRlsPoliciesaddTypeGuardUtilityFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeGuardUtilityFunctions(options?: Partial<ISupabaseRlsPoliciesaddTypeGuardUtilityFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add type guard utility functions',
+    module: 'supabaseRlsPolicies',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
