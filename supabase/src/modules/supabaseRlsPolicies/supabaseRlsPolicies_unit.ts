@@ -424,3 +424,23 @@ export function addStateSnapshotPersistenceHelpers(options?: Partial<ISupabaseRl
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement cleanup and disposal routines
+ */
+export interface ISupabaseRlsPoliciesimplementCleanupAndDisposalRoutinesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementCleanupAndDisposalRoutines(options?: Partial<ISupabaseRlsPoliciesimplementCleanupAndDisposalRoutinesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement cleanup and disposal routines',
+    module: 'supabaseRlsPolicies',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
