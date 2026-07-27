@@ -324,3 +324,23 @@ export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IAutomatedKeepe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback RPC provider resolver
+ */
+export interface IAutomatedKeeperWatchdogsconfigureFallbackRPCProviderResolverConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackRPCProviderResolver(config?: Partial<IAutomatedKeeperWatchdogsconfigureFallbackRPCProviderResolverConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure fallback RPC provider resolver',
+    module: 'automatedKeeperWatchdogs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
