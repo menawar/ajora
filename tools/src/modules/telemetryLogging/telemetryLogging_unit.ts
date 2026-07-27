@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipeline(options?: Partial<ITelemetryLo
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add type guard utility functions
+ */
+export interface ITelemetryLoggingaddTypeGuardUtilityFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeGuardUtilityFunctions(options?: Partial<ITelemetryLoggingaddTypeGuardUtilityFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add type guard utility functions',
+    module: 'telemetryLogging',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
