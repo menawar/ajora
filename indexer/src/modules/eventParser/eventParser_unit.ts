@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelays(options?: Partial<IEventParser
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add request header authorization helpers
+ */
+export interface IEventParseraddRequestHeaderAuthorizationHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRequestHeaderAuthorizationHelpers(options?: Partial<IEventParseraddRequestHeaderAuthorizationHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add request header authorization helpers',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
