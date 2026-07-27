@@ -184,3 +184,23 @@ export function addInputSanitizationAndValidation(options?: Partial<IVapidSubscr
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state change listeners
+ */
+export interface IVapidSubscriptionStoreconfigureReactiveStateChangeListenersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateChangeListeners(options?: Partial<IVapidSubscriptionStoreconfigureReactiveStateChangeListenersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure reactive state change listeners',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
