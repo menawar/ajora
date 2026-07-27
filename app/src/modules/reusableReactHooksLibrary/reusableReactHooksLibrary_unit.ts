@@ -644,3 +644,23 @@ export function configureUIThemeTokenOverrides(config?: Partial<IReusableReactHo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint helpers
+ */
+export interface IReusableReactHooksLibraryaddResponsiveLayoutBreakpointHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IReusableReactHooksLibraryaddResponsiveLayoutBreakpointHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add responsive layout breakpoint helpers',
+    module: 'reusableReactHooksLibrary',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
