@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(config?: Partial<ISubgraphI
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure module exports and index
+ */
+export interface ISubgraphIndexingSpecsconfigureModuleExportsAndIndexConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureModuleExportsAndIndex(config?: Partial<ISubgraphIndexingSpecsconfigureModuleExportsAndIndexConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure module exports and index',
+    module: 'subgraphIndexingSpecs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
