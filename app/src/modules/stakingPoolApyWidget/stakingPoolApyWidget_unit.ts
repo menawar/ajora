@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadataTags(config?: Partial<IStaking
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add persistent state storage helpers
+ */
+export interface IStakingPoolApyWidgetaddPersistentStateStorageHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPersistentStateStorageHelpers(config?: Partial<IStakingPoolApyWidgetaddPersistentStateStorageHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add persistent state storage helpers',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
