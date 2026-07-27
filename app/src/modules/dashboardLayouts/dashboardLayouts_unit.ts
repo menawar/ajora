@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadata(options?: Partial<IDashboardL
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add state snapshot persistence helpers
+ */
+export interface IDashboardLayoutsaddStateSnapshotPersistenceHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStateSnapshotPersistenceHelpers(options?: Partial<IDashboardLayoutsaddStateSnapshotPersistenceHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add state snapshot persistence helpers',
+    module: 'dashboardLayouts',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
