@@ -24,3 +24,23 @@ export function addInterfaceConfigurationSchemas(options?: Partial<IArchitecture
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement core service initialization
+ */
+export interface IArchitectureGuidesimplementCoreServiceInitializationOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementCoreServiceInitialization(options?: Partial<IArchitectureGuidesimplementCoreServiceInitializationOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement core service initialization',
+    module: 'architectureGuides',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
