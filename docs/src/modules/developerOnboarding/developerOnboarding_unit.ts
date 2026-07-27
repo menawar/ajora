@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(options?: Partial<IDeveloper
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluation rules
+ */
+export interface IDeveloperOnboardingconfigureFeatureFlagEvaluationRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluationRules(options?: Partial<IDeveloperOnboardingconfigureFeatureFlagEvaluationRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure feature flag evaluation rules',
+    module: 'developerOnboarding',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
