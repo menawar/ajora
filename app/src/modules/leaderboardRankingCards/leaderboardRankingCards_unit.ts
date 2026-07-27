@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(options?: Partial<ILeaderboa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure component theme token overrides
+ */
+export interface ILeaderboardRankingCardsconfigureComponentThemeTokenOverridesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureComponentThemeTokenOverrides(options?: Partial<ILeaderboardRankingCardsconfigureComponentThemeTokenOverridesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure component theme token overrides',
+    module: 'leaderboardRankingCards',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
