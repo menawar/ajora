@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(config?: Partial<ITailwindUt
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure UI theme token overrides
+ */
+export interface ITailwindUtilityPluginsconfigureUIThemeTokenOverridesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureUIThemeTokenOverrides(config?: Partial<ITailwindUtilityPluginsconfigureUIThemeTokenOverridesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure UI theme token overrides',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
