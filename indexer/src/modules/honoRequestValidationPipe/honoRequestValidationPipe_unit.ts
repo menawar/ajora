@@ -184,3 +184,23 @@ export function addInputSanitizationAndTypeValidators(config?: Partial<IHonoRequ
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure state update event listeners
+ */
+export interface IHonoRequestValidationPipeconfigureStateUpdateEventListenersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureStateUpdateEventListeners(config?: Partial<IHonoRequestValidationPipeconfigureStateUpdateEventListenersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure state update event listeners',
+    module: 'honoRequestValidationPipe',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
