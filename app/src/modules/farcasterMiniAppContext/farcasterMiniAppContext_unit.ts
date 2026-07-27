@@ -244,3 +244,23 @@ export function addBackgroundAsyncQueueProcessor(config?: Partial<IFarcasterMini
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline rules
+ */
+export interface IFarcasterMiniAppContextconfigureCustomMiddlewarePipelineRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipelineRules(config?: Partial<IFarcasterMiniAppContextconfigureCustomMiddlewarePipelineRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom middleware pipeline rules',
+    module: 'farcasterMiniAppContext',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
