@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionPolicies(options?: Partial<IYieldRew
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add asynchronous task queue processors
+ */
+export interface IYieldRewardsTrackeraddAsynchronousTaskQueueProcessorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAsynchronousTaskQueueProcessors(options?: Partial<IYieldRewardsTrackeraddAsynchronousTaskQueueProcessorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add asynchronous task queue processors',
+    module: 'yieldRewardsTracker',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
