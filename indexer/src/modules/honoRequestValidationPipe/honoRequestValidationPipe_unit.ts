@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(config?: Partial<IHonoReques
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluator
+ */
+export interface IHonoRequestValidationPipeconfigureFeatureFlagEvaluatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluator(config?: Partial<IHonoRequestValidationPipeconfigureFeatureFlagEvaluatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure feature flag evaluator',
+    module: 'honoRequestValidationPipe',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
