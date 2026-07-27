@@ -444,3 +444,23 @@ export function implementResourceDisposalRoutines(config?: Partial<ICodeReviewCo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure event emitter bus triggers
+ */
+export interface ICodeReviewCommitStandardsconfigureEventEmitterBusTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureEventEmitterBusTriggers(config?: Partial<ICodeReviewCommitStandardsconfigureEventEmitterBusTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure event emitter bus triggers',
+    module: 'codeReviewCommitStandards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
