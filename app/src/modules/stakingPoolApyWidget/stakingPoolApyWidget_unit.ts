@@ -124,3 +124,23 @@ export function exportSingletonServiceFactoryMethods(config?: Partial<IStakingPo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add robust exception handling routines
+ */
+export interface IStakingPoolApyWidgetaddRobustExceptionHandlingRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRobustExceptionHandlingRoutines(config?: Partial<IStakingPoolApyWidgetaddRobustExceptionHandlingRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add robust exception handling routines',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
