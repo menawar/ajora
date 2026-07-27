@@ -324,3 +324,23 @@ export function addRetryStrategyForRemoteRequests(options?: Partial<IRealtimeSyn
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback service provider
+ */
+export interface IRealtimeSyncconfigureFallbackServiceProviderOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackServiceProvider(options?: Partial<IRealtimeSyncconfigureFallbackServiceProviderOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure fallback service provider',
+    module: 'realtimeSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
