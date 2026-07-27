@@ -324,3 +324,23 @@ export function addRetryStrategyForRemoteRequests(options?: Partial<IDashboardLa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback service provider
+ */
+export interface IDashboardLayoutsconfigureFallbackServiceProviderOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackServiceProvider(options?: Partial<IDashboardLayoutsconfigureFallbackServiceProviderOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure fallback service provider',
+    module: 'dashboardLayouts',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
