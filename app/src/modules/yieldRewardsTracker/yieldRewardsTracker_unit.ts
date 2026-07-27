@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSBackdropFilters(options?: Partial<IYiel
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add user reputation score calculator
+ */
+export interface IYieldRewardsTrackeraddUserReputationScoreCalculatorOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserReputationScoreCalculator(options?: Partial<IYieldRewardsTrackeraddUserReputationScoreCalculatorOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add user reputation score calculator',
+    module: 'yieldRewardsTracker',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
