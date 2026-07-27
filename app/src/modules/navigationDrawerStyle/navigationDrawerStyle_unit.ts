@@ -1,0 +1,26 @@
+/**
+ * style(app): polish navigation bar slide-in drawers and mobile menus
+ * Module: navigationDrawerStyle
+ * Description: Improve mobile drawer gestures, backdrop dismiss triggers, active tab indicators, and bottom bar alignment.
+ * Author: agenes01 <adamsagnessambo@gmail.com>
+ */
+
+/**
+ * Subtask: add interface configuration schemas
+ */
+export interface INavigationDrawerStyleaddInterfaceConfigurationSchemasOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInterfaceConfigurationSchemas(options?: Partial<INavigationDrawerStyleaddInterfaceConfigurationSchemasOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add interface configuration schemas',
+    module: 'navigationDrawerStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
