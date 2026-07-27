@@ -124,3 +124,23 @@ export function exportSingletonInstanceFactoryMethods(options?: Partial<ITelemet
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add structured error handling logic
+ */
+export interface ITelemetryLoggingaddStructuredErrorHandlingLogicOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStructuredErrorHandlingLogic(options?: Partial<ITelemetryLoggingaddStructuredErrorHandlingLogicOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add structured error handling logic',
+    module: 'telemetryLogging',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
