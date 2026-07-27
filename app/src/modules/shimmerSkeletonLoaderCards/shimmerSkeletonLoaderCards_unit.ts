@@ -484,3 +484,23 @@ export function addSmartContractABIDecoderHelpers(config?: Partial<IShimmerSkele
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement token bucket rate limiter
+ */
+export interface IShimmerSkeletonLoaderCardsimplementTokenBucketRateLimiterConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTokenBucketRateLimiter(config?: Partial<IShimmerSkeletonLoaderCardsimplementTokenBucketRateLimiterConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement token bucket rate limiter',
+    module: 'shimmerSkeletonLoaderCards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
