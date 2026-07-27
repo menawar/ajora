@@ -744,3 +744,23 @@ export function implementModalBackdropFocusTraps(options?: Partial<IArchitecture
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React hook state reducers
+ */
+export interface IArchitectureGuidesconfigureCustomReactHookStateReducersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactHookStateReducers(options?: Partial<IArchitectureGuidesconfigureCustomReactHookStateReducersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom React hook state reducers',
+    module: 'architectureGuides',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
