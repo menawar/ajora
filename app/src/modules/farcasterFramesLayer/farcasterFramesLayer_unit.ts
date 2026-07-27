@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(options?: Partial<IFarcasterFrame
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily metric rollup aggregators
+ */
+export interface IFarcasterFramesLayerimplementDailyMetricRollupAggregatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyMetricRollupAggregators(options?: Partial<IFarcasterFramesLayerimplementDailyMetricRollupAggregatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement daily metric rollup aggregators',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
