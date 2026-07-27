@@ -464,3 +464,23 @@ export function configureCrosscomponentEventBus(options?: Partial<IPonderSchemaS
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add contract ABI decoder wrappers
+ */
+export interface IPonderSchemaSafetyaddContractABIDecoderWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addContractABIDecoderWrappers(options?: Partial<IPonderSchemaSafetyaddContractABIDecoderWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add contract ABI decoder wrappers',
+    module: 'ponderSchemaSafety',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
