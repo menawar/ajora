@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(config?: Partial<IPonderData
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure UI theme token overrides
+ */
+export interface IPonderDatabaseIndexconfigureUIThemeTokenOverridesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureUIThemeTokenOverrides(config?: Partial<IPonderDatabaseIndexconfigureUIThemeTokenOverridesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure UI theme token overrides',
+    module: 'ponderDatabaseIndex',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
