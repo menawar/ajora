@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(options?: Partial<IDbMigrati
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure component theme token overrides
+ */
+export interface IDbMigrationProceduresconfigureComponentThemeTokenOverridesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureComponentThemeTokenOverrides(options?: Partial<IDbMigrationProceduresconfigureComponentThemeTokenOverridesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure component theme token overrides',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
