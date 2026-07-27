@@ -64,3 +64,23 @@ export function configureRuntimeStateManagementGetters(options?: Partial<IDailyR
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add default option parameter fallbacks
+ */
+export interface IDailyRollupsaddDefaultOptionParameterFallbacksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultOptionParameterFallbacks(options?: Partial<IDailyRollupsaddDefaultOptionParameterFallbacksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add default option parameter fallbacks',
+    module: 'dailyRollups',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
