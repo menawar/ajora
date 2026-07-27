@@ -284,3 +284,23 @@ export function addTypeGuardUtilityFunctions(options?: Partial<IWebPushPayloadEn
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement response payload formatters
+ */
+export interface IWebPushPayloadEncryptionimplementResponsePayloadFormattersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResponsePayloadFormatters(options?: Partial<IWebPushPayloadEncryptionimplementResponsePayloadFormattersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement response payload formatters',
+    module: 'webPushPayloadEncryption',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
