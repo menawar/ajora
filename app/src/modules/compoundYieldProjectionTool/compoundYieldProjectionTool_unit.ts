@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipelineRules(config?: Partial<ICompoun
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add type assertion guard functions
+ */
+export interface ICompoundYieldProjectionTooladdTypeAssertionGuardFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeAssertionGuardFunctions(config?: Partial<ICompoundYieldProjectionTooladdTypeAssertionGuardFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add type assertion guard functions',
+    module: 'compoundYieldProjectionTool',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
