@@ -724,3 +724,23 @@ export function addToastNotificationTriggers(config?: Partial<IVapidKeyRotationa
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement modal dialog focus traps
+ */
+export interface IVapidKeyRotationimplementModalDialogFocusTrapsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementModalDialogFocusTraps(config?: Partial<IVapidKeyRotationimplementModalDialogFocusTrapsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement modal dialog focus traps',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
