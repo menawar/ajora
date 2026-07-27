@@ -864,3 +864,23 @@ export function implementDailyMetricRollupAggregators(options?: Partial<IDailyGo
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface IDailyGoalCalculatorconfigureVAPIDWebPushNotificationKeysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(options?: Partial<IDailyGoalCalculatorconfigureVAPIDWebPushNotificationKeysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure VAPID web push notification keys',
+    module: 'dailyGoalCalculator',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
