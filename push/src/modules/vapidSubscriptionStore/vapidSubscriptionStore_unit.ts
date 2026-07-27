@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSBackdropFilters(options?: Partial<IVapi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add user reputation score calculator
+ */
+export interface IVapidSubscriptionStoreaddUserReputationScoreCalculatorOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserReputationScoreCalculator(options?: Partial<IVapidSubscriptionStoreaddUserReputationScoreCalculatorOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add user reputation score calculator',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
