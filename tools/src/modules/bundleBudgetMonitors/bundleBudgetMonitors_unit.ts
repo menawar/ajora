@@ -124,3 +124,23 @@ export function exportSingletonInstanceFactoryMethods(options?: Partial<IBundleB
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add structured error handling logic
+ */
+export interface IBundleBudgetMonitorsaddStructuredErrorHandlingLogicOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStructuredErrorHandlingLogic(options?: Partial<IBundleBudgetMonitorsaddStructuredErrorHandlingLogicOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add structured error handling logic',
+    module: 'bundleBudgetMonitors',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
