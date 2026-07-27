@@ -204,3 +204,23 @@ export function configureStateUpdateEventListeners(config?: Partial<IJsonStructu
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement memory cache eviction strategy
+ */
+export interface IJsonStructuredLoggerimplementMemoryCacheEvictionStrategyConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMemoryCacheEvictionStrategy(config?: Partial<IJsonStructuredLoggerimplementMemoryCacheEvictionStrategyConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement memory cache eviction strategy',
+    module: 'jsonStructuredLogger',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
