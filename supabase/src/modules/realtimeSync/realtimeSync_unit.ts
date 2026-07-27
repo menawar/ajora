@@ -344,3 +344,23 @@ export function configureFallbackServiceProvider(options?: Partial<IRealtimeSync
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add performance metrics timer metrics
+ */
+export interface IRealtimeSyncaddPerformanceMetricsTimerMetricsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPerformanceMetricsTimerMetrics(options?: Partial<IRealtimeSyncaddPerformanceMetricsTimerMetricsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add performance metrics timer metrics',
+    module: 'realtimeSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
