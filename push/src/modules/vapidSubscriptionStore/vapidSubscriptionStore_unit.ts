@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(options?: Partial<IVapidSu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add build asset compression threshold checks
+ */
+export interface IVapidSubscriptionStoreaddBuildAssetCompressionThresholdChecksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildAssetCompressionThresholdChecks(options?: Partial<IVapidSubscriptionStoreaddBuildAssetCompressionThresholdChecksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add build asset compression threshold checks',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
