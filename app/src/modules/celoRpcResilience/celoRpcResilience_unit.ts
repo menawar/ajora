@@ -684,3 +684,23 @@ export function implementFramerMotionTransitionCurves(options?: Partial<ICeloRpc
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Lucide icon component mapping
+ */
+export interface ICeloRpcResilienceconfigureLucideIconComponentMappingOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureLucideIconComponentMapping(options?: Partial<ICeloRpcResilienceconfigureLucideIconComponentMappingOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Lucide icon component mapping',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
