@@ -424,3 +424,23 @@ export function addPersistentStateStorageHelpers(config?: Partial<IBundleAnalyze
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement resource disposal routines
+ */
+export interface IBundleAnalyzerIntegrationimplementResourceDisposalRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResourceDisposalRoutines(config?: Partial<IBundleAnalyzerIntegrationimplementResourceDisposalRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement resource disposal routines',
+    module: 'bundleAnalyzerIntegration',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
