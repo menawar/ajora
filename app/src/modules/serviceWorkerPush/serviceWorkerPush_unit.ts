@@ -544,3 +544,23 @@ export function addAuthorizationHeaderFormatters(config?: Partial<IServiceWorker
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement user preference storage hooks
+ */
+export interface IServiceWorkerPushimplementUserPreferenceStorageHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementUserPreferenceStorageHooks(config?: Partial<IServiceWorkerPushimplementUserPreferenceStorageHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement user preference storage hooks',
+    module: 'serviceWorkerPush',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
