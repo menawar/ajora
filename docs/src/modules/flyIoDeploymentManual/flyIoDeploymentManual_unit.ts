@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelayTimers(config?: Partial<IFlyIoDe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add authorization header formatters
+ */
+export interface IFlyIoDeploymentManualaddAuthorizationHeaderFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAuthorizationHeaderFormatters(config?: Partial<IFlyIoDeploymentManualaddAuthorizationHeaderFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add authorization header formatters',
+    module: 'flyIoDeploymentManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
