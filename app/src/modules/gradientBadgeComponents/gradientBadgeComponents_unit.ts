@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipelineRules(config?: Partial<IGradien
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add type assertion guard functions
+ */
+export interface IGradientBadgeComponentsaddTypeAssertionGuardFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeAssertionGuardFunctions(config?: Partial<IGradientBadgeComponentsaddTypeAssertionGuardFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add type assertion guard functions',
+    module: 'gradientBadgeComponents',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
