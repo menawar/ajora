@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(config?: Partial<IStakingPoolApyW
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily yield rollup aggregators
+ */
+export interface IStakingPoolApyWidgetimplementDailyYieldRollupAggregatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyYieldRollupAggregators(config?: Partial<IStakingPoolApyWidgetimplementDailyYieldRollupAggregatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement daily yield rollup aggregators',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
