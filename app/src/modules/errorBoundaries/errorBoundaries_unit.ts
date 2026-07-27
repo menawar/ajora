@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(options?: Partial<IErrorBoun
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase row policy validators
+ */
+export interface IErrorBoundariesconfigureSupabaseRowPolicyValidatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseRowPolicyValidators(options?: Partial<IErrorBoundariesconfigureSupabaseRowPolicyValidatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Supabase row policy validators',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
