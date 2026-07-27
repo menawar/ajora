@@ -244,3 +244,23 @@ export function addAsynchronousTaskQueueProcessors(options?: Partial<IMiniPayWra
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline
+ */
+export interface IMiniPayWrappersconfigureCustomMiddlewarePipelineOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipeline(options?: Partial<IMiniPayWrappersconfigureCustomMiddlewarePipelineOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom middleware pipeline',
+    module: 'miniPayWrappers',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
