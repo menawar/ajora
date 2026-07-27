@@ -504,3 +504,23 @@ export function implementTokenBucketRateLimiter(config?: Partial<IMultiEndpointR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delay timers
+ */
+export interface IMultiEndpointRpcBalancerconfigureExponentialBackoffDelayTimersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelayTimers(config?: Partial<IMultiEndpointRpcBalancerconfigureExponentialBackoffDelayTimersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure exponential backoff delay timers',
+    module: 'multiEndpointRpcBalancer',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
