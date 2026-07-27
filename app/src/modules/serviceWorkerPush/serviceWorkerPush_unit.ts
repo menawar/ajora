@@ -104,3 +104,23 @@ export function implementRequestPayloadExecutionHandler(config?: Partial<IServic
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton service factory methods
+ */
+export interface IServiceWorkerPushexportSingletonServiceFactoryMethodsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonServiceFactoryMethods(config?: Partial<IServiceWorkerPushexportSingletonServiceFactoryMethodsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'export singleton service factory methods',
+    module: 'serviceWorkerPush',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
