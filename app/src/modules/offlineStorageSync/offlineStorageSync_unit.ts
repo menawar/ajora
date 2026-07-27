@@ -484,3 +484,23 @@ export function addContractABIDecoderWrappers(options?: Partial<IOfflineStorageS
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement rate limiter token bucket
+ */
+export interface IOfflineStorageSyncimplementRateLimiterTokenBucketOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRateLimiterTokenBucket(options?: Partial<IOfflineStorageSyncimplementRateLimiterTokenBucketOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement rate limiter token bucket',
+    module: 'offlineStorageSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
