@@ -924,3 +924,23 @@ export function implementRPCEndpointHealthMonitors(config?: Partial<ITailwindUti
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure glassmorphism CSS filter rules
+ */
+export interface ITailwindUtilityPluginsconfigureGlassmorphismCSSFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureGlassmorphismCSSFilterRules(config?: Partial<ITailwindUtilityPluginsconfigureGlassmorphismCSSFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure glassmorphism CSS filter rules',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
