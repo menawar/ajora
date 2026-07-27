@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluator(config?: Partial<IDarkModeTokensco
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformer mapping functions
+ */
+export interface IDarkModeTokensaddDataTransformerMappingFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformerMappingFunctions(config?: Partial<IDarkModeTokensaddDataTransformerMappingFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add data transformer mapping functions',
+    module: 'darkModeTokens',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
