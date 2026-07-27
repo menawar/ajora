@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluationRules(options?: Partial<IDbMigrati
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformation mapping functions
+ */
+export interface IDbMigrationProceduresaddDataTransformationMappingFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformationMappingFunctions(options?: Partial<IDbMigrationProceduresaddDataTransformationMappingFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add data transformation mapping functions',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
