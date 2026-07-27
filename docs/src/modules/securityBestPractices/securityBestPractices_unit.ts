@@ -824,3 +824,23 @@ export function configureSupabaseRowPolicyValidators(options?: Partial<ISecurity
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface ISecurityBestPracticesaddPonderIndexerLogFilterRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(options?: Partial<ISecurityBestPracticesaddPonderIndexerLogFilterRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add Ponder indexer log filter rules',
+    module: 'securityBestPractices',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
