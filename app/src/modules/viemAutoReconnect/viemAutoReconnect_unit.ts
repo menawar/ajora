@@ -964,3 +964,23 @@ export function addUserSavingsTierCalculator(config?: Partial<IViemAutoReconnect
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Farcaster mini app frame parser
+ */
+export interface IViemAutoReconnectimplementFarcasterMiniAppFrameParserConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFarcasterMiniAppFrameParser(config?: Partial<IViemAutoReconnectimplementFarcasterMiniAppFrameParserConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Farcaster mini app frame parser',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
