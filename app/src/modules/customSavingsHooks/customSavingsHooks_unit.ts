@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(options?: Partial<ICustomSav
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase row policy validators
+ */
+export interface ICustomSavingsHooksconfigureSupabaseRowPolicyValidatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseRowPolicyValidators(options?: Partial<ICustomSavingsHooksconfigureSupabaseRowPolicyValidatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Supabase row policy validators',
+    module: 'customSavingsHooks',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
