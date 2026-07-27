@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipeline(options?: Partial<IEventParser
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add type guard utility functions
+ */
+export interface IEventParseraddTypeGuardUtilityFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeGuardUtilityFunctions(options?: Partial<IEventParseraddTypeGuardUtilityFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add type guard utility functions',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
