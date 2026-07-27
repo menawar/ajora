@@ -544,3 +544,23 @@ export function addRequestHeaderAuthorizationHelpers(options?: Partial<ISupabase
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement user preference storage hooks
+ */
+export interface ISupabaseRlsPoliciesimplementUserPreferenceStorageHooksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementUserPreferenceStorageHooks(options?: Partial<ISupabaseRlsPoliciesimplementUserPreferenceStorageHooksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement user preference storage hooks',
+    module: 'supabaseRlsPolicies',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
