@@ -24,3 +24,23 @@ export function addInterfaceConfigurationSchemas(options?: Partial<IContributing
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement core service initialization
+ */
+export interface IContributingCodeStyleimplementCoreServiceInitializationOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementCoreServiceInitialization(options?: Partial<IContributingCodeStyleimplementCoreServiceInitializationOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement core service initialization',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
