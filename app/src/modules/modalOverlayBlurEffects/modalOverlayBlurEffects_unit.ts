@@ -124,3 +124,23 @@ export function exportSingletonServiceFactoryMethods(config?: Partial<IModalOver
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add robust exception handling routines
+ */
+export interface IModalOverlayBlurEffectsaddRobustExceptionHandlingRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRobustExceptionHandlingRoutines(config?: Partial<IModalOverlayBlurEffectsaddRobustExceptionHandlingRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add robust exception handling routines',
+    module: 'modalOverlayBlurEffects',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
