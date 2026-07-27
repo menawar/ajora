@@ -924,3 +924,23 @@ export function implementRPCEndpointHealthMonitors(config?: Partial<IYieldApyRol
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure glassmorphism CSS filter rules
+ */
+export interface IYieldApyRollupsconfigureGlassmorphismCSSFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureGlassmorphismCSSFilterRules(config?: Partial<IYieldApyRollupsconfigureGlassmorphismCSSFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure glassmorphism CSS filter rules',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
