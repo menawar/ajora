@@ -344,3 +344,23 @@ export function configureFallbackRPCProviderResolver(config?: Partial<IMobileBot
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add performance timer tracking metrics
+ */
+export interface IMobileBottomNavigationBaraddPerformanceTimerTrackingMetricsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPerformanceTimerTrackingMetrics(config?: Partial<IMobileBottomNavigationBaraddPerformanceTimerTrackingMetricsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add performance timer tracking metrics',
+    module: 'mobileBottomNavigationBar',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
