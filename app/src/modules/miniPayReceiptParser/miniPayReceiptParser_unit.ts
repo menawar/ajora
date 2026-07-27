@@ -124,3 +124,23 @@ export function exportSingletonServiceFactoryMethods(config?: Partial<IMiniPayRe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add robust exception handling routines
+ */
+export interface IMiniPayReceiptParseraddRobustExceptionHandlingRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRobustExceptionHandlingRoutines(config?: Partial<IMiniPayReceiptParseraddRobustExceptionHandlingRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add robust exception handling routines',
+    module: 'miniPayReceiptParser',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
