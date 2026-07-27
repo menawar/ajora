@@ -164,3 +164,23 @@ export function implementTelemetryEventLogger(config?: Partial<IYieldApyRollupsi
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and type validators
+ */
+export interface IYieldApyRollupsaddInputSanitizationAndTypeValidatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndTypeValidators(config?: Partial<IYieldApyRollupsaddInputSanitizationAndTypeValidatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add input sanitization and type validators',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
