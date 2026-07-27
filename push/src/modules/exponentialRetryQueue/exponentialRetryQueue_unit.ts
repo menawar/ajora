@@ -244,3 +244,23 @@ export function addBackgroundAsyncQueueProcessor(config?: Partial<IExponentialRe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline rules
+ */
+export interface IExponentialRetryQueueconfigureCustomMiddlewarePipelineRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipelineRules(config?: Partial<IExponentialRetryQueueconfigureCustomMiddlewarePipelineRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom middleware pipeline rules',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
