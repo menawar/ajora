@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(config?: Partial<IDatabaseAc
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluator
+ */
+export interface IDatabaseAccessControlRulesconfigureFeatureFlagEvaluatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluator(config?: Partial<IDatabaseAccessControlRulesconfigureFeatureFlagEvaluatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure feature flag evaluator',
+    module: 'databaseAccessControlRules',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
