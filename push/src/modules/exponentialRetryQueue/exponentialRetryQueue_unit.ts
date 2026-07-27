@@ -64,3 +64,23 @@ export function configureReactiveStateStorageGetters(config?: Partial<IExponenti
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add default configuration fallbacks
+ */
+export interface IExponentialRetryQueueaddDefaultConfigurationFallbacksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultConfigurationFallbacks(config?: Partial<IExponentialRetryQueueaddDefaultConfigurationFallbacksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add default configuration fallbacks',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
