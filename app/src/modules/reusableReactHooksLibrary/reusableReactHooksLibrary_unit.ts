@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelayTimers(config?: Partial<IReusabl
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add authorization header formatters
+ */
+export interface IReusableReactHooksLibraryaddAuthorizationHeaderFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAuthorizationHeaderFormatters(config?: Partial<IReusableReactHooksLibraryaddAuthorizationHeaderFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add authorization header formatters',
+    module: 'reusableReactHooksLibrary',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
