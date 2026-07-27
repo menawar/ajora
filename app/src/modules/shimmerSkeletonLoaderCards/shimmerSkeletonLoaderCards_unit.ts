@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(config?: Partial<IShimmerS
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add build bundle compression checks
+ */
+export interface IShimmerSkeletonLoaderCardsaddBuildBundleCompressionChecksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildBundleCompressionChecks(config?: Partial<IShimmerSkeletonLoaderCardsaddBuildBundleCompressionChecksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add build bundle compression checks',
+    module: 'shimmerSkeletonLoaderCards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
