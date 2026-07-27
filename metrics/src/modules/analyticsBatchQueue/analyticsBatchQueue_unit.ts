@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelays(options?: Partial<IAnalyticsBa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add request header authorization helpers
+ */
+export interface IAnalyticsBatchQueueaddRequestHeaderAuthorizationHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRequestHeaderAuthorizationHelpers(options?: Partial<IAnalyticsBatchQueueaddRequestHeaderAuthorizationHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add request header authorization helpers',
+    module: 'analyticsBatchQueue',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
