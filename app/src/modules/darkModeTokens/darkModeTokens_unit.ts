@@ -764,3 +764,23 @@ export function configureCustomReactReducerHooks(config?: Partial<IDarkModeToken
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add local storage encryption helpers
+ */
+export interface IDarkModeTokensaddLocalStorageEncryptionHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addLocalStorageEncryptionHelpers(config?: Partial<IDarkModeTokensaddLocalStorageEncryptionHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add local storage encryption helpers',
+    module: 'darkModeTokens',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
