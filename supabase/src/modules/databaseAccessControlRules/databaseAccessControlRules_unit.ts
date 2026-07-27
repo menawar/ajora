@@ -764,3 +764,23 @@ export function configureCustomReactReducerHooks(config?: Partial<IDatabaseAcces
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add local storage encryption helpers
+ */
+export interface IDatabaseAccessControlRulesaddLocalStorageEncryptionHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addLocalStorageEncryptionHelpers(config?: Partial<IDatabaseAccessControlRulesaddLocalStorageEncryptionHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add local storage encryption helpers',
+    module: 'databaseAccessControlRules',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
