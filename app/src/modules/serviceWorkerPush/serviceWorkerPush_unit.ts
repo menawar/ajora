@@ -744,3 +744,23 @@ export function implementModalDialogFocusTraps(config?: Partial<IServiceWorkerPu
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React reducer hooks
+ */
+export interface IServiceWorkerPushconfigureCustomReactReducerHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactReducerHooks(config?: Partial<IServiceWorkerPushconfigureCustomReactReducerHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom React reducer hooks',
+    module: 'serviceWorkerPush',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
