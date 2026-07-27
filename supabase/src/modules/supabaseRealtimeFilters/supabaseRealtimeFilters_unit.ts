@@ -964,3 +964,23 @@ export function addUserSavingsTierCalculator(config?: Partial<ISupabaseRealtimeF
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Farcaster mini app frame parser
+ */
+export interface ISupabaseRealtimeFiltersimplementFarcasterMiniAppFrameParserConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFarcasterMiniAppFrameParser(config?: Partial<ISupabaseRealtimeFiltersimplementFarcasterMiniAppFrameParserConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Farcaster mini app frame parser',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
