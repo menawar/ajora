@@ -324,3 +324,23 @@ export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IGradientBadgeC
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback RPC provider resolver
+ */
+export interface IGradientBadgeComponentsconfigureFallbackRPCProviderResolverConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackRPCProviderResolver(config?: Partial<IGradientBadgeComponentsconfigureFallbackRPCProviderResolverConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure fallback RPC provider resolver',
+    module: 'gradientBadgeComponents',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
