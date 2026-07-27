@@ -164,3 +164,23 @@ export function implementTelemetryEventDispatchers(options?: Partial<ICeloRpcRes
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and validation
+ */
+export interface ICeloRpcResilienceaddInputSanitizationAndValidationOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndValidation(options?: Partial<ICeloRpcResilienceaddInputSanitizationAndValidationOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add input sanitization and validation',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
