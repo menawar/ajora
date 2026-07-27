@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSFilterRules(config?: Partial<IViemContr
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add user savings tier calculator
+ */
+export interface IViemContractEventListenersaddUserSavingsTierCalculatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserSavingsTierCalculator(config?: Partial<IViemContractEventListenersaddUserSavingsTierCalculatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add user savings tier calculator',
+    module: 'viemContractEventListeners',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
