@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluator(config?: Partial<IGlobalErrorTelem
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformer mapping functions
+ */
+export interface IGlobalErrorTelemetryaddDataTransformerMappingFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformerMappingFunctions(config?: Partial<IGlobalErrorTelemetryaddDataTransformerMappingFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add data transformer mapping functions',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
