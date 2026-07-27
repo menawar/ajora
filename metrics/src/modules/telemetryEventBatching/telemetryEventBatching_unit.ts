@@ -924,3 +924,23 @@ export function implementRPCEndpointHealthMonitors(config?: Partial<ITelemetryEv
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure glassmorphism CSS filter rules
+ */
+export interface ITelemetryEventBatchingconfigureGlassmorphismCSSFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureGlassmorphismCSSFilterRules(config?: Partial<ITelemetryEventBatchingconfigureGlassmorphismCSSFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure glassmorphism CSS filter rules',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
