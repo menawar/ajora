@@ -144,3 +144,23 @@ export function addStructuredErrorHandlingLogic(options?: Partial<IRealtimeSynca
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event dispatchers
+ */
+export interface IRealtimeSyncimplementTelemetryEventDispatchersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventDispatchers(options?: Partial<IRealtimeSyncimplementTelemetryEventDispatchersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement telemetry event dispatchers',
+    module: 'realtimeSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
