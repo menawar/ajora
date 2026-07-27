@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(config?: Partial<ISubgraphIn
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluator
+ */
+export interface ISubgraphIndexingSpecsconfigureFeatureFlagEvaluatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluator(config?: Partial<ISubgraphIndexingSpecsconfigureFeatureFlagEvaluatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure feature flag evaluator',
+    module: 'subgraphIndexingSpecs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
