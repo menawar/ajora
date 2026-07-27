@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluationRules(options?: Partial<IDailyGoal
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformation mapping functions
+ */
+export interface IDailyGoalCalculatoraddDataTransformationMappingFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformationMappingFunctions(options?: Partial<IDailyGoalCalculatoraddDataTransformationMappingFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add data transformation mapping functions',
+    module: 'dailyGoalCalculator',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
