@@ -184,3 +184,23 @@ export function addInputSanitizationAndValidation(options?: Partial<IArchitectur
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state change listeners
+ */
+export interface IArchitectureGuidesconfigureReactiveStateChangeListenersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateChangeListeners(options?: Partial<IArchitectureGuidesconfigureReactiveStateChangeListenersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure reactive state change listeners',
+    module: 'architectureGuides',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
