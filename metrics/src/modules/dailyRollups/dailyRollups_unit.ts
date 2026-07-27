@@ -104,3 +104,23 @@ export function implementPayloadExecutionHandlers(options?: Partial<IDailyRollup
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton instance factory methods
+ */
+export interface IDailyRollupsexportSingletonInstanceFactoryMethodsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonInstanceFactoryMethods(options?: Partial<IDailyRollupsexportSingletonInstanceFactoryMethodsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'export singleton instance factory methods',
+    module: 'dailyRollups',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
