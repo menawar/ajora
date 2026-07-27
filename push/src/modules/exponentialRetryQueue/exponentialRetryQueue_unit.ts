@@ -324,3 +324,23 @@ export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IExponentialRet
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback RPC provider resolver
+ */
+export interface IExponentialRetryQueueconfigureFallbackRPCProviderResolverConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackRPCProviderResolver(config?: Partial<IExponentialRetryQueueconfigureFallbackRPCProviderResolverConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure fallback RPC provider resolver',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
