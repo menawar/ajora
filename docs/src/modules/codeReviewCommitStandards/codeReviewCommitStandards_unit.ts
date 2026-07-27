@@ -144,3 +144,23 @@ export function addRobustExceptionHandlingRoutines(config?: Partial<ICodeReviewC
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event logger
+ */
+export interface ICodeReviewCommitStandardsimplementTelemetryEventLoggerConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventLogger(config?: Partial<ICodeReviewCommitStandardsimplementTelemetryEventLoggerConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement telemetry event logger',
+    module: 'codeReviewCommitStandards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
