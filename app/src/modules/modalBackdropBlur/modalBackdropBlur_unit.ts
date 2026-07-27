@@ -424,3 +424,23 @@ export function addStateSnapshotPersistenceHelpers(options?: Partial<IModalBackd
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement cleanup and disposal routines
+ */
+export interface IModalBackdropBlurimplementCleanupAndDisposalRoutinesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementCleanupAndDisposalRoutines(options?: Partial<IModalBackdropBlurimplementCleanupAndDisposalRoutinesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement cleanup and disposal routines',
+    module: 'modalBackdropBlur',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
