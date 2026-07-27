@@ -424,3 +424,23 @@ export function addPersistentStateStorageHelpers(config?: Partial<ITelemetryEven
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement resource disposal routines
+ */
+export interface ITelemetryEventBatchingimplementResourceDisposalRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResourceDisposalRoutines(config?: Partial<ITelemetryEventBatchingimplementResourceDisposalRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement resource disposal routines',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
