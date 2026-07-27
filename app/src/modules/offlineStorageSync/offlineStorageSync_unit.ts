@@ -864,3 +864,23 @@ export function implementDailyMetricRollupAggregators(options?: Partial<IOffline
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface IOfflineStorageSyncconfigureVAPIDWebPushNotificationKeysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(options?: Partial<IOfflineStorageSyncconfigureVAPIDWebPushNotificationKeysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure VAPID web push notification keys',
+    module: 'offlineStorageSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
