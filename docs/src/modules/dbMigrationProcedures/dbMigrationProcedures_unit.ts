@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(options?: Partial<IDbMigrat
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure final module integration exports
+ */
+export interface IDbMigrationProceduresconfigureFinalModuleIntegrationExportsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFinalModuleIntegrationExports(options?: Partial<IDbMigrationProceduresconfigureFinalModuleIntegrationExportsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure final module integration exports',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
