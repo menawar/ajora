@@ -924,3 +924,23 @@ export function implementRPCNodeLatencyHealthMonitors(options?: Partial<IContrib
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure glassmorphism CSS backdrop filters
+ */
+export interface IContributingCodeStyleconfigureGlassmorphismCSSBackdropFiltersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureGlassmorphismCSSBackdropFilters(options?: Partial<IContributingCodeStyleconfigureGlassmorphismCSSBackdropFiltersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure glassmorphism CSS backdrop filters',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
