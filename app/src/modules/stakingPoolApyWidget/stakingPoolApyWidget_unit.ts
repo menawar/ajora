@@ -904,3 +904,23 @@ export function addBuildBundleCompressionChecks(config?: Partial<IStakingPoolApy
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC endpoint health monitors
+ */
+export interface IStakingPoolApyWidgetimplementRPCEndpointHealthMonitorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCEndpointHealthMonitors(config?: Partial<IStakingPoolApyWidgetimplementRPCEndpointHealthMonitorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement RPC endpoint health monitors',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
