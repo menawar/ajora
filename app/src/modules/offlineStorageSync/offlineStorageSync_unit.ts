@@ -384,3 +384,23 @@ export function implementBatchRequestChunkingLogic(options?: Partial<IOfflineSto
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata
+ */
+export interface IOfflineStorageSyncconfigureContextualLoggingMetadataOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadata(options?: Partial<IOfflineStorageSyncconfigureContextualLoggingMetadataOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure contextual logging metadata',
+    module: 'offlineStorageSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
