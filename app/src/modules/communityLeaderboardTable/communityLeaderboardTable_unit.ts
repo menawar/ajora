@@ -464,3 +464,23 @@ export function configureEventEmitterBusTriggers(config?: Partial<ICommunityLead
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add smart contract ABI decoder helpers
+ */
+export interface ICommunityLeaderboardTableaddSmartContractABIDecoderHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addSmartContractABIDecoderHelpers(config?: Partial<ICommunityLeaderboardTableaddSmartContractABIDecoderHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add smart contract ABI decoder helpers',
+    module: 'communityLeaderboardTable',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
