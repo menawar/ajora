@@ -184,3 +184,23 @@ export function addInputSanitizationAndTypeValidators(config?: Partial<ITailwind
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure state update event listeners
+ */
+export interface ITailwindUtilityPluginsconfigureStateUpdateEventListenersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureStateUpdateEventListeners(config?: Partial<ITailwindUtilityPluginsconfigureStateUpdateEventListenersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure state update event listeners',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
