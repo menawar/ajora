@@ -64,3 +64,23 @@ export function configureRuntimeStateManagementGetters(options?: Partial<INotifi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add default option parameter fallbacks
+ */
+export interface INotificationRetryaddDefaultOptionParameterFallbacksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultOptionParameterFallbacks(options?: Partial<INotificationRetryaddDefaultOptionParameterFallbacksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add default option parameter fallbacks',
+    module: 'notificationRetry',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
