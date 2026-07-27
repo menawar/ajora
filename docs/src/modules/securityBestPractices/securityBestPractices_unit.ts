@@ -444,3 +444,23 @@ export function implementCleanupAndDisposalRoutines(options?: Partial<ISecurityB
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure cross-component event bus
+ */
+export interface ISecurityBestPracticesconfigureCrosscomponentEventBusOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCrosscomponentEventBus(options?: Partial<ISecurityBestPracticesconfigureCrosscomponentEventBusOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure cross-component event bus',
+    module: 'securityBestPractices',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
