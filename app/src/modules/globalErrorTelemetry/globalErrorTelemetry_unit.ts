@@ -44,3 +44,23 @@ export function implementPrimaryServiceConstructor(config?: Partial<IGlobalError
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state storage getters
+ */
+export interface IGlobalErrorTelemetryconfigureReactiveStateStorageGettersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateStorageGetters(config?: Partial<IGlobalErrorTelemetryconfigureReactiveStateStorageGettersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure reactive state storage getters',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
