@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSBackdropFilters(options?: Partial<IDail
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add user reputation score calculator
+ */
+export interface IDailyGoalCalculatoraddUserReputationScoreCalculatorOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserReputationScoreCalculator(options?: Partial<IDailyGoalCalculatoraddUserReputationScoreCalculatorOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add user reputation score calculator',
+    module: 'dailyGoalCalculator',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
