@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(config?: Partial<IMultiEndpo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase database policies
+ */
+export interface IMultiEndpointRpcBalancerconfigureSupabaseDatabasePoliciesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseDatabasePolicies(config?: Partial<IMultiEndpointRpcBalancerconfigureSupabaseDatabasePoliciesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Supabase database policies',
+    module: 'multiEndpointRpcBalancer',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
