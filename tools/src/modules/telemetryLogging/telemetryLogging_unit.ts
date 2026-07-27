@@ -904,3 +904,23 @@ export function addBuildAssetCompressionThresholdChecks(options?: Partial<ITelem
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC node latency health monitors
+ */
+export interface ITelemetryLoggingimplementRPCNodeLatencyHealthMonitorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCNodeLatencyHealthMonitors(options?: Partial<ITelemetryLoggingimplementRPCNodeLatencyHealthMonitorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement RPC node latency health monitors',
+    module: 'telemetryLogging',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
