@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(options?: Partial<IVapidSubs
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase row policy validators
+ */
+export interface IVapidSubscriptionStoreconfigureSupabaseRowPolicyValidatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseRowPolicyValidators(options?: Partial<IVapidSubscriptionStoreconfigureSupabaseRowPolicyValidatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Supabase row policy validators',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
