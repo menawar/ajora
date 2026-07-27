@@ -744,3 +744,23 @@ export function implementModalBackdropFocusTraps(options?: Partial<IFarcasterFra
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React hook state reducers
+ */
+export interface IFarcasterFramesLayerconfigureCustomReactHookStateReducersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactHookStateReducers(options?: Partial<IFarcasterFramesLayerconfigureCustomReactHookStateReducersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom React hook state reducers',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
