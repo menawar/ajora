@@ -144,3 +144,23 @@ export function addRobustExceptionHandlingRoutines(config?: Partial<IServiceWork
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event logger
+ */
+export interface IServiceWorkerPushimplementTelemetryEventLoggerConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventLogger(config?: Partial<IServiceWorkerPushimplementTelemetryEventLoggerConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement telemetry event logger',
+    module: 'serviceWorkerPush',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
