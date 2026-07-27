@@ -544,3 +544,23 @@ export function addAuthorizationHeaderFormatters(config?: Partial<ITelemetryEven
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement user preference storage hooks
+ */
+export interface ITelemetryEventBatchingimplementUserPreferenceStorageHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementUserPreferenceStorageHooks(config?: Partial<ITelemetryEventBatchingimplementUserPreferenceStorageHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement user preference storage hooks',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
