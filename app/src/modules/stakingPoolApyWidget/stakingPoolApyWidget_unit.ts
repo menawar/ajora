@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSFilterRules(config?: Partial<IStakingPo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add user savings tier calculator
+ */
+export interface IStakingPoolApyWidgetaddUserSavingsTierCalculatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserSavingsTierCalculator(config?: Partial<IStakingPoolApyWidgetaddUserSavingsTierCalculatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add user savings tier calculator',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
