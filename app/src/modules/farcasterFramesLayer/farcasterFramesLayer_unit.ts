@@ -964,3 +964,23 @@ export function addUserReputationScoreCalculator(options?: Partial<IFarcasterFra
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Farcaster mini app frame parser
+ */
+export interface IFarcasterFramesLayerimplementFarcasterMiniAppFrameParserOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFarcasterMiniAppFrameParser(options?: Partial<IFarcasterFramesLayerimplementFarcasterMiniAppFrameParserOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement Farcaster mini app frame parser',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
