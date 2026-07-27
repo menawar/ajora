@@ -304,3 +304,23 @@ export function implementJSONResponsePayloadFormatters(config?: Partial<IHonoReq
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add retry policy for remote RPC calls
+ */
+export interface IHonoRequestValidationPipeaddRetryPolicyForRemoteRPCCallsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRetryPolicyForRemoteRPCCalls(config?: Partial<IHonoRequestValidationPipeaddRetryPolicyForRemoteRPCCallsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add retry policy for remote RPC calls',
+    module: 'honoRequestValidationPipe',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
