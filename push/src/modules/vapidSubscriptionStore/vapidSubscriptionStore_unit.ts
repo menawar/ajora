@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadata(options?: Partial<IVapidSubsc
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add state snapshot persistence helpers
+ */
+export interface IVapidSubscriptionStoreaddStateSnapshotPersistenceHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStateSnapshotPersistenceHelpers(options?: Partial<IVapidSubscriptionStoreaddStateSnapshotPersistenceHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add state snapshot persistence helpers',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
