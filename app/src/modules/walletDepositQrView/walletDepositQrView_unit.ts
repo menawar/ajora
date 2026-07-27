@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSFilterRules(config?: Partial<IWalletDep
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add user savings tier calculator
+ */
+export interface IWalletDepositQrViewaddUserSavingsTierCalculatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserSavingsTierCalculator(config?: Partial<IWalletDepositQrViewaddUserSavingsTierCalculatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add user savings tier calculator',
+    module: 'walletDepositQrView',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
