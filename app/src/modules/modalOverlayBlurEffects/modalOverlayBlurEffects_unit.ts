@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSFilterRules(config?: Partial<IModalOver
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add user savings tier calculator
+ */
+export interface IModalOverlayBlurEffectsaddUserSavingsTierCalculatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserSavingsTierCalculator(config?: Partial<IModalOverlayBlurEffectsaddUserSavingsTierCalculatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add user savings tier calculator',
+    module: 'modalOverlayBlurEffects',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
