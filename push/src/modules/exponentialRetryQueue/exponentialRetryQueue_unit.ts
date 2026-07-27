@@ -504,3 +504,23 @@ export function implementTokenBucketRateLimiter(config?: Partial<IExponentialRet
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delay timers
+ */
+export interface IExponentialRetryQueueconfigureExponentialBackoffDelayTimersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelayTimers(config?: Partial<IExponentialRetryQueueconfigureExponentialBackoffDelayTimersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure exponential backoff delay timers',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
