@@ -864,3 +864,23 @@ export function implementDailyMetricRollupAggregators(options?: Partial<ISubgrap
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface ISubgraphDataFlowsconfigureVAPIDWebPushNotificationKeysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(options?: Partial<ISubgraphDataFlowsconfigureVAPIDWebPushNotificationKeysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure VAPID web push notification keys',
+    module: 'subgraphDataFlows',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
