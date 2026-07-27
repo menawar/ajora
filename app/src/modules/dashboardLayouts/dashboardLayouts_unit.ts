@@ -604,3 +604,23 @@ export function addDataTransformationMappingFunctions(options?: Partial<IDashboa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface IDashboardLayoutsimplementMockDataProviderGeneratorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(options?: Partial<IDashboardLayoutsimplementMockDataProviderGeneratorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement mock data provider generators',
+    module: 'dashboardLayouts',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
