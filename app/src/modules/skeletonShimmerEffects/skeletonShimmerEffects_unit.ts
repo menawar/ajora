@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipeline(options?: Partial<ISkeletonShi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add type guard utility functions
+ */
+export interface ISkeletonShimmerEffectsaddTypeGuardUtilityFunctionsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeGuardUtilityFunctions(options?: Partial<ISkeletonShimmerEffectsaddTypeGuardUtilityFunctionsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add type guard utility functions',
+    module: 'skeletonShimmerEffects',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
