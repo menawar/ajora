@@ -504,3 +504,23 @@ export function implementTokenBucketRateLimiter(config?: Partial<IVapidKeyRotati
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delay timers
+ */
+export interface IVapidKeyRotationconfigureExponentialBackoffDelayTimersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelayTimers(config?: Partial<IVapidKeyRotationconfigureExponentialBackoffDelayTimersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure exponential backoff delay timers',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
