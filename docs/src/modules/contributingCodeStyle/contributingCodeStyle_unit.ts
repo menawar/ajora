@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelays(options?: Partial<IContributin
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add request header authorization helpers
+ */
+export interface IContributingCodeStyleaddRequestHeaderAuthorizationHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRequestHeaderAuthorizationHelpers(options?: Partial<IContributingCodeStyleaddRequestHeaderAuthorizationHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add request header authorization helpers',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
