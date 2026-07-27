@@ -584,3 +584,23 @@ export function configureFeatureFlagEvaluator(config?: Partial<ITailwindUtilityP
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add data transformer mapping functions
+ */
+export interface ITailwindUtilityPluginsaddDataTransformerMappingFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDataTransformerMappingFunctions(config?: Partial<ITailwindUtilityPluginsaddDataTransformerMappingFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add data transformer mapping functions',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
