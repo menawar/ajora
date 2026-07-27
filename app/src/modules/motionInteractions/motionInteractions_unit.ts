@@ -504,3 +504,23 @@ export function implementRateLimiterTokenBucket(options?: Partial<IMotionInterac
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delays
+ */
+export interface IMotionInteractionsconfigureExponentialBackoffDelaysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelays(options?: Partial<IMotionInteractionsconfigureExponentialBackoffDelaysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure exponential backoff delays',
+    module: 'motionInteractions',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
