@@ -824,3 +824,23 @@ export function configureSupabaseRowPolicyValidators(options?: Partial<ISubgraph
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface ISubgraphDataFlowsaddPonderIndexerLogFilterRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(options?: Partial<ISubgraphDataFlowsaddPonderIndexerLogFilterRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add Ponder indexer log filter rules',
+    module: 'subgraphDataFlows',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
