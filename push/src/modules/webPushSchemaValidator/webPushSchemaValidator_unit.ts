@@ -824,3 +824,23 @@ export function configureSupabaseDatabasePolicies(config?: Partial<IWebPushSchem
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface IWebPushSchemaValidatoraddPonderIndexerLogFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(config?: Partial<IWebPushSchemaValidatoraddPonderIndexerLogFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add Ponder indexer log filter rules',
+    module: 'webPushSchemaValidator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
