@@ -824,3 +824,23 @@ export function configureSupabaseDatabasePolicies(config?: Partial<IGroupSavings
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface IGroupSavingsPoolDashboardaddPonderIndexerLogFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(config?: Partial<IGroupSavingsPoolDashboardaddPonderIndexerLogFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add Ponder indexer log filter rules',
+    module: 'groupSavingsPoolDashboard',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
