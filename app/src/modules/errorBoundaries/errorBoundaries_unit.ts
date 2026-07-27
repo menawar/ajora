@@ -184,3 +184,23 @@ export function addInputSanitizationAndValidation(options?: Partial<IErrorBounda
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state change listeners
+ */
+export interface IErrorBoundariesconfigureReactiveStateChangeListenersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateChangeListeners(options?: Partial<IErrorBoundariesconfigureReactiveStateChangeListenersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure reactive state change listeners',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
