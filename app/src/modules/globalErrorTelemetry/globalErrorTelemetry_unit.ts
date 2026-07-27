@@ -664,3 +664,23 @@ export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IGlobalErr
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Framer Motion transition curves
+ */
+export interface IGlobalErrorTelemetryimplementFramerMotionTransitionCurvesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFramerMotionTransitionCurves(config?: Partial<IGlobalErrorTelemetryimplementFramerMotionTransitionCurvesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Framer Motion transition curves',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
