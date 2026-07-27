@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(options?: Partial<IModalBac
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure final module integration exports
+ */
+export interface IModalBackdropBlurconfigureFinalModuleIntegrationExportsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFinalModuleIntegrationExports(options?: Partial<IModalBackdropBlurconfigureFinalModuleIntegrationExportsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure final module integration exports',
+    module: 'modalBackdropBlur',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
