@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSBackdropFilters(options?: Partial<IDbMi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add user reputation score calculator
+ */
+export interface IDbMigrationProceduresaddUserReputationScoreCalculatorOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserReputationScoreCalculator(options?: Partial<IDbMigrationProceduresaddUserReputationScoreCalculatorOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add user reputation score calculator',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
