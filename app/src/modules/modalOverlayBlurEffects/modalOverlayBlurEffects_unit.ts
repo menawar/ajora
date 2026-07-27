@@ -964,3 +964,23 @@ export function addUserSavingsTierCalculator(config?: Partial<IModalOverlayBlurE
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Farcaster mini app frame parser
+ */
+export interface IModalOverlayBlurEffectsimplementFarcasterMiniAppFrameParserConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFarcasterMiniAppFrameParser(config?: Partial<IModalOverlayBlurEffectsimplementFarcasterMiniAppFrameParserConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Farcaster mini app frame parser',
+    module: 'modalOverlayBlurEffects',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
