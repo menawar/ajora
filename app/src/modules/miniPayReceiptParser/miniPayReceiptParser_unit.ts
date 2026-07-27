@@ -104,3 +104,23 @@ export function implementRequestPayloadExecutionHandler(config?: Partial<IMiniPa
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton service factory methods
+ */
+export interface IMiniPayReceiptParserexportSingletonServiceFactoryMethodsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonServiceFactoryMethods(config?: Partial<IMiniPayReceiptParserexportSingletonServiceFactoryMethodsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'export singleton service factory methods',
+    module: 'miniPayReceiptParser',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
