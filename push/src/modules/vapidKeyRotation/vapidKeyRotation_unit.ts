@@ -664,3 +664,23 @@ export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IVapidKeyR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Framer Motion transition curves
+ */
+export interface IVapidKeyRotationimplementFramerMotionTransitionCurvesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFramerMotionTransitionCurves(config?: Partial<IVapidKeyRotationimplementFramerMotionTransitionCurvesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Framer Motion transition curves',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
