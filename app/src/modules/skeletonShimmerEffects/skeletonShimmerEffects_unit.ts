@@ -824,3 +824,23 @@ export function configureSupabaseRowPolicyValidators(options?: Partial<ISkeleton
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add Ponder indexer log filter rules
+ */
+export interface ISkeletonShimmerEffectsaddPonderIndexerLogFilterRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPonderIndexerLogFilterRules(options?: Partial<ISkeletonShimmerEffectsaddPonderIndexerLogFilterRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add Ponder indexer log filter rules',
+    module: 'skeletonShimmerEffects',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
