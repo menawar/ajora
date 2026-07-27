@@ -344,3 +344,23 @@ export function configureFallbackRPCProviderResolver(config?: Partial<ISupabaseR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add performance timer tracking metrics
+ */
+export interface ISupabaseRlsManualaddPerformanceTimerTrackingMetricsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPerformanceTimerTrackingMetrics(config?: Partial<ISupabaseRlsManualaddPerformanceTimerTrackingMetricsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add performance timer tracking metrics',
+    module: 'supabaseRlsManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
