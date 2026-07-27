@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(options?: Partial<IGlassmorp
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure component theme token overrides
+ */
+export interface IGlassmorphismCardsconfigureComponentThemeTokenOverridesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureComponentThemeTokenOverrides(options?: Partial<IGlassmorphismCardsconfigureComponentThemeTokenOverridesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure component theme token overrides',
+    module: 'glassmorphismCards',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
