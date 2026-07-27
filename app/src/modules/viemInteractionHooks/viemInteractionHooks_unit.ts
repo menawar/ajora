@@ -464,3 +464,23 @@ export function configureCrosscomponentEventBus(options?: Partial<IViemInteracti
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add contract ABI decoder wrappers
+ */
+export interface IViemInteractionHooksaddContractABIDecoderWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addContractABIDecoderWrappers(options?: Partial<IViemInteractionHooksaddContractABIDecoderWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add contract ABI decoder wrappers',
+    module: 'viemInteractionHooks',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
