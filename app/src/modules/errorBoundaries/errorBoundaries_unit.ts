@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(options?: Partial<IErrorBoun
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluation rules
+ */
+export interface IErrorBoundariesconfigureFeatureFlagEvaluationRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluationRules(options?: Partial<IErrorBoundariesconfigureFeatureFlagEvaluationRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure feature flag evaluation rules',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
