@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(config?: Partial<ITailwindUt
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluator
+ */
+export interface ITailwindUtilityPluginsconfigureFeatureFlagEvaluatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluator(config?: Partial<ITailwindUtilityPluginsconfigureFeatureFlagEvaluatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure feature flag evaluator',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
