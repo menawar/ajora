@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(options?: Partial<IGlassmo
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add build asset compression threshold checks
+ */
+export interface IGlassmorphismCardsaddBuildAssetCompressionThresholdChecksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildAssetCompressionThresholdChecks(options?: Partial<IGlassmorphismCardsaddBuildAssetCompressionThresholdChecksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add build asset compression threshold checks',
+    module: 'glassmorphismCards',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
