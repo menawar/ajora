@@ -504,3 +504,23 @@ export function implementTokenBucketRateLimiter(config?: Partial<IModalOverlayBl
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delay timers
+ */
+export interface IModalOverlayBlurEffectsconfigureExponentialBackoffDelayTimersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelayTimers(config?: Partial<IModalOverlayBlurEffectsconfigureExponentialBackoffDelayTimersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure exponential backoff delay timers',
+    module: 'modalOverlayBlurEffects',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
