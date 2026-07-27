@@ -644,3 +644,23 @@ export function configureUIThemeTokenOverrides(config?: Partial<IFlyIoDeployment
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint helpers
+ */
+export interface IFlyIoDeploymentManualaddResponsiveLayoutBreakpointHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IFlyIoDeploymentManualaddResponsiveLayoutBreakpointHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add responsive layout breakpoint helpers',
+    module: 'flyIoDeploymentManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
