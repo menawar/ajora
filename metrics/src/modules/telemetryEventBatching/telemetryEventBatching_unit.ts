@@ -284,3 +284,23 @@ export function addTypeAssertionGuardFunctions(config?: Partial<ITelemetryEventB
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement JSON response payload formatters
+ */
+export interface ITelemetryEventBatchingimplementJSONResponsePayloadFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementJSONResponsePayloadFormatters(config?: Partial<ITelemetryEventBatchingimplementJSONResponsePayloadFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement JSON response payload formatters',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
