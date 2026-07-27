@@ -904,3 +904,23 @@ export function addBuildAssetCompressionThresholdChecks(options?: Partial<IYield
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC node latency health monitors
+ */
+export interface IYieldRewardsTrackerimplementRPCNodeLatencyHealthMonitorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCNodeLatencyHealthMonitors(options?: Partial<IYieldRewardsTrackerimplementRPCNodeLatencyHealthMonitorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement RPC node latency health monitors',
+    module: 'yieldRewardsTracker',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
