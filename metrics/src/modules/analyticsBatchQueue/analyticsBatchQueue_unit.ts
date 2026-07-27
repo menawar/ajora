@@ -284,3 +284,23 @@ export function addTypeGuardUtilityFunctions(options?: Partial<IAnalyticsBatchQu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement response payload formatters
+ */
+export interface IAnalyticsBatchQueueimplementResponsePayloadFormattersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResponsePayloadFormatters(options?: Partial<IAnalyticsBatchQueueimplementResponsePayloadFormattersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement response payload formatters',
+    module: 'analyticsBatchQueue',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
