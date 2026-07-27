@@ -384,3 +384,23 @@ export function implementBatchRequestChunkingLogic(options?: Partial<ISubgraphDa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata
+ */
+export interface ISubgraphDataFlowsconfigureContextualLoggingMetadataOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadata(options?: Partial<ISubgraphDataFlowsconfigureContextualLoggingMetadataOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure contextual logging metadata',
+    module: 'subgraphDataFlows',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
