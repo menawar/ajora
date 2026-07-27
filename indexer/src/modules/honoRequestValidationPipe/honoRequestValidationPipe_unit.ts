@@ -484,3 +484,23 @@ export function addSmartContractABIDecoderHelpers(config?: Partial<IHonoRequestV
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement token bucket rate limiter
+ */
+export interface IHonoRequestValidationPipeimplementTokenBucketRateLimiterConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTokenBucketRateLimiter(config?: Partial<IHonoRequestValidationPipeimplementTokenBucketRateLimiterConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement token bucket rate limiter',
+    module: 'honoRequestValidationPipe',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
