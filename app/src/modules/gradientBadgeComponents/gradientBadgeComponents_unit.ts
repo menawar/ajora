@@ -764,3 +764,23 @@ export function configureCustomReactReducerHooks(config?: Partial<IGradientBadge
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add local storage encryption helpers
+ */
+export interface IGradientBadgeComponentsaddLocalStorageEncryptionHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addLocalStorageEncryptionHelpers(config?: Partial<IGradientBadgeComponentsaddLocalStorageEncryptionHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add local storage encryption helpers',
+    module: 'gradientBadgeComponents',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
