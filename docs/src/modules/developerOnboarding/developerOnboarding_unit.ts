@@ -104,3 +104,23 @@ export function implementPayloadExecutionHandlers(options?: Partial<IDeveloperOn
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton instance factory methods
+ */
+export interface IDeveloperOnboardingexportSingletonInstanceFactoryMethodsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonInstanceFactoryMethods(options?: Partial<IDeveloperOnboardingexportSingletonInstanceFactoryMethodsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'export singleton instance factory methods',
+    module: 'developerOnboarding',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
