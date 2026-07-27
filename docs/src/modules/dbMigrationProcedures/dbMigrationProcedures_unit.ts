@@ -64,3 +64,23 @@ export function configureRuntimeStateManagementGetters(options?: Partial<IDbMigr
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add default option parameter fallbacks
+ */
+export interface IDbMigrationProceduresaddDefaultOptionParameterFallbacksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultOptionParameterFallbacks(options?: Partial<IDbMigrationProceduresaddDefaultOptionParameterFallbacksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add default option parameter fallbacks',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
