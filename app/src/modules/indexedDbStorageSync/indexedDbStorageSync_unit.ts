@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadataTags(config?: Partial<IIndexed
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add persistent state storage helpers
+ */
+export interface IIndexedDbStorageSyncaddPersistentStateStorageHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPersistentStateStorageHelpers(config?: Partial<IIndexedDbStorageSyncaddPersistentStateStorageHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add persistent state storage helpers',
+    module: 'indexedDbStorageSync',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
