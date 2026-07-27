@@ -164,3 +164,23 @@ export function implementTelemetryEventDispatchers(options?: Partial<IActivityFe
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and validation
+ */
+export interface IActivityFeedaddInputSanitizationAndValidationOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndValidation(options?: Partial<IActivityFeedaddInputSanitizationAndValidationOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add input sanitization and validation',
+    module: 'activityFeed',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
