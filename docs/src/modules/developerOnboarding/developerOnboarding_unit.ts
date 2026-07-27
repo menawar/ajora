@@ -704,3 +704,23 @@ export function configureLucideIconComponentMapping(options?: Partial<IDeveloper
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification banner triggers
+ */
+export interface IDeveloperOnboardingaddToastNotificationBannerTriggersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationBannerTriggers(options?: Partial<IDeveloperOnboardingaddToastNotificationBannerTriggersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add toast notification banner triggers',
+    module: 'developerOnboarding',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
