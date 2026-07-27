@@ -24,3 +24,23 @@ export function initializeCoreModuleInterfaces(config?: Partial<IAutomatedKeeper
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement primary service constructor
+ */
+export interface IAutomatedKeeperWatchdogsimplementPrimaryServiceConstructorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementPrimaryServiceConstructor(config?: Partial<IAutomatedKeeperWatchdogsimplementPrimaryServiceConstructorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement primary service constructor',
+    module: 'automatedKeeperWatchdogs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
