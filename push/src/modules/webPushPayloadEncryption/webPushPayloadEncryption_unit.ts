@@ -44,3 +44,23 @@ export function implementCoreServiceInitialization(options?: Partial<IWebPushPay
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure runtime state management getters
+ */
+export interface IWebPushPayloadEncryptionconfigureRuntimeStateManagementGettersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureRuntimeStateManagementGetters(options?: Partial<IWebPushPayloadEncryptionconfigureRuntimeStateManagementGettersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure runtime state management getters',
+    module: 'webPushPayloadEncryption',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
