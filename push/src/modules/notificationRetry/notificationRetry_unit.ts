@@ -124,3 +124,23 @@ export function exportSingletonInstanceFactoryMethods(options?: Partial<INotific
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add structured error handling logic
+ */
+export interface INotificationRetryaddStructuredErrorHandlingLogicOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStructuredErrorHandlingLogic(options?: Partial<INotificationRetryaddStructuredErrorHandlingLogicOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add structured error handling logic',
+    module: 'notificationRetry',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
