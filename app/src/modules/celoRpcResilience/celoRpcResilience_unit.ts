@@ -324,3 +324,23 @@ export function addRetryStrategyForRemoteRequests(options?: Partial<ICeloRpcResi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure fallback service provider
+ */
+export interface ICeloRpcResilienceconfigureFallbackServiceProviderOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFallbackServiceProvider(options?: Partial<ICeloRpcResilienceconfigureFallbackServiceProviderOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure fallback service provider',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
