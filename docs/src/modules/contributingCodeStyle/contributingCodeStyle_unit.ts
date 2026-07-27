@@ -224,3 +224,23 @@ export function implementMemoryCacheEvictionPolicies(options?: Partial<IContribu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add asynchronous task queue processors
+ */
+export interface IContributingCodeStyleaddAsynchronousTaskQueueProcessorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAsynchronousTaskQueueProcessors(options?: Partial<IContributingCodeStyleaddAsynchronousTaskQueueProcessorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add asynchronous task queue processors',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
