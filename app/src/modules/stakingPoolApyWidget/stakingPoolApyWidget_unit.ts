@@ -64,3 +64,23 @@ export function configureReactiveStateStorageGetters(config?: Partial<IStakingPo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add default configuration fallbacks
+ */
+export interface IStakingPoolApyWidgetaddDefaultConfigurationFallbacksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultConfigurationFallbacks(config?: Partial<IStakingPoolApyWidgetaddDefaultConfigurationFallbacksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add default configuration fallbacks',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
