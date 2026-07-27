@@ -864,3 +864,23 @@ export function implementDailyYieldRollupAggregators(config?: Partial<IFlyIoDepl
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface IFlyIoDeploymentManualconfigureVAPIDWebPushNotificationKeysConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(config?: Partial<IFlyIoDeploymentManualconfigureVAPIDWebPushNotificationKeysConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure VAPID web push notification keys',
+    module: 'flyIoDeploymentManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
