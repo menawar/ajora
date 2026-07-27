@@ -684,3 +684,23 @@ export function implementFramerMotionTransitionCurves(options?: Partial<IVapidSu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Lucide icon component mapping
+ */
+export interface IVapidSubscriptionStoreconfigureLucideIconComponentMappingOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureLucideIconComponentMapping(options?: Partial<IVapidSubscriptionStoreconfigureLucideIconComponentMappingOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Lucide icon component mapping',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
