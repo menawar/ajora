@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(options?: Partial<IWalletConnecti
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily metric rollup aggregators
+ */
+export interface IWalletConnectionimplementDailyMetricRollupAggregatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyMetricRollupAggregators(options?: Partial<IWalletConnectionimplementDailyMetricRollupAggregatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement daily metric rollup aggregators',
+    module: 'walletConnection',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
