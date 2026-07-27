@@ -244,3 +244,23 @@ export function addAsynchronousTaskQueueProcessors(options?: Partial<IWalletConn
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline
+ */
+export interface IWalletConnectionconfigureCustomMiddlewarePipelineOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipeline(options?: Partial<IWalletConnectionconfigureCustomMiddlewarePipelineOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom middleware pipeline',
+    module: 'walletConnection',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
