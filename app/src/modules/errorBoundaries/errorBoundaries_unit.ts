@@ -864,3 +864,23 @@ export function implementDailyMetricRollupAggregators(options?: Partial<IErrorBo
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface IErrorBoundariesconfigureVAPIDWebPushNotificationKeysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(options?: Partial<IErrorBoundariesconfigureVAPIDWebPushNotificationKeysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure VAPID web push notification keys',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
