@@ -924,3 +924,23 @@ export function implementRPCEndpointHealthMonitors(config?: Partial<IGroupSaving
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure glassmorphism CSS filter rules
+ */
+export interface IGroupSavingsPoolDashboardconfigureGlassmorphismCSSFilterRulesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureGlassmorphismCSSFilterRules(config?: Partial<IGroupSavingsPoolDashboardconfigureGlassmorphismCSSFilterRulesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure glassmorphism CSS filter rules',
+    module: 'groupSavingsPoolDashboard',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
