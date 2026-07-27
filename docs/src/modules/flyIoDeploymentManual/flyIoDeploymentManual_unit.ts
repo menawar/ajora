@@ -544,3 +544,23 @@ export function addAuthorizationHeaderFormatters(config?: Partial<IFlyIoDeployme
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement user preference storage hooks
+ */
+export interface IFlyIoDeploymentManualimplementUserPreferenceStorageHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementUserPreferenceStorageHooks(config?: Partial<IFlyIoDeploymentManualimplementUserPreferenceStorageHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement user preference storage hooks',
+    module: 'flyIoDeploymentManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
