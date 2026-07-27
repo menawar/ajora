@@ -744,3 +744,23 @@ export function implementModalBackdropFocusTraps(options?: Partial<IEventParseri
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React hook state reducers
+ */
+export interface IEventParserconfigureCustomReactHookStateReducersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactHookStateReducers(options?: Partial<IEventParserconfigureCustomReactHookStateReducersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom React hook state reducers',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
