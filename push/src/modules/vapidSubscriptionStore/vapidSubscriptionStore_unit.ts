@@ -284,3 +284,23 @@ export function addTypeGuardUtilityFunctions(options?: Partial<IVapidSubscriptio
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement response payload formatters
+ */
+export interface IVapidSubscriptionStoreimplementResponsePayloadFormattersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResponsePayloadFormatters(options?: Partial<IVapidSubscriptionStoreimplementResponsePayloadFormattersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement response payload formatters',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
