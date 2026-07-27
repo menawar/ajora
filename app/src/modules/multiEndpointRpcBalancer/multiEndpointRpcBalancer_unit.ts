@@ -284,3 +284,23 @@ export function addTypeAssertionGuardFunctions(config?: Partial<IMultiEndpointRp
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement JSON response payload formatters
+ */
+export interface IMultiEndpointRpcBalancerimplementJSONResponsePayloadFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementJSONResponsePayloadFormatters(config?: Partial<IMultiEndpointRpcBalancerimplementJSONResponsePayloadFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement JSON response payload formatters',
+    module: 'multiEndpointRpcBalancer',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
