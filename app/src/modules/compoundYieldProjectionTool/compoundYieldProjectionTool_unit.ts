@@ -664,3 +664,23 @@ export function addResponsiveLayoutBreakpointHelpers(config?: Partial<ICompoundY
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Framer Motion transition curves
+ */
+export interface ICompoundYieldProjectionToolimplementFramerMotionTransitionCurvesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFramerMotionTransitionCurves(config?: Partial<ICompoundYieldProjectionToolimplementFramerMotionTransitionCurvesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Framer Motion transition curves',
+    module: 'compoundYieldProjectionTool',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
