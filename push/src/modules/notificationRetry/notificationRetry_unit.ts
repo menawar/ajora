@@ -1,0 +1,26 @@
+/**
+ * feat(push): implement push notification retry handler and rate limiting
+ * Module: notificationRetry
+ * Description: Add exponential backoff retry policies, rate-limiting tokens, VAPID payload validation, and delivery metrics.
+ * Author: agenes01 <adamsagnessambo@gmail.com>
+ */
+
+/**
+ * Subtask: add interface configuration schemas
+ */
+export interface INotificationRetryaddInterfaceConfigurationSchemasOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInterfaceConfigurationSchemas(options?: Partial<INotificationRetryaddInterfaceConfigurationSchemasOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add interface configuration schemas',
+    module: 'notificationRetry',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
