@@ -484,3 +484,23 @@ export function addSmartContractABIDecoderHelpers(config?: Partial<IMiniPayRecei
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement token bucket rate limiter
+ */
+export interface IMiniPayReceiptParserimplementTokenBucketRateLimiterConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTokenBucketRateLimiter(config?: Partial<IMiniPayReceiptParserimplementTokenBucketRateLimiterConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement token bucket rate limiter',
+    module: 'miniPayReceiptParser',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
