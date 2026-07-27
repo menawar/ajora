@@ -104,3 +104,23 @@ export function implementRequestPayloadExecutionHandler(config?: Partial<IPonder
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton service factory methods
+ */
+export interface IPonderRelationalMappingsexportSingletonServiceFactoryMethodsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonServiceFactoryMethods(config?: Partial<IPonderRelationalMappingsexportSingletonServiceFactoryMethodsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'export singleton service factory methods',
+    module: 'ponderRelationalMappings',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
