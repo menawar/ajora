@@ -744,3 +744,23 @@ export function implementModalDialogFocusTraps(config?: Partial<IPonderDatabaseI
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React reducer hooks
+ */
+export interface IPonderDatabaseIndexconfigureCustomReactReducerHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactReducerHooks(config?: Partial<IPonderDatabaseIndexconfigureCustomReactReducerHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom React reducer hooks',
+    module: 'ponderDatabaseIndex',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
