@@ -104,3 +104,23 @@ export function implementRequestPayloadExecutionHandler(config?: Partial<IGlobal
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton service factory methods
+ */
+export interface IGlobalErrorTelemetryexportSingletonServiceFactoryMethodsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonServiceFactoryMethods(config?: Partial<IGlobalErrorTelemetryexportSingletonServiceFactoryMethodsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'export singleton service factory methods',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
