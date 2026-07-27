@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(config?: Partial<ILocalEnvironmen
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily yield rollup aggregators
+ */
+export interface ILocalEnvironmentSetupimplementDailyYieldRollupAggregatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyYieldRollupAggregators(config?: Partial<ILocalEnvironmentSetupimplementDailyYieldRollupAggregatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement daily yield rollup aggregators',
+    module: 'localEnvironmentSetup',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
