@@ -684,3 +684,23 @@ export function implementFramerMotionTransitionCurves(config?: Partial<ISupabase
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Lucide icon component map
+ */
+export interface ISupabaseRealtimeFiltersconfigureLucideIconComponentMapConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureLucideIconComponentMap(config?: Partial<ISupabaseRealtimeFiltersconfigureLucideIconComponentMapConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Lucide icon component map',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
