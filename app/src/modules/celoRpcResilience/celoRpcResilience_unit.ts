@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(options?: Partial<ICeloRpcRe
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure component theme token overrides
+ */
+export interface ICeloRpcResilienceconfigureComponentThemeTokenOverridesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureComponentThemeTokenOverrides(options?: Partial<ICeloRpcResilienceconfigureComponentThemeTokenOverridesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure component theme token overrides',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
