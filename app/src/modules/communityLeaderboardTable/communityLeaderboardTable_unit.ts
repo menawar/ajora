@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(config?: Partial<ICommunityL
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase database policies
+ */
+export interface ICommunityLeaderboardTableconfigureSupabaseDatabasePoliciesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseDatabasePolicies(config?: Partial<ICommunityLeaderboardTableconfigureSupabaseDatabasePoliciesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Supabase database policies',
+    module: 'communityLeaderboardTable',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
