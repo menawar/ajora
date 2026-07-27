@@ -44,3 +44,23 @@ export function implementCoreServiceInitialization(options?: Partial<IErrorBound
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure runtime state management getters
+ */
+export interface IErrorBoundariesconfigureRuntimeStateManagementGettersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureRuntimeStateManagementGetters(options?: Partial<IErrorBoundariesconfigureRuntimeStateManagementGettersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure runtime state management getters',
+    module: 'errorBoundaries',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
