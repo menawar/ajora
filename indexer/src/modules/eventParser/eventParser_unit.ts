@@ -464,3 +464,23 @@ export function configureCrosscomponentEventBus(options?: Partial<IEventParserco
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add contract ABI decoder wrappers
+ */
+export interface IEventParseraddContractABIDecoderWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addContractABIDecoderWrappers(options?: Partial<IEventParseraddContractABIDecoderWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add contract ABI decoder wrappers',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
