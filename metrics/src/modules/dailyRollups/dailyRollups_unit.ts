@@ -244,3 +244,23 @@ export function addAsynchronousTaskQueueProcessors(options?: Partial<IDailyRollu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline
+ */
+export interface IDailyRollupsconfigureCustomMiddlewarePipelineOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipeline(options?: Partial<IDailyRollupsconfigureCustomMiddlewarePipelineOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom middleware pipeline',
+    module: 'dailyRollups',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
