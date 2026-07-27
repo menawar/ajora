@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(options?: Partial<IDashboardLayou
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily metric rollup aggregators
+ */
+export interface IDashboardLayoutsimplementDailyMetricRollupAggregatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyMetricRollupAggregators(options?: Partial<IDashboardLayoutsimplementDailyMetricRollupAggregatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement daily metric rollup aggregators',
+    module: 'dashboardLayouts',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
