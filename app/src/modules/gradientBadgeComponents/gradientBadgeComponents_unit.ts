@@ -44,3 +44,23 @@ export function implementPrimaryServiceConstructor(config?: Partial<IGradientBad
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state storage getters
+ */
+export interface IGradientBadgeComponentsconfigureReactiveStateStorageGettersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateStorageGetters(config?: Partial<IGradientBadgeComponentsconfigureReactiveStateStorageGettersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure reactive state storage getters',
+    module: 'gradientBadgeComponents',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
