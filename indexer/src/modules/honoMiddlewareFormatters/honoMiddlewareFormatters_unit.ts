@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelays(options?: Partial<IHonoMiddlew
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add request header authorization helpers
+ */
+export interface IHonoMiddlewareFormattersaddRequestHeaderAuthorizationHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRequestHeaderAuthorizationHelpers(options?: Partial<IHonoMiddlewareFormattersaddRequestHeaderAuthorizationHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add request header authorization helpers',
+    module: 'honoMiddlewareFormatters',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
