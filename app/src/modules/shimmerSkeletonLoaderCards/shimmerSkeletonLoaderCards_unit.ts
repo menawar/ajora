@@ -184,3 +184,23 @@ export function addInputSanitizationAndTypeValidators(config?: Partial<IShimmerS
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure state update event listeners
+ */
+export interface IShimmerSkeletonLoaderCardsconfigureStateUpdateEventListenersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureStateUpdateEventListeners(config?: Partial<IShimmerSkeletonLoaderCardsconfigureStateUpdateEventListenersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure state update event listeners',
+    module: 'shimmerSkeletonLoaderCards',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
