@@ -604,3 +604,23 @@ export function addDataTransformationMappingFunctions(options?: Partial<IDailyRo
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface IDailyRollupsimplementMockDataProviderGeneratorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(options?: Partial<IDailyRollupsimplementMockDataProviderGeneratorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement mock data provider generators',
+    module: 'dailyRollups',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
