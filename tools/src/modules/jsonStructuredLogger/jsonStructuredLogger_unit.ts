@@ -484,3 +484,23 @@ export function addSmartContractABIDecoderHelpers(config?: Partial<IJsonStructur
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement token bucket rate limiter
+ */
+export interface IJsonStructuredLoggerimplementTokenBucketRateLimiterConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTokenBucketRateLimiter(config?: Partial<IJsonStructuredLoggerimplementTokenBucketRateLimiterConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement token bucket rate limiter',
+    module: 'jsonStructuredLogger',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
