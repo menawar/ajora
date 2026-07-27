@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadataTags(config?: Partial<ISupabas
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add persistent state storage helpers
+ */
+export interface ISupabaseRealtimeFiltersaddPersistentStateStorageHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPersistentStateStorageHelpers(config?: Partial<ISupabaseRealtimeFiltersaddPersistentStateStorageHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add persistent state storage helpers',
+    module: 'supabaseRealtimeFilters',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
