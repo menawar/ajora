@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelayTimers(config?: Partial<IAnimate
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add authorization header formatters
+ */
+export interface IAnimatedStatusBannerAlertsaddAuthorizationHeaderFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAuthorizationHeaderFormatters(config?: Partial<IAnimatedStatusBannerAlertsaddAuthorizationHeaderFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add authorization header formatters',
+    module: 'animatedStatusBannerAlerts',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
