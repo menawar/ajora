@@ -944,3 +944,23 @@ export function configureGlassmorphismCSSFilterRules(config?: Partial<IAnimatedS
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add user savings tier calculator
+ */
+export interface IAnimatedStatusBannerAlertsaddUserSavingsTierCalculatorConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addUserSavingsTierCalculator(config?: Partial<IAnimatedStatusBannerAlertsaddUserSavingsTierCalculatorConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add user savings tier calculator',
+    module: 'animatedStatusBannerAlerts',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
