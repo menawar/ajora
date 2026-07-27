@@ -284,3 +284,23 @@ export function addTypeGuardUtilityFunctions(options?: Partial<ICeloRpcResilienc
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement response payload formatters
+ */
+export interface ICeloRpcResilienceimplementResponsePayloadFormattersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResponsePayloadFormatters(options?: Partial<ICeloRpcResilienceimplementResponsePayloadFormattersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement response payload formatters',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
