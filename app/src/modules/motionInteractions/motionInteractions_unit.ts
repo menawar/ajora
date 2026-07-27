@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(options?: Partial<IMotionInt
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure component theme token overrides
+ */
+export interface IMotionInteractionsconfigureComponentThemeTokenOverridesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureComponentThemeTokenOverrides(options?: Partial<IMotionInteractionsconfigureComponentThemeTokenOverridesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure component theme token overrides',
+    module: 'motionInteractions',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
