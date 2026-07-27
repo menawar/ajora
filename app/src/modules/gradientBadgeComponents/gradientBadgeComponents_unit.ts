@@ -144,3 +144,23 @@ export function addRobustExceptionHandlingRoutines(config?: Partial<IGradientBad
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement telemetry event logger
+ */
+export interface IGradientBadgeComponentsimplementTelemetryEventLoggerConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementTelemetryEventLogger(config?: Partial<IGradientBadgeComponentsimplementTelemetryEventLoggerConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement telemetry event logger',
+    module: 'gradientBadgeComponents',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
