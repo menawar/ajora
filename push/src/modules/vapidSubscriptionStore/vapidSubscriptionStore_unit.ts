@@ -604,3 +604,23 @@ export function addDataTransformationMappingFunctions(options?: Partial<IVapidSu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface IVapidSubscriptionStoreimplementMockDataProviderGeneratorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(options?: Partial<IVapidSubscriptionStoreimplementMockDataProviderGeneratorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement mock data provider generators',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
