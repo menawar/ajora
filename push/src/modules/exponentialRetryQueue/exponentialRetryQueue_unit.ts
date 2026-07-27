@@ -424,3 +424,23 @@ export function addPersistentStateStorageHelpers(config?: Partial<IExponentialRe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement resource disposal routines
+ */
+export interface IExponentialRetryQueueimplementResourceDisposalRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResourceDisposalRoutines(config?: Partial<IExponentialRetryQueueimplementResourceDisposalRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement resource disposal routines',
+    module: 'exponentialRetryQueue',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
