@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(config?: Partial<IGroupSavin
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase database policies
+ */
+export interface IGroupSavingsPoolDashboardconfigureSupabaseDatabasePoliciesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseDatabasePolicies(config?: Partial<IGroupSavingsPoolDashboardconfigureSupabaseDatabasePoliciesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Supabase database policies',
+    module: 'groupSavingsPoolDashboard',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
