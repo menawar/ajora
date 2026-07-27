@@ -104,3 +104,23 @@ export function implementPayloadExecutionHandlers(options?: Partial<IUserReputat
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: export singleton instance factory methods
+ */
+export interface IUserReputationBadgesexportSingletonInstanceFactoryMethodsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function exportSingletonInstanceFactoryMethods(options?: Partial<IUserReputationBadgesexportSingletonInstanceFactoryMethodsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'export singleton instance factory methods',
+    module: 'userReputationBadges',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
