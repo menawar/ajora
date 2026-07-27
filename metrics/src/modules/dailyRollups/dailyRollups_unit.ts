@@ -704,3 +704,23 @@ export function configureLucideIconComponentMapping(options?: Partial<IDailyRoll
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification banner triggers
+ */
+export interface IDailyRollupsaddToastNotificationBannerTriggersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationBannerTriggers(options?: Partial<IDailyRollupsaddToastNotificationBannerTriggersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add toast notification banner triggers',
+    module: 'dailyRollups',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
