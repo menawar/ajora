@@ -304,3 +304,23 @@ export function implementResponsePayloadFormatters(options?: Partial<IQrCodeGene
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add retry strategy for remote requests
+ */
+export interface IQrCodeGeneratorModaladdRetryStrategyForRemoteRequestsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRetryStrategyForRemoteRequests(options?: Partial<IQrCodeGeneratorModaladdRetryStrategyForRemoteRequestsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add retry strategy for remote requests',
+    module: 'qrCodeGeneratorModal',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
