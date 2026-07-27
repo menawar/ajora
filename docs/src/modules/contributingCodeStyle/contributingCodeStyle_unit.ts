@@ -684,3 +684,23 @@ export function implementFramerMotionTransitionCurves(options?: Partial<IContrib
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Lucide icon component mapping
+ */
+export interface IContributingCodeStyleconfigureLucideIconComponentMappingOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureLucideIconComponentMapping(options?: Partial<IContributingCodeStyleconfigureLucideIconComponentMappingOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Lucide icon component mapping',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
