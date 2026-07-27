@@ -284,3 +284,23 @@ export function addTypeAssertionGuardFunctions(config?: Partial<ISupabaseRlsManu
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement JSON response payload formatters
+ */
+export interface ISupabaseRlsManualimplementJSONResponsePayloadFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementJSONResponsePayloadFormatters(config?: Partial<ISupabaseRlsManualimplementJSONResponsePayloadFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement JSON response payload formatters',
+    module: 'supabaseRlsManual',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
