@@ -644,3 +644,23 @@ export function configureUIThemeTokenOverrides(config?: Partial<IGlobalErrorTele
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint helpers
+ */
+export interface IGlobalErrorTelemetryaddResponsiveLayoutBreakpointHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IGlobalErrorTelemetryaddResponsiveLayoutBreakpointHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add responsive layout breakpoint helpers',
+    module: 'globalErrorTelemetry',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
