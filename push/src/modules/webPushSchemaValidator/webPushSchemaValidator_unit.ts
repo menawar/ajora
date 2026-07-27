@@ -464,3 +464,23 @@ export function configureEventEmitterBusTriggers(config?: Partial<IWebPushSchema
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add smart contract ABI decoder helpers
+ */
+export interface IWebPushSchemaValidatoraddSmartContractABIDecoderHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addSmartContractABIDecoderHelpers(config?: Partial<IWebPushSchemaValidatoraddSmartContractABIDecoderHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add smart contract ABI decoder helpers',
+    module: 'webPushSchemaValidator',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
