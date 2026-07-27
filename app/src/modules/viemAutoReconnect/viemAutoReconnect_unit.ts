@@ -464,3 +464,23 @@ export function configureEventEmitterBusTriggers(config?: Partial<IViemAutoRecon
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add smart contract ABI decoder helpers
+ */
+export interface IViemAutoReconnectaddSmartContractABIDecoderHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addSmartContractABIDecoderHelpers(config?: Partial<IViemAutoReconnectaddSmartContractABIDecoderHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add smart contract ABI decoder helpers',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
