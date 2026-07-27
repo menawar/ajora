@@ -184,3 +184,23 @@ export function addInputSanitizationAndTypeValidators(config?: Partial<IViemAuto
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure state update event listeners
+ */
+export interface IViemAutoReconnectconfigureStateUpdateEventListenersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureStateUpdateEventListeners(config?: Partial<IViemAutoReconnectconfigureStateUpdateEventListenersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure state update event listeners',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
