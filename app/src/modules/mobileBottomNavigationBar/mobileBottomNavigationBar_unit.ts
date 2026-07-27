@@ -704,3 +704,23 @@ export function configureLucideIconComponentMap(config?: Partial<IMobileBottomNa
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification triggers
+ */
+export interface IMobileBottomNavigationBaraddToastNotificationTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationTriggers(config?: Partial<IMobileBottomNavigationBaraddToastNotificationTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add toast notification triggers',
+    module: 'mobileBottomNavigationBar',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
