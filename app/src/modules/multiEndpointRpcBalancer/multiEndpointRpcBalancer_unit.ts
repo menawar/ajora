@@ -384,3 +384,23 @@ export function implementRequestPayloadChunkingLogic(config?: Partial<IMultiEndp
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure contextual logging metadata tags
+ */
+export interface IMultiEndpointRpcBalancerconfigureContextualLoggingMetadataTagsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureContextualLoggingMetadataTags(config?: Partial<IMultiEndpointRpcBalancerconfigureContextualLoggingMetadataTagsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure contextual logging metadata tags',
+    module: 'multiEndpointRpcBalancer',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
