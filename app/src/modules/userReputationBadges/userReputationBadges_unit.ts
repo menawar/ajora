@@ -444,3 +444,23 @@ export function implementCleanupAndDisposalRoutines(options?: Partial<IUserReput
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure cross-component event bus
+ */
+export interface IUserReputationBadgesconfigureCrosscomponentEventBusOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCrosscomponentEventBus(options?: Partial<IUserReputationBadgesconfigureCrosscomponentEventBusOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure cross-component event bus',
+    module: 'userReputationBadges',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
