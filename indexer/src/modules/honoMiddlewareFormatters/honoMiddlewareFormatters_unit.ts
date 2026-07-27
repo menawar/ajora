@@ -64,3 +64,23 @@ export function configureRuntimeStateManagementGetters(options?: Partial<IHonoMi
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add default option parameter fallbacks
+ */
+export interface IHonoMiddlewareFormattersaddDefaultOptionParameterFallbacksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultOptionParameterFallbacks(options?: Partial<IHonoMiddlewareFormattersaddDefaultOptionParameterFallbacksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add default option parameter fallbacks',
+    module: 'honoMiddlewareFormatters',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
