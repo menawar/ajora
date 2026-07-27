@@ -464,3 +464,23 @@ export function configureCrosscomponentEventBus(options?: Partial<IWalletConnect
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add contract ABI decoder wrappers
+ */
+export interface IWalletConnectionaddContractABIDecoderWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addContractABIDecoderWrappers(options?: Partial<IWalletConnectionaddContractABIDecoderWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add contract ABI decoder wrappers',
+    module: 'walletConnection',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
