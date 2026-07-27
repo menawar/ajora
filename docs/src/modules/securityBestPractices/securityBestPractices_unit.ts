@@ -504,3 +504,23 @@ export function implementRateLimiterTokenBucket(options?: Partial<ISecurityBestP
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delays
+ */
+export interface ISecurityBestPracticesconfigureExponentialBackoffDelaysOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelays(options?: Partial<ISecurityBestPracticesconfigureExponentialBackoffDelaysOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure exponential backoff delays',
+    module: 'securityBestPractices',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
