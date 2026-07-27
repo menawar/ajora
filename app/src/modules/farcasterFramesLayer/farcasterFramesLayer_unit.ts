@@ -184,3 +184,23 @@ export function addInputSanitizationAndValidation(options?: Partial<IFarcasterFr
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state change listeners
+ */
+export interface IFarcasterFramesLayerconfigureReactiveStateChangeListenersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateChangeListeners(options?: Partial<IFarcasterFramesLayerconfigureReactiveStateChangeListenersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure reactive state change listeners',
+    module: 'farcasterFramesLayer',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
