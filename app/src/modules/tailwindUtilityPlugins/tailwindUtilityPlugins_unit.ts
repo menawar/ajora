@@ -704,3 +704,23 @@ export function configureLucideIconComponentMap(config?: Partial<ITailwindUtilit
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification triggers
+ */
+export interface ITailwindUtilityPluginsaddToastNotificationTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationTriggers(config?: Partial<ITailwindUtilityPluginsaddToastNotificationTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add toast notification triggers',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
