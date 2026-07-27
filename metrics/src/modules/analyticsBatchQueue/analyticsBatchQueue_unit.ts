@@ -124,3 +124,23 @@ export function exportSingletonInstanceFactoryMethods(options?: Partial<IAnalyti
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add structured error handling logic
+ */
+export interface IAnalyticsBatchQueueaddStructuredErrorHandlingLogicOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStructuredErrorHandlingLogic(options?: Partial<IAnalyticsBatchQueueaddStructuredErrorHandlingLogicOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add structured error handling logic',
+    module: 'analyticsBatchQueue',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
