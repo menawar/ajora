@@ -444,3 +444,23 @@ export function implementCleanupAndDisposalRoutines(options?: Partial<IBundleBud
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure cross-component event bus
+ */
+export interface IBundleBudgetMonitorsconfigureCrosscomponentEventBusOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCrosscomponentEventBus(options?: Partial<IBundleBudgetMonitorsconfigureCrosscomponentEventBusOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure cross-component event bus',
+    module: 'bundleBudgetMonitors',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
