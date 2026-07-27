@@ -444,3 +444,23 @@ export function implementCleanupAndDisposalRoutines(options?: Partial<IContribut
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure cross-component event bus
+ */
+export interface IContributingCodeStyleconfigureCrosscomponentEventBusOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCrosscomponentEventBus(options?: Partial<IContributingCodeStyleconfigureCrosscomponentEventBusOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure cross-component event bus',
+    module: 'contributingCodeStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
