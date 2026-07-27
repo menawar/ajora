@@ -624,3 +624,23 @@ export function implementMockDataProviderGenerators(config?: Partial<IViemAutoRe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure UI theme token overrides
+ */
+export interface IViemAutoReconnectconfigureUIThemeTokenOverridesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureUIThemeTokenOverrides(config?: Partial<IViemAutoReconnectconfigureUIThemeTokenOverridesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure UI theme token overrides',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
