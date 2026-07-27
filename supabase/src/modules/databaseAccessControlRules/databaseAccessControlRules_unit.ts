@@ -44,3 +44,23 @@ export function implementPrimaryServiceConstructor(config?: Partial<IDatabaseAcc
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state storage getters
+ */
+export interface IDatabaseAccessControlRulesconfigureReactiveStateStorageGettersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateStorageGetters(config?: Partial<IDatabaseAccessControlRulesconfigureReactiveStateStorageGettersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure reactive state storage getters',
+    module: 'databaseAccessControlRules',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
