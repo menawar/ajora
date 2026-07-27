@@ -904,3 +904,23 @@ export function addBuildBundleCompressionChecks(config?: Partial<ITelemetryEvent
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC endpoint health monitors
+ */
+export interface ITelemetryEventBatchingimplementRPCEndpointHealthMonitorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCEndpointHealthMonitors(config?: Partial<ITelemetryEventBatchingimplementRPCEndpointHealthMonitorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement RPC endpoint health monitors',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
