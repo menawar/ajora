@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(config?: Partial<IYieldApy
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add build bundle compression checks
+ */
+export interface IYieldApyRollupsaddBuildBundleCompressionChecksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildBundleCompressionChecks(config?: Partial<IYieldApyRollupsaddBuildBundleCompressionChecksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add build bundle compression checks',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
