@@ -864,3 +864,23 @@ export function implementDailyYieldRollupAggregators(config?: Partial<ICommunity
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure VAPID web push notification keys
+ */
+export interface ICommunityLeaderboardTableconfigureVAPIDWebPushNotificationKeysConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureVAPIDWebPushNotificationKeys(config?: Partial<ICommunityLeaderboardTableconfigureVAPIDWebPushNotificationKeysConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure VAPID web push notification keys',
+    module: 'communityLeaderboardTable',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
