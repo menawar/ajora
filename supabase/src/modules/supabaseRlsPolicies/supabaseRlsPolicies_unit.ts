@@ -764,3 +764,23 @@ export function configureCustomReactHookStateReducers(options?: Partial<ISupabas
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add web storage encryption wrappers
+ */
+export interface ISupabaseRlsPoliciesaddWebStorageEncryptionWrappersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addWebStorageEncryptionWrappers(options?: Partial<ISupabaseRlsPoliciesaddWebStorageEncryptionWrappersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add web storage encryption wrappers',
+    module: 'supabaseRlsPolicies',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
