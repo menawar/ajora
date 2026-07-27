@@ -344,3 +344,23 @@ export function configureFallbackRPCProviderResolver(config?: Partial<IIndexedDb
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add performance timer tracking metrics
+ */
+export interface IIndexedDbStorageSyncaddPerformanceTimerTrackingMetricsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addPerformanceTimerTrackingMetrics(config?: Partial<IIndexedDbStorageSyncaddPerformanceTimerTrackingMetricsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add performance timer tracking metrics',
+    module: 'indexedDbStorageSync',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
