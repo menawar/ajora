@@ -644,3 +644,23 @@ export function configureComponentThemeTokenOverrides(options?: Partial<INavigat
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint utilities
+ */
+export interface INavigationDrawerStyleaddResponsiveLayoutBreakpointUtilitiesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointUtilities(options?: Partial<INavigationDrawerStyleaddResponsiveLayoutBreakpointUtilitiesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add responsive layout breakpoint utilities',
+    module: 'navigationDrawerStyle',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
