@@ -64,3 +64,23 @@ export function configureReactiveStateStorageGetters(config?: Partial<IVapidKeyR
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add default configuration fallbacks
+ */
+export interface IVapidKeyRotationaddDefaultConfigurationFallbacksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultConfigurationFallbacks(config?: Partial<IVapidKeyRotationaddDefaultConfigurationFallbacksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add default configuration fallbacks',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
