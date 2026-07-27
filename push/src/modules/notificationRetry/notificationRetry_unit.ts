@@ -644,3 +644,23 @@ export function configureComponentThemeTokenOverrides(options?: Partial<INotific
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint utilities
+ */
+export interface INotificationRetryaddResponsiveLayoutBreakpointUtilitiesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointUtilities(options?: Partial<INotificationRetryaddResponsiveLayoutBreakpointUtilitiesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add responsive layout breakpoint utilities',
+    module: 'notificationRetry',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
