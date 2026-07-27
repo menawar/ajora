@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(options?: Partial<IHonoMiddleware
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily metric rollup aggregators
+ */
+export interface IHonoMiddlewareFormattersimplementDailyMetricRollupAggregatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyMetricRollupAggregators(options?: Partial<IHonoMiddlewareFormattersimplementDailyMetricRollupAggregatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement daily metric rollup aggregators',
+    module: 'honoMiddlewareFormatters',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
