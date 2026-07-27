@@ -684,3 +684,23 @@ export function implementFramerMotionTransitionCurves(config?: Partial<IMobileBo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Lucide icon component map
+ */
+export interface IMobileBottomNavigationBarconfigureLucideIconComponentMapConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureLucideIconComponentMap(config?: Partial<IMobileBottomNavigationBarconfigureLucideIconComponentMapConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure Lucide icon component map',
+    module: 'mobileBottomNavigationBar',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
