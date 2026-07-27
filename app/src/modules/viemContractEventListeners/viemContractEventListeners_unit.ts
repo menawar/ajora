@@ -604,3 +604,23 @@ export function addDataTransformerMappingFunctions(config?: Partial<IViemContrac
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface IViemContractEventListenersimplementMockDataProviderGeneratorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(config?: Partial<IViemContractEventListenersimplementMockDataProviderGeneratorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement mock data provider generators',
+    module: 'viemContractEventListeners',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
