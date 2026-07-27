@@ -284,3 +284,23 @@ export function addTypeAssertionGuardFunctions(config?: Partial<IViemAutoReconne
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement JSON response payload formatters
+ */
+export interface IViemAutoReconnectimplementJSONResponsePayloadFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementJSONResponsePayloadFormatters(config?: Partial<IViemAutoReconnectimplementJSONResponsePayloadFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement JSON response payload formatters',
+    module: 'viemAutoReconnect',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
