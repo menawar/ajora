@@ -804,3 +804,23 @@ export function implementWebSocketReconnectHandlers(options?: Partial<IRealtimeS
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure Supabase row policy validators
+ */
+export interface IRealtimeSyncconfigureSupabaseRowPolicyValidatorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureSupabaseRowPolicyValidators(options?: Partial<IRealtimeSyncconfigureSupabaseRowPolicyValidatorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure Supabase row policy validators',
+    module: 'realtimeSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
