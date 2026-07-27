@@ -904,3 +904,23 @@ export function addBuildBundleCompressionChecks(config?: Partial<IYieldApyRollup
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC endpoint health monitors
+ */
+export interface IYieldApyRollupsimplementRPCEndpointHealthMonitorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCEndpointHealthMonitors(config?: Partial<IYieldApyRollupsimplementRPCEndpointHealthMonitorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement RPC endpoint health monitors',
+    module: 'yieldApyRollups',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
