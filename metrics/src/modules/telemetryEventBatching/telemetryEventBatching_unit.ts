@@ -124,3 +124,23 @@ export function exportSingletonServiceFactoryMethods(config?: Partial<ITelemetry
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add robust exception handling routines
+ */
+export interface ITelemetryEventBatchingaddRobustExceptionHandlingRoutinesConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addRobustExceptionHandlingRoutines(config?: Partial<ITelemetryEventBatchingaddRobustExceptionHandlingRoutinesConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add robust exception handling routines',
+    module: 'telemetryEventBatching',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
