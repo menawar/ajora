@@ -387,5 +387,22 @@
     "resolved": null,
     "push": null,
     "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
+  },
+  {
+    "periodId": 20660,
+    "date": "2026-07-26",
+    "txCount": 53,
+    "activeUsers": 45,
+    "newUsers": 0,
+    "contributions": 2,
+    "principalIn": "200000000000000000",
+    "prizesPaid": "0",
+    "sprays": 0,
+    "welcomes": 0,
+    "picks": 6,
+    "checkIns": 45,
+    "resolved": null,
+    "push": null,
+    "note": "periodId-topic exact; CheckedIn/Verified block-window approximate"
   }
 ]
