@@ -844,3 +844,23 @@ export function addPonderIndexerLogFilterRules(config?: Partial<IPonderDatabaseI
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement daily yield rollup aggregators
+ */
+export interface IPonderDatabaseIndeximplementDailyYieldRollupAggregatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementDailyYieldRollupAggregators(config?: Partial<IPonderDatabaseIndeximplementDailyYieldRollupAggregatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement daily yield rollup aggregators',
+    module: 'ponderDatabaseIndex',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
