@@ -244,3 +244,23 @@ export function addAsynchronousTaskQueueProcessors(options?: Partial<IActivityFe
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom middleware pipeline
+ */
+export interface IActivityFeedconfigureCustomMiddlewarePipelineOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomMiddlewarePipeline(options?: Partial<IActivityFeedconfigureCustomMiddlewarePipelineOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure custom middleware pipeline',
+    module: 'activityFeed',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
