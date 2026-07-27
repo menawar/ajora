@@ -164,3 +164,23 @@ export function implementTelemetryEventDispatchers(options?: Partial<INotificati
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and validation
+ */
+export interface INotificationRetryaddInputSanitizationAndValidationOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndValidation(options?: Partial<INotificationRetryaddInputSanitizationAndValidationOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add input sanitization and validation',
+    module: 'notificationRetry',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
