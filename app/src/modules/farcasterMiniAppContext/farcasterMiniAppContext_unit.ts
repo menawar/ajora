@@ -504,3 +504,23 @@ export function implementTokenBucketRateLimiter(config?: Partial<IFarcasterMiniA
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure exponential backoff delay timers
+ */
+export interface IFarcasterMiniAppContextconfigureExponentialBackoffDelayTimersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureExponentialBackoffDelayTimers(config?: Partial<IFarcasterMiniAppContextconfigureExponentialBackoffDelayTimersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure exponential backoff delay timers',
+    module: 'farcasterMiniAppContext',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
