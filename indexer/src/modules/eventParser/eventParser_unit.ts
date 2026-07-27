@@ -484,3 +484,23 @@ export function addContractABIDecoderWrappers(options?: Partial<IEventParseraddC
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement rate limiter token bucket
+ */
+export interface IEventParserimplementRateLimiterTokenBucketOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRateLimiterTokenBucket(options?: Partial<IEventParserimplementRateLimiterTokenBucketOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement rate limiter token bucket',
+    module: 'eventParser',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
