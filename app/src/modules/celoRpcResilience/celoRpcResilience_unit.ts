@@ -604,3 +604,23 @@ export function addDataTransformationMappingFunctions(options?: Partial<ICeloRpc
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface ICeloRpcResilienceimplementMockDataProviderGeneratorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(options?: Partial<ICeloRpcResilienceimplementMockDataProviderGeneratorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement mock data provider generators',
+    module: 'celoRpcResilience',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
