@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(config?: Partial<IWalletDe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add build bundle compression checks
+ */
+export interface IWalletDepositQrViewaddBuildBundleCompressionChecksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildBundleCompressionChecks(config?: Partial<IWalletDepositQrViewaddBuildBundleCompressionChecksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add build bundle compression checks',
+    module: 'walletDepositQrView',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
