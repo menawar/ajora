@@ -284,3 +284,23 @@ export function addTypeGuardUtilityFunctions(options?: Partial<IActivityFeedaddT
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement response payload formatters
+ */
+export interface IActivityFeedimplementResponsePayloadFormattersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementResponsePayloadFormatters(options?: Partial<IActivityFeedimplementResponsePayloadFormattersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement response payload formatters',
+    module: 'activityFeed',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
