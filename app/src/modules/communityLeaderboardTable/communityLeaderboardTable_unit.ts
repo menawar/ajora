@@ -604,3 +604,23 @@ export function addDataTransformerMappingFunctions(config?: Partial<ICommunityLe
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement mock data provider generators
+ */
+export interface ICommunityLeaderboardTableimplementMockDataProviderGeneratorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementMockDataProviderGenerators(config?: Partial<ICommunityLeaderboardTableimplementMockDataProviderGeneratorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement mock data provider generators',
+    module: 'communityLeaderboardTable',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
