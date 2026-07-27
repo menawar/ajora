@@ -904,3 +904,23 @@ export function addBuildAssetCompressionThresholdChecks(options?: Partial<IDbMig
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: implement RPC node latency health monitors
+ */
+export interface IDbMigrationProceduresimplementRPCNodeLatencyHealthMonitorsOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementRPCNodeLatencyHealthMonitors(options?: Partial<IDbMigrationProceduresimplementRPCNodeLatencyHealthMonitorsOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'implement RPC node latency health monitors',
+    module: 'dbMigrationProcedures',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
