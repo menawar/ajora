@@ -444,3 +444,23 @@ export function implementResourceDisposalRoutines(config?: Partial<IVapidKeyRota
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure event emitter bus triggers
+ */
+export interface IVapidKeyRotationconfigureEventEmitterBusTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureEventEmitterBusTriggers(config?: Partial<IVapidKeyRotationconfigureEventEmitterBusTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure event emitter bus triggers',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
