@@ -704,3 +704,23 @@ export function configureLucideIconComponentMap(config?: Partial<IPonderDatabase
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification triggers
+ */
+export interface IPonderDatabaseIndexaddToastNotificationTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationTriggers(config?: Partial<IPonderDatabaseIndexaddToastNotificationTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add toast notification triggers',
+    module: 'ponderDatabaseIndex',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
