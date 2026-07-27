@@ -744,3 +744,23 @@ export function implementModalDialogFocusTraps(config?: Partial<IAutomatedKeeper
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure custom React reducer hooks
+ */
+export interface IAutomatedKeeperWatchdogsconfigureCustomReactReducerHooksConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureCustomReactReducerHooks(config?: Partial<IAutomatedKeeperWatchdogsconfigureCustomReactReducerHooksConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure custom React reducer hooks',
+    module: 'automatedKeeperWatchdogs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
