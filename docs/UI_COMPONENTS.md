@@ -1,26 +1,30 @@
 # UI Components
 
-Ajora uses a custom component library built with Tailwind CSS and Framer Motion for animations.
+Ajora uses a custom component library built with Tailwind CSS, Lucide icons, and Framer Motion for micro-animations.
 
-## Principles
-- **Glassmorphism**: We use translucent panels (`glass-panel`) for a modern feel.
-- **Micro-interactions**: Components like buttons and cards scale on hover/tap.
-- **Accessibility**: All interactive elements have focus rings and ARIA attributes.
+## Core Design Principles
+- **Glassmorphism**: Translucent backdrop blur effects (`bg-bg-primary/95 backdrop-blur-md`).
+- **Micro-interactions**: Interactive elements spring-scale on hover and active click states via `framer-motion`.
+- **Accessibility**: Standard ARIA attributes, semantic HTML elements, and keyboard focus state indicator rings (`focus-visible:ring-celo-green`).
 
-## Button
-The `Button` component supports variants (default, outline, ghost) and sizes.
-It includes built-in hover and tap animations using framer-motion.
+## Primitive Components
 
-## Card
-The `Card` component supports `variant` (default, glass, border) and an `interactive` flag.
-When interactive, it scales on hover and tap, and receives keyboard focus rings.
+### `Button`
+Extends Framer Motion's `motion.button` props with custom variants and loading states.
+- **Props**: `variant` ("primary" | "secondary" | "outline" | "danger" | "ghost"), `size` ("sm" | "md" | "lg"), `isLoading` (boolean), `iconPosition` ("left" | "right").
+- **Accessibility**: Automatically disables focus interactions when `isLoading` or `disabled`.
 
-## EmptyState
-Used for zero-data states (e.g. no stats yet).
-Features an icon, title, description, and an optional action component (like a link or button).
+### `Input`
+Custom form input with integrated clear actions and error states.
+- **Props**: `error` (string), `prefixNode` (ReactNode), `suffixNode` (ReactNode), `loading` (boolean), `onClear` (() => void).
 
-## Tooltip
-Wraps any element and shows a hover-triggered tooltip. Supports custom positions (top, bottom, left, right).
+### `OnboardingModal`
+Interactive onboarding carousel with touch swipe gestures and sound effect triggers (`useSFX`).
+- **Features**: Drag-to-swipe navigation via `framer-motion`, dot progress indicator, sound cues.
 
-## Modal
-A full-screen accessible modal using React Portal. Includes a backdrop, close button, escape key listener, and click-outside handler.
+### `Card` & `GlassCard`
+Container cards with customizable hover tilt/scale micro-animations and border glow styling.
+
+### `ErrorAlert` & Error Utilities
+Standardized error boundary wrappers and helper functions in `app/lib/errors.ts` for safe error message parsing.
+

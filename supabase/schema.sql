@@ -1,17 +1,18 @@
 -- Ajora Off-chain Database Schema (PostgreSQL for Supabase)
+-- Provides off-chain user profiles, notifications, crew statistics, and quest tracking
 
 -- 1. Users Table
 -- Stores user profiles, preferences, and aggregate stats
 CREATE TABLE IF NOT EXISTS public.users (
-    address TEXT PRIMARY KEY, -- Wallet address (lowercase)
-    xp_balance INTEGER DEFAULT 0,
+    address TEXT PRIMARY KEY CHECK (address ~ '^0x[a-fA-F0-9]{40}$'), -- Lowercase EVM wallet address validation
+    xp_balance INTEGER DEFAULT 0 CHECK (xp_balance >= 0),
     current_theme TEXT DEFAULT 'light',
     unlocked_themes TEXT[] DEFAULT ARRAY['light', 'dark']::TEXT[],
-    longest_streak INTEGER DEFAULT 0,
-    current_streak INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0 CHECK (longest_streak >= 0),
+    current_streak INTEGER DEFAULT 0 CHECK (current_streak >= 0),
     last_saved_at TIMESTAMP WITH TIME ZONE,
     crew_id UUID REFERENCES public.crews(id) ON DELETE SET NULL,
-    total_saved_usd NUMERIC(18, 2) DEFAULT 0.0,
+    total_saved_usd NUMERIC(18, 2) DEFAULT 0.0 CHECK (total_saved_usd >= 0.0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -20,7 +21,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 CREATE TABLE IF NOT EXISTS public.crews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
-    total_volume_usd NUMERIC(18, 2) DEFAULT 0.0,
+    total_volume_usd NUMERIC(18, 2) DEFAULT 0.0 CHECK (total_volume_usd >= 0.0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -30,9 +31,9 @@ CREATE TABLE IF NOT EXISTS public.quests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    xp_reward INTEGER NOT NULL,
+    xp_reward INTEGER NOT NULL CHECK (xp_reward >= 0),
     quest_type TEXT NOT NULL, -- 'daily', 'weekly', 'lifetime'
-    target_count INTEGER DEFAULT 1,
+    target_count INTEGER DEFAULT 1 CHECK (target_count > 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS public.user_quests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_address TEXT REFERENCES public.users(address) ON DELETE CASCADE,
     quest_id UUID REFERENCES public.quests(id) ON DELETE CASCADE,
-    progress INTEGER DEFAULT 0,
+    progress INTEGER DEFAULT 0 CHECK (progress >= 0),
     completed BOOLEAN DEFAULT FALSE,
     completed_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -93,3 +94,4 @@ BEGIN
   END IF;
 END;
 $$ LANGUAGE plpgsql;
+
