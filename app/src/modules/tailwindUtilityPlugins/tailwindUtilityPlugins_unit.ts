@@ -44,3 +44,23 @@ export function implementPrimaryServiceConstructor(config?: Partial<ITailwindUti
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure reactive state storage getters
+ */
+export interface ITailwindUtilityPluginsconfigureReactiveStateStorageGettersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureReactiveStateStorageGetters(config?: Partial<ITailwindUtilityPluginsconfigureReactiveStateStorageGettersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure reactive state storage getters',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
