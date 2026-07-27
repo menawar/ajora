@@ -984,3 +984,23 @@ export function implementFarcasterMiniAppFrameParser(config?: Partial<IServiceWo
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: configure module exports and index
+ */
+export interface IServiceWorkerPushconfigureModuleExportsAndIndexConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureModuleExportsAndIndex(config?: Partial<IServiceWorkerPushconfigureModuleExportsAndIndexConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'configure module exports and index',
+    module: 'serviceWorkerPush',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
