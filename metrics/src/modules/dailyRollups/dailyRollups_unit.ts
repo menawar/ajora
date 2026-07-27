@@ -564,3 +564,23 @@ export function implementUserPreferenceStorageHooks(options?: Partial<IDailyRoll
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure feature flag evaluation rules
+ */
+export interface IDailyRollupsconfigureFeatureFlagEvaluationRulesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureFeatureFlagEvaluationRules(options?: Partial<IDailyRollupsconfigureFeatureFlagEvaluationRulesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure feature flag evaluation rules',
+    module: 'dailyRollups',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
