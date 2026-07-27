@@ -524,3 +524,23 @@ export function configureExponentialBackoffDelayTimers(config?: Partial<IPonderD
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add authorization header formatters
+ */
+export interface IPonderDatabaseIndexaddAuthorizationHeaderFormattersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addAuthorizationHeaderFormatters(config?: Partial<IPonderDatabaseIndexaddAuthorizationHeaderFormattersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add authorization header formatters',
+    module: 'ponderDatabaseIndex',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
