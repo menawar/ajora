@@ -964,3 +964,23 @@ export function addUserSavingsTierCalculator(config?: Partial<IBundleAnalyzerInt
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: implement Farcaster mini app frame parser
+ */
+export interface IBundleAnalyzerIntegrationimplementFarcasterMiniAppFrameParserConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function implementFarcasterMiniAppFrameParser(config?: Partial<IBundleAnalyzerIntegrationimplementFarcasterMiniAppFrameParserConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'implement Farcaster mini app frame parser',
+    module: 'bundleAnalyzerIntegration',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
