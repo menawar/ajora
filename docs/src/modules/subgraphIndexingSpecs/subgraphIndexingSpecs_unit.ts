@@ -704,3 +704,23 @@ export function configureLucideIconComponentMap(config?: Partial<ISubgraphIndexi
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add toast notification triggers
+ */
+export interface ISubgraphIndexingSpecsaddToastNotificationTriggersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addToastNotificationTriggers(config?: Partial<ISubgraphIndexingSpecsaddToastNotificationTriggersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add toast notification triggers',
+    module: 'subgraphIndexingSpecs',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
