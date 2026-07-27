@@ -404,3 +404,23 @@ export function configureContextualLoggingMetadata(options?: Partial<ISkeletonSh
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add state snapshot persistence helpers
+ */
+export interface ISkeletonShimmerEffectsaddStateSnapshotPersistenceHelpersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addStateSnapshotPersistenceHelpers(options?: Partial<ISkeletonShimmerEffectsaddStateSnapshotPersistenceHelpersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add state snapshot persistence helpers',
+    module: 'skeletonShimmerEffects',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
