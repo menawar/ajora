@@ -644,3 +644,23 @@ export function configureUIThemeTokenOverrides(config?: Partial<IBundleAnalyzerI
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint helpers
+ */
+export interface IBundleAnalyzerIntegrationaddResponsiveLayoutBreakpointHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointHelpers(config?: Partial<IBundleAnalyzerIntegrationaddResponsiveLayoutBreakpointHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add responsive layout breakpoint helpers',
+    module: 'bundleAnalyzerIntegration',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
