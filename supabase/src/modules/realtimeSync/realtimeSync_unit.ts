@@ -884,3 +884,23 @@ export function configureVAPIDWebPushNotificationKeys(options?: Partial<IRealtim
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add build asset compression threshold checks
+ */
+export interface IRealtimeSyncaddBuildAssetCompressionThresholdChecksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addBuildAssetCompressionThresholdChecks(options?: Partial<IRealtimeSyncaddBuildAssetCompressionThresholdChecksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add build asset compression threshold checks',
+    module: 'realtimeSync',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
