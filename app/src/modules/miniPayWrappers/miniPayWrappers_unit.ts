@@ -64,3 +64,23 @@ export function configureRuntimeStateManagementGetters(options?: Partial<IMiniPa
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add default option parameter fallbacks
+ */
+export interface IMiniPayWrappersaddDefaultOptionParameterFallbacksOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addDefaultOptionParameterFallbacks(options?: Partial<IMiniPayWrappersaddDefaultOptionParameterFallbacksOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add default option parameter fallbacks',
+    module: 'miniPayWrappers',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
