@@ -764,3 +764,23 @@ export function configureCustomReactReducerHooks(config?: Partial<IVapidKeyRotat
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add local storage encryption helpers
+ */
+export interface IVapidKeyRotationaddLocalStorageEncryptionHelpersConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addLocalStorageEncryptionHelpers(config?: Partial<IVapidKeyRotationaddLocalStorageEncryptionHelpersConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add local storage encryption helpers',
+    module: 'vapidKeyRotation',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
