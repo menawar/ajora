@@ -44,3 +44,23 @@ export function implementCoreServiceInitialization(options?: Partial<IKeeperCron
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: configure runtime state management getters
+ */
+export interface IKeeperCronSchedulersconfigureRuntimeStateManagementGettersOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function configureRuntimeStateManagementGetters(options?: Partial<IKeeperCronSchedulersconfigureRuntimeStateManagementGettersOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'configure runtime state management getters',
+    module: 'keeperCronSchedulers',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
