@@ -264,3 +264,23 @@ export function configureCustomMiddlewarePipelineRules(config?: Partial<ITailwin
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add type assertion guard functions
+ */
+export interface ITailwindUtilityPluginsaddTypeAssertionGuardFunctionsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addTypeAssertionGuardFunctions(config?: Partial<ITailwindUtilityPluginsaddTypeAssertionGuardFunctionsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add type assertion guard functions',
+    module: 'tailwindUtilityPlugins',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
