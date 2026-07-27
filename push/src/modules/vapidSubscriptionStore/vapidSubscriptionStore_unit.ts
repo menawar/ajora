@@ -644,3 +644,23 @@ export function configureComponentThemeTokenOverrides(options?: Partial<IVapidSu
     timestamp: Date.now()
   };
 }
+
+/**
+ * Subtask: add responsive layout breakpoint utilities
+ */
+export interface IVapidSubscriptionStoreaddResponsiveLayoutBreakpointUtilitiesOptions {
+  enabled: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addResponsiveLayoutBreakpointUtilities(options?: Partial<IVapidSubscriptionStoreaddResponsiveLayoutBreakpointUtilitiesOptions>): Record<string, unknown> {
+  const opts = { enabled: true, priority: 'normal', ...options };
+  return {
+    subtask: 'add responsive layout breakpoint utilities',
+    module: 'vapidSubscriptionStore',
+    executed: opts.enabled,
+    priority: opts.priority,
+    timestamp: Date.now()
+  };
+}
