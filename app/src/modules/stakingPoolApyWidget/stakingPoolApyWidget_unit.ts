@@ -164,3 +164,23 @@ export function implementTelemetryEventLogger(config?: Partial<IStakingPoolApyWi
     updatedAt: Date.now()
   };
 }
+
+/**
+ * Subtask: add input sanitization and type validators
+ */
+export interface IStakingPoolApyWidgetaddInputSanitizationAndTypeValidatorsConfig {
+  active: boolean;
+  priority: string;
+  metadata?: Record<string, unknown>;
+}
+
+export function addInputSanitizationAndTypeValidators(config?: Partial<IStakingPoolApyWidgetaddInputSanitizationAndTypeValidatorsConfig>): Record<string, unknown> {
+  const cfg = { active: true, priority: 'standard', ...config };
+  return {
+    task: 'add input sanitization and type validators',
+    module: 'stakingPoolApyWidget',
+    active: cfg.active,
+    priority: cfg.priority,
+    updatedAt: Date.now()
+  };
+}
