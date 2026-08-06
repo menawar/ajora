@@ -150,7 +150,7 @@ export default function SavePage() {
             <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted h-5 w-5 pointer-events-none" aria-hidden="true" />
             <input
               id="custom-amount-input"
-              aria-label="Custom amount in cUSD"
+              aria-label="Custom amount in USDm"
               inputMode="decimal"
               placeholder={t("save.amountPlaceholder")}
               value={amount}

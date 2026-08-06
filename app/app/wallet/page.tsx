@@ -81,7 +81,7 @@ export default function WalletPage() {
                 decimals={2}
                 duration={1200}
               />
-              <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
+              <span className="text-sm font-bold text-text-muted ml-1">USDm</span>
             </div>
           )}
         </div>
@@ -101,7 +101,7 @@ export default function WalletPage() {
                 decimals={2}
                 duration={1200}
               />
-              <span className="text-sm font-bold text-text-muted ml-1">cUSD</span>
+              <span className="text-sm font-bold text-text-muted ml-1">USDm</span>
             </div>
           )}
         </div>
@@ -202,7 +202,7 @@ export default function WalletPage() {
           >
             <div>
               <div className="font-bold text-text-primary">{dayLabel(e.periodId, e.isToday)}</div>
-              <div className="text-sm font-semibold text-celo-green mt-0.5">{cusd(e.principal)} cUSD</div>
+              <div className="text-sm font-semibold text-celo-green mt-0.5">{cusd(e.principal)} USDm</div>
             </div>
             {e.isToday ? (
               <span className="rounded-xl bg-celo-gold/15 px-3 py-2 text-xs font-bold text-amber-700 border border-celo-gold/20">

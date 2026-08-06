@@ -42,7 +42,7 @@ function useOnChainQuests(address: string | undefined): Quest[] {
       {
         id: "daily_save",
         title: "Daily Saver",
-        description: "Save at least 1 cUSD into the vault today.",
+        description: "Save at least 1 USDm into the vault today.",
         reward: 50,
         type: "daily",
         progress: { current: entries.filter((e) => e.isToday).length > 0 ? 1 : 0, target: 1 },

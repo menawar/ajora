@@ -78,7 +78,7 @@ export function SavingsChart({ entries, loading = false, className = "" }: Savin
         </h2>
         <div className="text-right">
           <div className="text-xs text-text-muted font-medium">Avg / day</div>
-          <div className="text-sm font-black text-celo-green">{cusd(avg)} cUSD</div>
+          <div className="text-sm font-black text-celo-green">{cusd(avg)} USDm</div>
         </div>
       </div>
 

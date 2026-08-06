@@ -8,7 +8,7 @@
 ## Pre-requisites
 1. Use a rigged demo environment (local anvil fork or a specially deployed testnet contract with a 2-minute epoch).
 2. Both phones should have a Celo wallet installed (e.g., MiniPay).
-3. Ensure Phone A has at least 10 cUSD, and Phone B is connected to a fresh account.
+3. Ensure Phone A has at least 10 USDm, and Phone B is connected to a fresh account.
 
 ---
 
@@ -17,7 +17,7 @@
 | Time | Action | Visuals | Audio / Voiceover |
 | :--- | :--- | :--- | :--- |
 | **0:00 - 0:05** | **Hook** | **Phone A** opens Ajora inside MiniPay. Quick pan of the UI (Traction stats, current Daily Pot). | *"This is Ajora: the no-loss prize-linked savings game on Celo."* |
-| **0:05 - 0:15** | **Save** | **Phone A** types `10` cUSD into the Save screen, hits "Save & Get Tickets". The Celo transaction confirms in ~2 seconds. | *"Save your cUSD to earn tickets for the daily draw. Your principal is always safe and withdrawable."* |
+| **0:05 - 0:15** | **Save** | **Phone A** types `10` USDm into the Save screen, hits "Save & Get Tickets". The Celo transaction confirms in ~2 seconds. | *"Save your USDm to earn tickets for the daily draw. Your principal is always safe and withdrawable."* |
 | **0:15 - 0:25** | **Pick & Spray** | **Phone A** goes to the Pick screen, selects a number (e.g., 7). Then navigates to the Crew tab and hits "Spray" (sends a referral link via WhatsApp to Phone B). | *"Pick your lucky number, then spray your friends with tickets to boost the pot."* |
 | **0:25 - 0:35** | **Join (Phone B)** | **Phone B** taps the WhatsApp link. Ajora opens instantly. The user taps "Claim Spray Ticket" (gasless via relayer). | *"When friends use your link, they join instantly without needing gas."* |
 | **0:35 - 0:45** | **The Draw** | Screen split. A countdown timer hits zero. Both phones receive a push notification: "Draw resolved! Winning number is 7". | *"Every day at 8 PM, the draw runs automatically on-chain..."* |

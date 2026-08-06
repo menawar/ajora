@@ -24,7 +24,7 @@ const logId = (event: EventWithLog) => `${event.transaction.hash}-${event.log.lo
 /** Mirrors PotVault.currentPeriod(): one period per UTC day. */
 const periodOf = (timestamp: bigint) => timestamp / 86_400n;
 
-/** The vault's stablecoin (cUSD, single-token v3). Multi-vault configs map this per vault. */
+/** The vault's stablecoin (USDm, single-token v3). Multi-vault configs map this per vault. */
 const STABLECOIN = "0x765DE816845861e75A25fCA122bb6898B8B1282a" as const;
 
 interface UserDelta {

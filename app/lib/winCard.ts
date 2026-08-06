@@ -60,7 +60,7 @@ export async function renderCard(data: CardData): Promise<Blob> {
   ctx.fillText("Ajora 🎉", W / 2, 210);
   ctx.font = "42px system-ui, sans-serif";
   ctx.fillStyle = "#555";
-  ctx.fillText("Save small, keep every cent, chop jara.", W / 2, 280);
+  ctx.fillText("Save small, keep every cent, win extra bonus.", W / 2, 280);
 
   if (data.kind === "win") {
     ctx.fillStyle = "#1a1a2e";
@@ -68,7 +68,7 @@ export async function renderCard(data: CardData): Promise<Blob> {
     ctx.fillText("I chopped", W / 2, 450);
     ctx.fillStyle = "#0aa860";
     ctx.font = "bold 150px system-ui, sans-serif";
-    ctx.fillText(`${data.amountCusd} cUSD`, W / 2, 610);
+    ctx.fillText(`${data.amountCusd} USDm`, W / 2, 610);
     ctx.fillStyle = "#1a1a2e";
     ctx.font = "bold 64px system-ui, sans-serif";
     ctx.fillText("in tonight's draw 💸", W / 2, 720);

@@ -36,7 +36,7 @@ const FAQ_DATA = [
     q: "How do I win?",
     a: (
       <>
-        You earn <GlossaryTooltip term="Tickets" definition="Chances to win in the daily draw. 1 cUSD saved = 1 base ticket." /> 
+        You earn <GlossaryTooltip term="Tickets" definition="Chances to win in the daily draw. 1 USDm saved = 1 base ticket." /> 
         by saving. Every day at 20:00 UTC, a random winning number (1-9) is drawn by the 
         <GlossaryTooltip term="Keeper" definition="An automated backend script that triggers the draw and harvests yield." />. 
         If your picked number matches, your tickets receive a proportional share of the pot!
@@ -60,7 +60,7 @@ const FAQ_DATA = [
     a: (
       <>
         Winnings automatically accrue to your wallet&apos;s internal Ajora balance. You can see your 
-        unclaimed winnings on the Wallet page and tap &quot;Claim&quot; to withdraw them straight to your MiniPay wallet as cUSD.
+        unclaimed winnings on the Wallet page and tap &quot;Claim&quot; to withdraw them straight to your MiniPay wallet as USDm.
       </>
     )
   },

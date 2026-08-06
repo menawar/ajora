@@ -17,7 +17,7 @@ import { IYieldAdapter } from "../src/interfaces/IYieldAdapter.sol";
 /// @dev Env: VAULT, DRAW_MANAGER (core addresses), AAVE_POOL, A_TOKEN (venue),
 ///      DEPOSIT_CAP (default 1000e18 — month-1 blast-radius cap).
 ///      Celo mainnet venue: pool 0x3E59A31363E2ad014dcbc521c4a0d5757d9f3402,
-///      aCelcUSD 0xBba98352628B0B0c4b40583F593fFCb630935a45.
+///      aUSDm 0xBba98352628B0B0c4b40583F593fFCb630935a45.
 contract DeployYield is Script {
     function run() external returns (YieldAdapter adapter, Treasury treasury) {
         PotVault vault = PotVault(vm.envAddress("VAULT"));

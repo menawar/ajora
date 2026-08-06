@@ -23,12 +23,16 @@ contract Treasury is ITreasury {
     uint256 public totalYieldFees;
     uint256 public totalSponsorFees;
     uint256 public totalRescueFees;
+    /// @notice Lifetime shortfall covered for the vault — visible on the transparency dashboard.
+    uint256 public totalShortfallCovered;
 
     mapping(uint256 periodId => uint256) public rakeOf;
 
     error NotAdmin();
+    error NotVault();
     error TransferFailed();
     error ZeroAddress();
+    error InsufficientReserves();
 
     constructor(IERC20 _token, PotVault _vault, DrawManager _drawManager) {
         if (
@@ -100,5 +104,18 @@ contract Treasury is ITreasury {
         if (to == address(0)) revert ZeroAddress();
         if (!token.transfer(to, amount)) revert TransferFailed();
         emit FeeWithdrawn(to, amount);
+    }
+
+    /// @inheritdoc ITreasury
+    /// @dev Vault-only. Transfers `amount` from Treasury's token balance directly to the vault
+    ///      to cover a withdrawal shortfall when the Aave venue is momentarily illiquid.
+    ///      This is a last-resort fallback — rake/fee reserves absorb the gap and are
+    ///      replenished once Aave liquidity recovers and the keeper harvests again.
+    function coverShortfall(uint256 amount) external {
+        if (msg.sender != address(vault)) revert NotVault();
+        if (token.balanceOf(address(this)) < amount) revert InsufficientReserves();
+        totalShortfallCovered += amount;
+        if (!token.transfer(address(vault), amount)) revert TransferFailed();
+        emit ShortfallCovered(amount);
     }
 }

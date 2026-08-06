@@ -7,7 +7,7 @@
     "PotVault": {
       "address": "0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415",
       "stablecoin": "0x765DE816845861e75A25fCA122bb6898B8B1282a",
-      "stablecoinSymbol": "cUSD",
+      "stablecoinSymbol": "USDm",
       "minContribution": "100000000000000000",
       "admin": "0x0Cf01057391165EcB2Bb989B2255cd581F075DB7",
       "userPeriodCap": "50000000000000000000",

@@ -79,7 +79,7 @@ try {
 
   // ---- deploy + wire the core exactly like Deploy.s.sol ----
   const MIN = parseUnits("0.1", 18);
-  const cusd = await deploy("MockERC20", ["Celo Dollar", "cUSD", 18]);
+  const cusd = await deploy("MockERC20", ["Mento Dollar", "USDm", 18]);
   const vault = await deploy("PotVault", [cusd.address, MIN]);
   const streak = await deploy("StreakSBT", []);
   const faucet = await deploy("SprayFaucet", [vault.address, deployer.address]);

@@ -8,8 +8,8 @@ import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { IAaveV3Pool } from "../src/interfaces/IAaveV3Pool.sol";
 import { IYieldAdapter } from "../src/interfaces/IYieldAdapter.sol";
 
-/// @notice Fork tests against the live Aave v3 cUSD reserve on Celo mainnet — the venue
-///         chosen for launch (audited, instant-liquidity, cUSD-native).
+/// @notice Fork tests against the live Aave v3 USDm reserve on Celo mainnet — the venue
+///         chosen for launch (audited, instant-liquidity, USDm-native).
 /// @dev Skipped unless CELO_FORK_RPC is set, e.g.:
 ///      CELO_FORK_RPC=https://forno.celo.org forge test --match-contract Fork
 
@@ -78,7 +78,7 @@ contract YieldAdapterForkTest is Test {
 
         vm.warp(block.timestamp + 30 days);
         uint256 balance = IERC20(A_CUSD).balanceOf(address(adapter));
-        assertGt(balance, 80e18, "cUSD reserve accrues interest over 30 days");
+        assertGt(balance, 80e18, "USDm reserve accrues interest over 30 days");
 
         uint256 periodId = vault.currentPeriod();
         uint256 harvested = adapter.harvest(periodId);

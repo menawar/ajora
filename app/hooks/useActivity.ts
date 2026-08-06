@@ -45,9 +45,9 @@ function cusd(value: bigint): string {
 
 /**
  * Builds a real activity feed for the connected wallet from recent on-chain events:
- *  - Contributed → "Saved X cUSD"
+ *  - Contributed → "Saved X USDm"
  *  - CheckedIn   → "Day N streak check-in"
- *  - PrizeClaimed → "Won X cUSD 🎉"
+ *  - PrizeClaimed → "Won X USDm 🎉"
  *
  * Returns up to 10 items, newest-first. Falls back to [] on error/no wallet.
  */
@@ -116,7 +116,7 @@ export function useActivity() {
           allItems.push({
             id: `save-${log.transactionHash}-${log.logIndex}`,
             type: "save",
-            text: `Saved ${cusd(amount)} cUSD`,
+            text: `Saved ${cusd(amount)} USDm`,
             time: timeAgo(ts),
             ts,
           });
@@ -140,7 +140,7 @@ export function useActivity() {
           allItems.push({
             id: `win-${log.transactionHash}-${log.logIndex}`,
             type: "win",
-            text: `Won ${cusd(amount)} cUSD 🎉`,
+            text: `Won ${cusd(amount)} USDm 🎉`,
             time: timeAgo(ts),
             ts,
           });

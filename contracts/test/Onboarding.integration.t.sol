@@ -36,7 +36,7 @@ contract OnboardingIntegrationTest is Test {
     function setUp() public {
         treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 days + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         sbt = new StreakSBT(IERC20(address(cusd)), treasury);
         faucet = new SprayFaucet(vault, verifier, treasury);
@@ -88,7 +88,7 @@ contract OnboardingIntegrationTest is Test {
         vm.prank(newUser);
         uint256 won = vault.claimWinnings(period);
         assertEq(won, pot);
-        assertEq(cusd.balanceOf(newUser), pot, "real cUSD, zero deposit");
+        assertEq(cusd.balanceOf(newUser), pot, "real USDm, zero deposit");
 
         // 6. No-loss check: Amara's principal remains fully redeemable after the period closes.
         vm.warp(block.timestamp + 1 days);

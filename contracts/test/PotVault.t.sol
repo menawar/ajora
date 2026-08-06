@@ -22,11 +22,11 @@ contract PotVaultTest is Test {
     address internal alice = address(0xA11CE);
     address internal bob = address(0xB0B);
 
-    uint256 internal constant MIN = 0.1e18; // 0.10 cUSD
+    uint256 internal constant MIN = 0.1e18; // 0.10 USDm
 
     function setUp() public {
         treasury = Treasury(address(new MockTreasury()));
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
 
         cusd.mint(alice, 100e18);
@@ -42,9 +42,9 @@ contract PotVaultTest is Test {
 
     function test_ContributeMintsTicketsAndTracksPrincipal() public {
         uint256 period = vault.currentPeriod();
-        uint256 tickets = _contribute(alice, 1e18); // 1.0 cUSD -> 10 tickets
+        uint256 tickets = _contribute(alice, 1e18); // 1.0 USDm -> 10 tickets
 
-        assertEq(tickets, 10, "10 tickets for 1.0 cUSD at 0.1 min");
+        assertEq(tickets, 10, "10 tickets for 1.0 USDm at 0.1 min");
         assertEq(vault.principalOf(alice, period), 1e18);
         assertEq(vault.ticketsOf(alice, period), 10);
         assertEq(cusd.balanceOf(address(vault)), 1e18);

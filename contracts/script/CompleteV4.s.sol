@@ -14,7 +14,7 @@ import { ICrewRegistry } from "../src/interfaces/ICrewRegistry.sol";
 ///         landed; this deploys DrawManager + (the updated) CrewRegistry and wires all five.
 /// @dev Env: V4_VAULT, V4_STREAK, V4_FAUCET (the landed addresses), KEEPER (defaults to
 ///      deployer). Run once gas normalizes:
-///      STABLECOIN unused here — the vault is already bound to cUSD.
+///      STABLECOIN unused here — the vault is already bound to USDm.
 contract CompleteV4 is Script {
     function run() external returns (DrawManager draw, CrewRegistry crew) {
         PotVault vault = PotVault(vm.envAddress("V4_VAULT"));

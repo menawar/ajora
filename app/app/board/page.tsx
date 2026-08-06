@@ -184,7 +184,7 @@ export default function BoardPage() {
                   <div className="text-lg font-black text-text-primary leading-tight">
                     {boardType === "savings" ? cusd(r.total) : r.total.toString()}
                     <span className="text-[10px] text-text-muted uppercase tracking-widest font-bold block -mt-1">
-                      {boardType === "savings" ? "cUSD" : "XP"}
+                      {boardType === "savings" ? "USDm" : "XP"}
                     </span>
                   </div>
                 </div>

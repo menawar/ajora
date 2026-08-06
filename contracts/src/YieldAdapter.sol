@@ -101,14 +101,41 @@ contract YieldAdapter is IYieldAdapter {
     }
 
     /// @inheritdoc IYieldAdapter
-    /// @dev Withdraws straight to the vault. Underflow on totalDeployed means the vault asked
-    ///      for more principal than was ever deployed — that's a caller bug, so revert.
-    function withdraw(uint256 amount) external onlyVault {
-        totalDeployed -= amount;
+    /// @dev Wraps pool.withdraw in try/catch so a momentarily-illiquid Aave venue never hard-reverts
+    ///      a user's principal claim. On a full revert we attempt a partial pull using the available
+    ///      aToken balance; on that also failing we emit PartialWithdrawal(amount, 0) and return 0.
+    ///      totalDeployed is decremented only by what was actually recalled — accounting stays correct.
+    function withdraw(uint256 amount) external onlyVault returns (uint256 actual) {
         IAaveV3Pool pool = IAaveV3Pool(addressesProvider.getPool());
-        uint256 got = pool.withdraw(address(token), amount, address(vault));
-        if (got != amount) revert VenueShort();
-        emit Withdrawn(amount);
+
+        // Attempt to withdraw the full requested amount.
+        try pool.withdraw(address(token), amount, address(vault)) returns (uint256 got) {
+            totalDeployed -= got;
+            actual = got;
+            // In practice Aave either gives the full amount or reverts; if a partial ever
+            // slips through, surface it with the same event.
+            if (got < amount) {
+                emit PartialWithdrawal(amount, got);
+            } else {
+                emit Withdrawn(got);
+            }
+        } catch {
+            // Aave is illiquid — attempt a best-effort partial pull using the aToken
+            // balance, which is the maximum we could ever hope to reclaim right now.
+            uint256 abal = aToken.balanceOf(address(this));
+            if (abal == 0) {
+                emit PartialWithdrawal(amount, 0);
+                return 0;
+            }
+            uint256 pullable = abal < amount ? abal : amount;
+            try pool.withdraw(address(token), pullable, address(vault)) returns (uint256 got2) {
+                totalDeployed -= got2;
+                actual = got2;
+            } catch {
+                actual = 0;
+            }
+            emit PartialWithdrawal(amount, actual);
+        }
     }
 
     /// @inheritdoc IYieldAdapter

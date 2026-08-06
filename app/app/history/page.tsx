@@ -95,9 +95,9 @@ export default function HistoryPage() {
       {!loading && entries.length > 0 && (
         <motion.div variants={itemVariants} className="grid grid-cols-3 gap-2">
           {[
-            { label: "Recent (14d)", value: cusd(total) + " cUSD" },
-            { label: "All Time (30d)", value: cusd(totalAllTime) + " cUSD" },
-            { label: "Avg / Day", value: entries.length > 0 ? cusd(total / BigInt(entries.length)) + " cUSD" : "—" },
+            { label: "Recent (14d)", value: cusd(total) + " USDm" },
+            { label: "All Time (30d)", value: cusd(totalAllTime) + " USDm" },
+            { label: "Avg / Day", value: entries.length > 0 ? cusd(total / BigInt(entries.length)) + " USDm" : "—" },
           ].map(({ label, value }) => (
             <div key={label} className="glass-panel rounded-2xl p-3 text-center">
               <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">{label}</div>
@@ -174,7 +174,7 @@ export default function HistoryPage() {
                 </div>
                 <div>
                   <div className="font-bold text-sm text-text-primary">{fullDayLabel(e.periodId, e.isToday)}</div>
-                  <div className="text-xs font-semibold text-celo-green mt-0.5">{cusd(e.principal)} cUSD</div>
+                  <div className="text-xs font-semibold text-celo-green mt-0.5">{cusd(e.principal)} USDm</div>
                 </div>
               </div>
               {e.isToday ? (

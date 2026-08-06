@@ -9,7 +9,7 @@ This Letter of Intent outlines the mutual interest and preliminary understanding
 - **Campaign Name:** [e.g., The Celo Summer Draw by Sponsor]
 - **Duration:** [e.g., 7 Days]
 - **Start Date:** [Date]
-- **Total Funding Amount:** [Amount in cUSD]
+- **Total Funding Amount:** [Amount in USDm]
 
 ## 2. Ajora’s Deliverables
 - Re-brand the daily draw screen to prominently feature the Sponsor's name/logo.

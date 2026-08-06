@@ -34,7 +34,7 @@ contract PotVaultGuardsTest is Test {
 
     function setUp() public {
         vm.warp(20_000 days + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         
         treasury = Treasury(address(new MockTreasury()));

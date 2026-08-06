@@ -30,7 +30,7 @@ contract DrawVRFTest is Test {
     function setUp() public {
         treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         
         vrfMock = new VRFCoordinatorV2Mock(0.1e18, 1e9);

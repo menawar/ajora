@@ -32,7 +32,7 @@ function deps(nowMs: number, digest: unknown): JobDeps & { delivered: string[] }
 const drawDigest = {
   resolved: true,
   winningNumber: 7,
-  winners: [{ address: "0xaa", share: "2500000000000000000" }], // 2.50 cUSD
+  winners: [{ address: "0xaa", share: "2500000000000000000" }], // 2.50 USDm
   losers: ["0xbb", "0xcc"],
 };
 

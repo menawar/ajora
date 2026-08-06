@@ -42,7 +42,7 @@ export function WinningsSection() {
         <div>
           <h2 className="font-bold text-text-primary text-sm">Unclaimed Winnings</h2>
           <p className="text-xs text-text-muted">
-            {cusd(total)} cUSD ready to claim
+            {cusd(total)} USDm ready to claim
           </p>
         </div>
       </div>
@@ -64,7 +64,7 @@ export function WinningsSection() {
                   🏆 Won on {dayLabel(entry.periodId)}
                 </div>
                 <div className="text-xs font-semibold text-celo-green mt-0.5">
-                  {cusd(entry.amount)} cUSD
+                  {cusd(entry.amount)} USDm
                 </div>
               </div>
 

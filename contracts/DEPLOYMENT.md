@@ -30,12 +30,12 @@ Caps are **armed inside the deploy broadcast** — there is no unguarded window
 between deployment and a follow-up transaction.
 
 ### Caps Rationale & Review Date
-- **Per-User Cap (50 cUSD)**: High enough to allow meaningful daily savings for the target demographic (Africa retail), but low enough to prevent a single whale from dominating the yield pool and warping the prize odds early on.
-- **TVL Cap (5000 cUSD)**: A conservative month-1 boundary. If the protocol is compromised, the maximum aggregate loss is capped at $5,000, which can be made whole from the team's operational treasury.
+- **Per-User Cap (50 USDm)**: High enough to allow meaningful daily savings for the target demographic (Africa retail), but low enough to prevent a single whale from dominating the yield pool and warping the prize odds early on.
+- **TVL Cap (5000 USDm)**: A conservative month-1 boundary. If the protocol is compromised, the maximum aggregate loss is capped at $5,000, which can be made whole from the team's operational treasury.
 - **Review Date**: **August 15, 2026**. After 30 days of mainnet stability and organic growth, the team will review metrics and consider raising the TVL cap to $50,000 and the per-user cap to $500.
 
-Stablecoin addresses: mainnet cUSD `0x765DE816845861e75A25fCA122bb6898B8B1282a`,
-Alfajores cUSD `0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1`.
+Stablecoin addresses: mainnet USDm `0x765DE816845861e75A25fCA122bb6898B8B1282a`,
+Alfajores USDm `0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1`.
 
 ## Commands
 
@@ -75,12 +75,12 @@ cast send $VAULT 'applyYieldAdapter()' --private-key $PK --rpc-url $RPC --legacy
 ```
 
 Rehearsal assertions (all held on the last run):
-1. Wiring reads back (`drawManager()`, `sprayFaucet()`, caps = 50 / 5000 cUSD).
-2. A 60 cUSD contribute **reverts** (`UserCapExceeded`); 40 cUSD succeeds.
+1. Wiring reads back (`drawManager()`, `sprayFaucet()`, caps = 50 / 5000 USDm).
+2. A 60 USDm contribute **reverts** (`UserCapExceeded`); 40 USDm succeeds.
 3. `deployIdle(30)` respects the 20% buffer; adapter supplies real Aave.
-4. After a 30-day warp, `harvest` moved **real reserve interest** (~0.0625 cUSD on
-   30 cUSD, matching the live rate) into the period's jaraPot.
-5. `claimPrincipal` returned **exactly 40 cUSD**, auto-recalling the shortfall from
+4. After a 30-day warp, `harvest` moved **real reserve interest** (~0.0625 USDm on
+   30 USDm, matching the live rate) into the period's jaraPot.
+5. `claimPrincipal` returned **exactly 40 USDm**, auto-recalling the shortfall from
    Aave mid-claim; afterwards `vault balance + adapter.totalDeployed()` equalled
    liabilities to the wei.
 
@@ -129,7 +129,7 @@ forge script script/DeployYield.s.sol:DeployYield \
   --rpc-url https://forno.celo.org --broadcast --private-key "$PRIVATE_KEY"
 ```
 
-Venue: the **Aave v3 cUSD reserve on Celo** (audited, instant liquidity). The script
+Venue: the **Aave v3 USDm reserve on Celo** (audited, instant liquidity). The script
 deploys `YieldAdapter` + `Treasury` and *proposes* the adapter; the vault's 24h
 timelock means you finish with `vault.applyYieldAdapter()` after the logged eta.
 
@@ -145,7 +145,7 @@ Operating notes:
   claim window — add to the daily keeper pass.
 - Venue changes: deploy a new adapter, drain the old one (`vault.recallDeployed`),
   then propose/apply through the timelock. `adapter.setDepositCap` bounds venue
-  exposure (month-1 default 1000 cUSD).
+  exposure (month-1 default 1000 USDm).
 - Fork-verify before any venue change:
   `CELO_FORK_RPC=https://forno.celo.org forge test --match-contract Fork`.
 - The same suite also runs weekly in CI (`fork-tests.yml`) and opens a

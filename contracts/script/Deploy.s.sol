@@ -16,11 +16,11 @@ import { ICrewRegistry } from "../src/interfaces/ICrewRegistry.sol";
 ///         the month-1 blast-radius caps (spec §13, issue #50) in the same broadcast.
 /// @dev Env vars: STABLECOIN (token address), MIN_CONTRIBUTION (default 0.1e18),
 ///      VERIFIER and KEEPER (both default to the deployer until the backend services exist).
-///      Caps (0 disables): USER_PERIOD_CAP (default 50e18 — 50 cUSD/user/day),
+///      Caps (0 disables): USER_PERIOD_CAP (default 50e18 — 50 USDm/user/day),
 ///      MAX_TOTAL_PRINCIPAL (default 5000e18 TVL), FREE_VALUE_CAP (default: the faucet's
 ///      built-in 30 tickets; only overridden when set).
-///      Celo mainnet cUSD: 0x765DE816845861e75A25fCA122bb6898B8B1282a
-///      Alfajores  cUSD:   0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1
+///      Celo mainnet USDm: 0x765DE816845861e75A25fCA122bb6898B8B1282a  (same address, rebranded from cUSD)
+///      Alfajores  USDm:   0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1
 contract Deploy is Script {
     function run()
         external

@@ -11,12 +11,17 @@ interface IYieldAdapter {
     event Deposited(uint256 amount);
     event Withdrawn(uint256 amount);
     event Harvested(uint256 yieldAmount, uint256 indexed periodId);
+    /// @notice Emitted when the venue cannot fulfill the full requested recall.
+    ///         `actual` is the amount that was actually returned to the vault (may be 0).
+    event PartialWithdrawal(uint256 requested, uint256 actual);
 
     /// @notice Deploy vault principal into the venue. Vault only.
     function deposit(uint256 amount) external;
 
     /// @notice Recall principal from the venue back to the vault. Vault only.
-    function withdraw(uint256 amount) external;
+    /// @return actual The amount actually recalled; may be less than `amount` if the
+    ///         venue is temporarily illiquid. The vault handles the shortfall upstream.
+    function withdraw(uint256 amount) external returns (uint256 actual);
 
     /// @notice Send accrued yield (venue balance above deployed principal) to the vault's
     ///         jaraPot for `periodId`. Callable by anyone (keeper in practice).

@@ -1,6 +1,6 @@
 # Ajora 🎉
 
-> **Save 0.10 cUSD a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe.**
+> **Save 0.10 USDm a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe.**
 
 Ajora is a **no-loss prize-linked savings game** built as a [MiniPay](https://www.opera.com/products/minipay) Mini App on [Celo](https://celo.org). It digitizes the continent's most-trusted money ritual — the rotating savings group (**Ajo** / **Esusu** / **Chama** / **Susu**) — and makes the organizer impossible: the smart contract holds the funds, so nobody can run away with the money.
 
@@ -160,7 +160,7 @@ Live core: **core_v5**, deployed 2026-07-07.
 | `DrawManager` | [`0xacB78C0DdAA33C660010dE76b842A54b613156B4`](https://celoscan.io/address/0xacB78C0DdAA33C660010dE76b842A54b613156B4) |
 | `CrewRegistry` | [`0x73F0770aea05298579252dFf193df0454C0B5A8a`](https://celoscan.io/address/0x73F0770aea05298579252dFf193df0454C0B5A8a) |
 
-Stablecoin: cUSD · min contribution / ticket value: 0.10 cUSD · full details + superseded cores:
+Stablecoin: USDm · min contribution / ticket value: 0.10 USDm · full details + superseded cores:
 [`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json) ·
 runbook: [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md)
 

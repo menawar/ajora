@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @notice Minimal mintable ERC20 for tests (stands in for a Mento stablecoin like cUSD).
+/// @notice Minimal mintable ERC20 for tests (stands in for a Mento stablecoin like USDm).
 contract MockERC20 {
     string public name;
     string public symbol;

@@ -57,7 +57,7 @@ export async function runDrawJob(deps: JobDeps, periodId?: bigint): Promise<JobR
   for (const w of digest.winners ?? []) {
     await attempt(deps, report, now(), [w.address], "won", String(period), {
       title: "You won the jara! 🎉",
-      body: `${cusd(w.share)} cUSD is yours — open Ajora to claim it.`,
+      body: `${cusd(w.share)} USDm is yours — open Ajora to claim it.`,
       tag: `draw-${period}`,
       url: "/draw",
     });
@@ -116,7 +116,7 @@ export async function runClaimJob(deps: JobDeps): Promise<JobReport> {
     if (!slot) continue;
     await attempt(deps, report, now(), [r.address], "claim", `p${r.periodId}-${slot}`, {
       title: slot === "final" ? "⏳ Last day to claim your jara!" : "💰 Your jara is waiting",
-      body: `${cusd(r.amount)} cUSD unclaimed — ${r.daysLeft} day${r.daysLeft === 1 ? "" : "s"} left before it recycles.`,
+      body: `${cusd(r.amount)} USDm unclaimed — ${r.daysLeft} day${r.daysLeft === 1 ? "" : "s"} left before it recycles.`,
       tag: `claim-${r.periodId}`,
       url: "/wallet",
     });

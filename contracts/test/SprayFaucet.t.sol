@@ -31,7 +31,7 @@ contract SprayFaucetTest is Test {
     function setUp() public {
         treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 days + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         faucet = new SprayFaucet(vault, verifier, treasury);
         vault.setSprayFaucet(address(faucet));

@@ -63,7 +63,7 @@ const CACHE_HEADER = "public, max-age=30, stale-while-revalidate=60";
  * - reciprocal-spray: A sprayed B and B sprayed A (2-cycles are the cheapest wash loop).
  * - repeat-pair: the same sender sprayed the same recipient 5+ times (drip farming).
  * - shared-funder: >= 5 addresses whose first spray all came from the same funder and
- *   who never spray each other but share a gas/cUSD source (#85).
+ *   who never spray each other but share a gas/USDm source (#85).
  */
 /** Flag computation does two joins; amortize it across requests (#64). */
 const FLAGS_TTL_MS = 60_000;
@@ -91,7 +91,7 @@ async function computeFlagsUncached(): Promise<Map<string, string[]>> {
 
   // shared-funder: addresses whose first spray-in came from the same funder,
   // clustered at >= SHARED_FUNDER_THRESHOLD members. Rings avoid reciprocal
-  // sprays but share a gas/cUSD source -> cluster them.
+  // sprays but share a gas/USDm source -> cluster them.
   const SHARED_FUNDER_THRESHOLD = 5;
   const sLater = alias(schema.sprays, "s_later");
   const sEarlier = alias(schema.sprays, "s_earlier");

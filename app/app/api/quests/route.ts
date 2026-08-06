@@ -104,7 +104,7 @@ async function deriveQuestsFromChain(address: `0x${string}`) {
     {
       id: "daily_save",
       title: "Daily Saver",
-      description: "Save at least 1 cUSD into the vault today.",
+      description: "Save at least 1 USDm into the vault today.",
       xpReward: 50,
       progress: savedToday ? 1 : 0,
       total: 1,

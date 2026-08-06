@@ -11,6 +11,8 @@ interface ITreasury {
     event RescueFeeCollected(uint256 amount, address indexed user);
     event FeeWithdrawn(address indexed to, uint256 amount);
     event JaraFunded(uint256 amount, uint256 indexed periodId);
+    /// @notice Emitted when the Treasury covers a liquidity shortfall for the vault.
+    event ShortfallCovered(uint256 amount);
 
     /// @notice Pull `amount` of rake from the caller (a paid Big Pot) and account it.
     function collectRake(uint256 amount, uint256 periodId) external;
@@ -30,4 +32,8 @@ interface ITreasury {
     /// @notice Recycle a resolved period's unclaimed prize remainder forward. Permissionless
     ///         once the claim window has passed. Returns the amount recycled.
     function sweepUnclaimed(uint256 periodId) external returns (uint256 amount);
+
+    /// @notice Transfer `amount` from Treasury reserves to the vault to cover a withdrawal
+    ///         shortfall when the yield venue is temporarily illiquid. Vault-only.
+    function coverShortfall(uint256 amount) external;
 }

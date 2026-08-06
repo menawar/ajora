@@ -6,6 +6,7 @@ import { IPotVault } from "./interfaces/IPotVault.sol";
 import { IStreakSBT } from "./interfaces/IStreakSBT.sol";
 import { ICrewRegistry } from "./interfaces/ICrewRegistry.sol";
 import { IYieldAdapter } from "./interfaces/IYieldAdapter.sol";
+import { ITreasury } from "./interfaces/ITreasury.sol";
 
 /// @title PotVault
 /// @notice Week-1 core of Ajora: custodies daily savings in a Mento stablecoin, mints draw
@@ -16,7 +17,7 @@ import { IYieldAdapter } from "./interfaces/IYieldAdapter.sol";
 ///      tickets are credited by the SprayFaucet. Yield routing arrives in a later milestone
 ///      (see AJORA_SPEC.md §8).
 contract PotVault is IPotVault {
-    /// @notice The Mento stablecoin this vault accepts (e.g. cUSD / cKES / cCOP).
+    /// @notice The Mento stablecoin this vault accepts (e.g. USDm / KESm / COPm).
     IERC20 public immutable token;
 
     /// @notice Minimum contribution (in token base units). Set at deploy for the token's decimals.
@@ -42,6 +43,10 @@ contract PotVault is IPotVault {
 
     /// @notice Earliest timestamp the pending adapter can be applied; 0 = nothing proposed.
     uint256 public yieldAdapterEta;
+
+    /// @notice Treasury used as last-resort backstop when the yield venue is illiquid.
+    ///         Optional — if not set the queue is the only fallback.
+    ITreasury public treasury;
 
     /// @notice Share of total assets (bps) that must stay liquid in-vault after deployIdle.
     uint256 public liquidityBufferBps = 2_000;
@@ -71,6 +76,13 @@ contract PotVault is IPotVault {
     /// @dev Ticket multiplier is scaled by 10: 10 = 1.0x, 15 = 1.5x, 30 = 3.0x.
     uint256 internal constant MULTIPLIER_SCALE = 10;
 
+    /// @notice Deferred withdrawals: user → total principal owed but not yet transferred.
+    ///         Populated by claimPrincipal when the vault is illiquid; cleared by drainQueue.
+    mapping(address user => uint256) internal _pendingWithdrawals;
+
+    /// @notice Sum of all _pendingWithdrawals entries; used by drainQueue for a single bulk recall.
+    uint256 public totalQueued;
+
     mapping(uint256 periodId => Period) internal _periods;
     mapping(address user => mapping(uint256 periodId => uint256)) internal _principal;
     mapping(address user => mapping(uint256 periodId => uint256)) internal _tickets;
@@ -96,6 +108,7 @@ contract PotVault is IPotVault {
     error UnpauseTimelocked();
     error UserCapExceeded();
     error TvlCapExceeded();
+    error QueueEmpty();
 
     event StreakSBTUpdated(address indexed streakSBT);
     event SprayFaucetSet(address indexed sprayFaucet);
@@ -104,10 +117,13 @@ contract PotVault is IPotVault {
     event YieldAdapterProposed(address indexed adapter, uint256 eta);
     event YieldAdapterSet(address indexed adapter);
     event LiquidityBufferSet(uint256 bps);
+    /// @notice Extended buffer event emitted by setLiquidityBufferWithReason for keeper transparency.
+    event LiquidityBufferUpdated(uint256 bps, string reason);
     event PrincipalDeployed(uint256 amount);
     event PrincipalRecalled(uint256 amount);
     event CircuitBreaker(bool active);
     event DepositCapsSet(uint256 userPeriodCap, uint256 maxTotalPrincipal);
+    event TreasurySet(address indexed treasury);
 
     constructor(IERC20 _token, uint256 _minContribution) {
         token = _token;
@@ -208,6 +224,22 @@ contract PotVault is IPotVault {
         emit LiquidityBufferSet(bps);
     }
 
+    /// @notice Same as setLiquidityBuffer but emits an extended event with a human-readable
+    ///         reason so the keeper's draw-day bump is visible in the transparency dashboard.
+    /// @dev Call this from the keeper cron, e.g. "pre-draw buffer bump" / "post-draw reset".
+    function setLiquidityBufferWithReason(uint256 bps, string calldata reason) external onlyAdmin {
+        if (bps > 10_000) revert InvalidBps();
+        liquidityBufferBps = bps;
+        emit LiquidityBufferUpdated(bps, reason);
+    }
+
+    /// @notice Wire (or update) the Treasury used as last-resort liquidity backstop. Admin only.
+    /// @dev Setting address(0) disables the backstop; the withdrawal queue becomes the sole fallback.
+    function setTreasury(ITreasury _treasury) external onlyAdmin {
+        treasury = _treasury;
+        emit TreasurySet(address(_treasury));
+    }
+
     /// @notice Push idle principal into the yield venue, keeping the liquidity buffer
     ///         in-vault. Admin only (the harvest keeper never touches principal).
     function deployIdle(uint256 amount) external onlyAdmin {
@@ -232,15 +264,39 @@ contract PotVault is IPotVault {
         emit PrincipalRecalled(amount);
     }
 
-    /// @dev Claims never wait on the buffer: if the vault is short, pull the shortfall from
-    ///      the venue right now. Called after all state updates (CEI preserved).
-    function _ensureLiquidity(uint256 amount) internal {
+    /// @dev Tries to ensure `amount` of token is liquid in the vault, in three steps:
+    ///      1. Already liquid → done.
+    ///      2. Recall from yield adapter (partial-fill tolerant — the adapter never reverts).
+    ///      3. Treasury backstop for any remaining gap.
+    ///      Returns true if the vault now holds >= `amount`, false if still short.
+    ///      Called after all state updates (CEI preserved).
+    function _ensureLiquidity(uint256 amount) internal returns (bool sufficient) {
         uint256 balance = token.balanceOf(address(this));
-        if (balance >= amount) return;
+        if (balance >= amount) return true;
+
+        uint256 needed = amount - balance;
+
+        // Step 1 — yield adapter (never reverts, may return 0 if illiquid).
         IYieldAdapter adapter = yieldAdapter;
-        if (address(adapter) == address(0)) return; // transfer below will revert cleanly
-        adapter.withdraw(amount - balance);
-        emit PrincipalRecalled(amount - balance);
+        if (address(adapter) != address(0)) {
+            uint256 recalled = adapter.withdraw(needed);
+            if (recalled > 0) {
+                emit PrincipalRecalled(recalled);
+                if (recalled >= needed) return true;
+                needed -= recalled;
+            }
+        }
+
+        // Step 2 — treasury backstop (last resort before queuing).
+        ITreasury t = treasury;
+        if (address(t) != address(0)) {
+            // coverShortfall reverts if treasury is empty; we catch and continue.
+            try t.coverShortfall(needed) {
+                return true;
+            } catch { }
+        }
+
+        return false;
     }
 
     /// @inheritdoc IPotVault
@@ -293,28 +349,47 @@ contract PotVault is IPotVault {
     ///      current period is locked until it closes — otherwise principal could exit while
     ///      its draw tickets stay live, a free option on the jara pot (issue #28). Today's
     ///      savings ride in tonight's draw and unlock right after.
+    ///      If the vault is temporarily illiquid (Aave utilization spike + empty Treasury), the
+    ///      claim is *queued* rather than reverting — the keeper calls drainQueue() once
+    ///      liquidity is restored. The user's no-loss guarantee is preserved: the obligation
+    ///      is recorded in _pendingWithdrawals and will be settled in full.
     function claimPrincipal(uint256 periodId) external returns (uint256 amount) {
         if (periodId >= currentPeriod()) revert PeriodStillOpen();
         amount = _principal[msg.sender][periodId];
         if (amount == 0) revert NothingToClaim();
 
+        // CEI: zero out principal before any external calls.
         _principal[msg.sender][periodId] = 0;
         _periods[periodId].totalPrincipal -= amount;
         totalPrincipalOutstanding -= amount;
 
-        _ensureLiquidity(amount);
+        bool liquid = _ensureLiquidity(amount);
+
+        if (!liquid) {
+            // Vault is temporarily illiquid — defer payment to the keeper queue.
+            // The user's obligation is recorded; they will be paid when drainQueue() runs.
+            _pendingWithdrawals[msg.sender] += amount;
+            totalQueued += amount;
+            emit WithdrawalQueued(msg.sender, periodId, amount);
+            return amount;
+        }
+
         if (!token.transfer(msg.sender, amount)) revert TransferFailed();
         emit PrincipalClaimed(msg.sender, periodId, amount);
     }
 
     /// @inheritdoc IPotVault
+    /// @dev Winnings come from jaraPot (bonus), not principal, so a temporary failure is
+    ///      acceptable — the user can retry once Aave liquidity recovers. Best-effort recall
+    ///      is attempted; if still short the transfer reverts and state is unchanged (the
+    ///      zero-out above is the only state change, reversed implicitly by the revert).
     function claimWinnings(uint256 periodId) external returns (uint256 amount) {
         amount = _winnings[msg.sender][periodId];
         if (amount == 0) revert NothingToClaim();
 
         _winnings[msg.sender][periodId] = 0;
 
-        _ensureLiquidity(amount);
+        _ensureLiquidity(amount); // best-effort; transfer below reverts cleanly if still short
         if (!token.transfer(msg.sender, amount)) revert TransferFailed();
         emit WinningsClaimed(msg.sender, periodId, amount);
     }
@@ -359,6 +434,53 @@ contract PotVault is IPotVault {
         emit TicketsCredited(user, periodId, tickets);
     }
 
+    // -------------------------------------------------------------- queue
+
+    /// @notice Settle all deferred principal claims in a single batch. Admin/keeper only.
+    /// @dev Recalls the entire queued sum from the yield venue in **one** Aave call, then
+    ///      iterates through `users` paying each in order. Stops early if the vault runs dry
+    ///      mid-batch (remaining users stay queued for the next call). Emits QueueDrained.
+    /// @param users Ordered list of addresses to drain. Keeper should sort by queue timestamp.
+    function drainQueue(address[] calldata users) external onlyAdmin {
+        uint256 queued = totalQueued;
+        if (queued == 0) revert QueueEmpty();
+
+        // One bulk recall from the adapter rather than N individual calls.
+        uint256 vaultBalance = token.balanceOf(address(this));
+        if (vaultBalance < queued) {
+            IYieldAdapter adapter = yieldAdapter;
+            if (address(adapter) != address(0)) {
+                uint256 recalled = adapter.withdraw(queued - vaultBalance);
+                if (recalled > 0) emit PrincipalRecalled(recalled);
+            }
+            // Treasury backstop for any remainder.
+            ITreasury t = treasury;
+            uint256 stillNeeded = queued - token.balanceOf(address(this));
+            if (stillNeeded > 0 && address(t) != address(0)) {
+                try t.coverShortfall(stillNeeded) { } catch { }
+            }
+        }
+
+        uint256 totalPaid;
+        for (uint256 i = 0; i < users.length; i++) {
+            address user = users[i];
+            uint256 owed = _pendingWithdrawals[user];
+            if (owed == 0) continue;
+
+            // Stop if the vault can no longer cover the next user's full amount.
+            if (token.balanceOf(address(this)) < owed) break;
+
+            _pendingWithdrawals[user] = 0;
+            totalQueued -= owed;
+            totalPaid += owed;
+
+            if (!token.transfer(user, owed)) revert TransferFailed();
+            emit QueuedWithdrawalPaid(user, owed);
+        }
+
+        emit QueueDrained(totalPaid);
+    }
+
     // -------------------------------------------------------------- internal
 
     /// @dev Caller's ticket multiplier (scaled by 10), clamped to >= 1.0x so it can only help.
@@ -380,5 +502,10 @@ contract PotVault is IPotVault {
 
     function periodInfo(uint256 periodId) external view returns (Period memory) {
         return _periods[periodId];
+    }
+
+    /// @inheritdoc IPotVault
+    function pendingWithdrawalOf(address user) external view returns (uint256) {
+        return _pendingWithdrawals[user];
     }
 }

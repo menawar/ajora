@@ -18,10 +18,10 @@ When funding a campaign, please use the following naming convention in the memo/
 
 ## How to Fund a Campaign
 
-Use the provided walkthrough script to easily fund the sponsor pool using your wallet. Ensure you have the required cUSD and gas tokens (CELO).
+Use the provided walkthrough script to easily fund the sponsor pool using your wallet. Ensure you have the required USDm and gas tokens (CELO).
 
 \`\`\`bash
-# Fund 50 cUSD for the next draw period
+# Fund 50 USDm for the next draw period
 ./tools/fund-sponsor-pool.sh 50 "SPONSOR_CELO_SUMMER_24"
 \`\`\`
 

@@ -37,7 +37,7 @@ export async function GET() {
             Ajora Daily Pot
           </div>
           <div style={{ display: "flex", fontSize: 100, fontWeight: 800, marginTop: 20, color: "#111827" }}>
-            {potSize} cUSD
+            {potSize} USDm
           </div>
           <div style={{ display: "flex", fontSize: 36, color: "#4b5563", marginTop: 40 }}>
             Save. Pick a number. Win the pot.

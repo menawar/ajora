@@ -1,4 +1,4 @@
-// Minimal ERC20 surface used against Mento stablecoins (cUSD).
+// Minimal ERC20 surface used against Mento stablecoins (USDm).
 export const erc20Abi = [
   {
     type: "function",

@@ -26,7 +26,7 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
 
   const stepMessages: Record<ComboStep, string> = {
     idle: "",
-    approving: "Approving cUSD...",
+    approving: "Approving USDm...",
     saving: "Saving to Celo...",
     picking: "Picking number...",
     checking_in: "Updating streak...",

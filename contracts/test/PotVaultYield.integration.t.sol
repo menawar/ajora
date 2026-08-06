@@ -7,11 +7,9 @@ import { YieldAdapter } from "../src/YieldAdapter.sol";
 import { IERC20 } from "../src/interfaces/IERC20.sol";
 import { IAaveV3Pool } from "../src/interfaces/IAaveV3Pool.sol";
 import { IYieldAdapter } from "../src/interfaces/IYieldAdapter.sol";
+import { IPotVault } from "../src/interfaces/IPotVault.sol";
 import { MockERC20 } from "./mocks/MockERC20.sol";
 import { MockAaveV3Pool } from "./mocks/MockAaveV3Pool.sol";
-
-/// @notice End-to-end vault<->adapter routing: timelocked wiring, buffer-gated deployment,
-///         and the no-loss guarantee holding while principal sits in the venue.
 
 import { Treasury }
 from "../src/Treasury.sol";
@@ -35,7 +33,7 @@ contract PotVaultYieldIntegrationTest is Test {
 
     function setUp() public {
         vm.warp(20_000 days + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         
         treasury = Treasury(address(new MockTreasury()));
@@ -187,7 +185,7 @@ contract PotVaultYieldIntegrationTest is Test {
         uint256 periodId = vault.currentPeriod();
         _contribute(alice, 100e18);
 
-        // Sponsor funds a 10 cUSD pot, then everything idle gets deployed.
+        // Sponsor funds a 10 USDm pot, then everything idle gets deployed.
         cusd.mint(address(this), 10e18);
         cusd.approve(address(vault), 10e18);
         vault.fundJara(periodId, 10e18);
@@ -218,5 +216,126 @@ contract PotVaultYieldIntegrationTest is Test {
         vm.prank(alice);
         uint256 got = vault.claimPrincipal(periodId);
         assertEq(got, 100e18);
+    }
+
+    // ------------------------------------------------- withdrawal queue
+
+    /// @notice When Aave is completely illiquid (pool drained), claimPrincipal must NOT revert.
+    ///         Instead it queues the withdrawal and emits WithdrawalQueued. Principal accounting
+    ///         stays consistent: totalPrincipalOutstanding decremented, totalQueued incremented.
+    function test_ClaimPrincipalQueuesWhenVenueDry() public {
+        _wireAdapter();
+        uint256 periodId = vault.currentPeriod();
+        _contribute(alice, 100e18);
+        vault.deployIdle(80e18); // 20 stays liquid
+
+        // Drain the mock pool so Aave cannot fulfill any withdrawal.
+        uint256 poolBal = cusd.balanceOf(address(pool));
+        vm.prank(address(pool));
+        cusd.transfer(address(0xDEAD), poolBal);
+
+        // Also drain the in-vault balance so even the 20 liquid won't cover 100.
+        // (alice contributed 100; 80 deployed, 20 in vault)
+        // The 20 covers only 20 of alice's 100 — the remaining 80 cannot be recalled.
+        // Actually the vault has 20 liquid but alice needs 100, so it tries to recall 80 from
+        // Aave (gets 0), then tries treasury (none set), returns false → queue.
+
+        vm.warp(block.timestamp + 1 days);
+        vm.expectEmit(true, true, false, true);
+        emit IPotVault.WithdrawalQueued(alice, periodId, 100e18);
+
+        vm.prank(alice);
+        uint256 queued = vault.claimPrincipal(periodId);
+        assertEq(queued, 100e18, "amount returned even when queued");
+
+        assertEq(vault.pendingWithdrawalOf(alice), 100e18, "alice queued");
+        assertEq(vault.totalQueued(), 100e18, "totalQueued updated");
+        // Principal mapping zeroed out; outstanding decremented.
+        assertEq(vault.principalOf(alice, periodId), 0, "principal zeroed");
+        // Alice has NOT received tokens yet.
+        assertEq(cusd.balanceOf(alice), 1_000e18 - 100e18, "alice has not been paid yet");
+    }
+
+    /// @notice After Aave liquidity is restored, drainQueue pays all queued users in a
+    ///         single transaction (one Aave withdrawal call, N token transfers).
+    function test_DrainQueuePaysAllUsersInOneTx() public {
+        address bob = address(0xB0B);
+        cusd.mint(bob, 1_000e18);
+
+        _wireAdapter();
+        uint256 periodId = vault.currentPeriod();
+
+        _contribute(alice, 100e18);
+        _contribute(bob, 50e18);
+        vault.deployIdle(120e18); // buffer: 20% of 150 = 30; max deploy = 120
+
+        // Drain Aave so both claims queue.
+        uint256 poolBal = cusd.balanceOf(address(pool));
+        vm.prank(address(pool));
+        cusd.transfer(address(0xDEAD), poolBal);
+
+        vm.warp(block.timestamp + 1 days);
+
+        vm.prank(alice);
+        vault.claimPrincipal(periodId);
+
+        vm.prank(bob);
+        vault.claimPrincipal(periodId);
+
+        assertEq(vault.totalQueued(), 150e18, "both queued");
+
+        // Restore Aave liquidity: re-mint underlying back to the pool.
+        cusd.mint(address(pool), 120e18);
+
+        // Keeper drains the queue — one bulk Aave recall, then pays both users.
+        address[] memory users = new address[](2);
+        users[0] = alice;
+        users[1] = bob;
+
+        vm.expectEmit(false, false, false, true);
+        emit IPotVault.QueueDrained(150e18);
+
+        vault.drainQueue(users);
+
+        assertEq(vault.totalQueued(), 0, "queue empty");
+        assertEq(vault.pendingWithdrawalOf(alice), 0, "alice cleared");
+        assertEq(vault.pendingWithdrawalOf(bob), 0, "bob cleared");
+        assertEq(cusd.balanceOf(alice), 1_000e18, "alice made whole");
+        assertEq(cusd.balanceOf(bob), 1_000e18, "bob made whole");
+    }
+
+    /// @notice When Aave is partially dry, the Treasury backstop covers the gap so the
+    ///         user is paid immediately without needing to queue.
+    function test_TreasuryCoversShortfall() public {
+        MockTreasury mockT = MockTreasury(address(treasury));
+
+        _wireAdapter();
+        uint256 periodId = vault.currentPeriod();
+        _contribute(alice, 100e18);
+        vault.deployIdle(80e18); // 20 liquid in vault
+
+        // Wire treasury backstop to the vault.
+        vault.setTreasury(treasury);
+
+        // Seed treasury with 80 USDm (enough to cover the Aave shortfall).
+        cusd.mint(address(this), 80e18);
+        cusd.approve(address(mockT), 80e18);
+        mockT.seed(IERC20(address(cusd)), address(vault), 80e18);
+
+        // Drain Aave (treasury should cover).
+        uint256 poolBal = cusd.balanceOf(address(pool));
+        vm.prank(address(pool));
+        cusd.transfer(address(0xDEAD), poolBal);
+
+        vm.warp(block.timestamp + 1 days);
+
+        // Alice claims — Aave gives 0, Treasury covers 80, vault had 20 → total 100 ✓.
+        vm.prank(alice);
+        uint256 got = vault.claimPrincipal(periodId);
+
+        assertEq(got, 100e18, "alice paid in full");
+        assertEq(cusd.balanceOf(alice), 1_000e18, "alice made whole via treasury backstop");
+        assertEq(vault.pendingWithdrawalOf(alice), 0, "nothing queued");
+        assertEq(mockT.totalShortfallCovered(), 80e18, "treasury absorbed the gap");
     }
 }

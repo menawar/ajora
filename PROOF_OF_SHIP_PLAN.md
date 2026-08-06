@@ -25,7 +25,7 @@
 ## 2. Ajora's structural edge
 
 1. **The game IS a transaction engine.** One session = check-in + save + pick (+ sprays) = 3–6 real mainnet txs/user/day. No other project type compounds AI-scored metrics this fast.
-2. **Triple-track fit:** Mento stablecoins ✓ (cUSD core loop) · Mini Apps ✓ (MiniPay-first) · Self ✓ (verification seam already built into SprayFaucet, lands in #18). Three sponsored prize pools, one codebase.
+2. **Triple-track fit:** Mento stablecoins ✓ (USDm core loop) · Mini Apps ✓ (MiniPay-first) · Self ✓ (verification seam already built into SprayFaucet, lands in #18). Three sponsored prize pools, one codebase.
 3. **Commit cadence is already elite:** 50+ granular conventional commits in 2 days, every one compiling with tests green — exactly what the technical-quality agent measures.
 4. **Zero-deposit onboarding** removes the biggest activation barrier for real (not farmed) users — and unique-user count is a first-class AI metric.
 
@@ -47,7 +47,7 @@
 - [ ] **#20 wired mainnet deploy:** PotVault + StreakSBT + SprayFaucet + DrawManager, verified on Celoscan, addresses **registered in KarmaGAP the same hour**
 - [ ] **#8 wallet layer + MiniPay hook** (eligibility item ①)
 - [ ] **#9 Home + Save screens** live on the Vercel URL
-- [ ] Fund a small real sponsor campaign (even $20 cUSD backs 200 welcome tickets) so onboarding works day one
+- [ ] Fund a small real sponsor campaign (even $20 USDm backs 200 welcome tickets) so onboarding works day one
 
 ### Phase 2 — Users × transactions (July 9–24)
 - [ ] **#10 Pick + draw reveal**, **#13 zero-deposit onboarding** — complete the playable loop

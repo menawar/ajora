@@ -107,7 +107,7 @@ export function RecentWinnersFeed() {
                     {shortAddr(w.address as Address)}
                   </span>
                   <span className="text-sm font-black text-text-primary">
-                    +{shareStr} <span className="text-[10px] text-text-muted font-bold">cUSD</span>
+                    +{shareStr} <span className="text-[10px] text-text-muted font-bold">USDm</span>
                   </span>
                 </div>
                 {w.claimed && (

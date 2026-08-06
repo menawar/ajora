@@ -1,6 +1,6 @@
 # Ajora — Full Product & Technical Specification
 
-> **Ajora 🎉** — *"Save 0.10 cUSD a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe."*
+> **Ajora 🎉** — *"Save 0.10 USDm a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe."*
 >
 > *The name blends **Ajo** (the trusted savings circle) with **jara** (the free bonus you always keep). "Ajora" also means "deep" in Wolaita — a deep pool of savings. Tagline: "Save small, keep every cent, chop jara."*
 
@@ -38,7 +38,7 @@
 
 **Ajora** is a **no-loss prize-linked savings game** built as a MiniPay Mini App on Celo. It digitizes the continent's most-trusted money ritual — the rotating savings group (**Ajo** in Nigeria, **Esusu**, **Chama** in Kenya, **Susu** in Ghana) — and makes the organizer impossible: the smart contract holds funds, so nobody can run away with the money.
 
-Users save tiny amounts of Mento stablecoins (cUSD / cKES / cCOP) daily. **Principal is always returned in full** (no-loss). A daily draw distributes a **jara pot** (the bonus), funded by yield on pooled savings + sponsors + rake — never by principal. A Nigerian *owambe*-inspired **"spray"** mechanic lets users gift free, sponsor-funded tickets to friends, which is the core viral loop.
+Users save tiny amounts of Mento stablecoins (USDm / KESm / COPm) daily. **Principal is always returned in full** (no-loss). A daily draw distributes a **jara pot** (the bonus), funded by yield on pooled savings + sponsors + rake — never by principal. A Nigerian *owambe*-inspired **"spray"** mechanic lets users gift free, sponsor-funded tickets to friends, which is the core viral loop.
 
 **Why it's not play-to-earn slop:** there is no speculative token to buy, no principal at risk, and every reward traces to real external revenue. The on-chain design exists for a genuine reason — a shared, custody-free money pool that must be provably fair.
 
@@ -92,11 +92,11 @@ A session is **~40 seconds**. Target **3–6 on-chain transactions per active us
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  1. OPEN (in MiniPay)                                        │
-│     → New user: free 0.10 cUSD welcome ticket, sponsor-paid  │
+│     → New user: free 0.10 USDm welcome ticket, sponsor-paid  │
 │       (welcomeTicket() tx). Can win day one, zero spend.     │
 ├─────────────────────────────────────────────────────────────┤
 │  2. SAVE                                                     │
-│     → Tap "Save" → contribute() ~$0.10+ cUSD into today's    │
+│     → Tap "Save" → contribute() ~$0.10+ USDm into today's    │
 │       PotVault. This is the real deposit. [1 tx]             │
 ├─────────────────────────────────────────────────────────────┤
 │  3. PICK                                                     │
@@ -114,7 +114,7 @@ A session is **~40 seconds**. Target **3–6 on-chain transactions per active us
 ├─────────────────────────────────────────────────────────────┤
 │  6. CLAIM + SHARE                                            │
 │     → claimPrize() / claimWinnings() [1 tx, occasional]      │
-│     → Auto-generated "I chopped 2 cUSD 💸" card → WhatsApp   │
+│     → Auto-generated "I chopped 2 USDm 💸" card → WhatsApp   │
 │     → Streak multiplier ticks up (checkIn() tx)              │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -154,7 +154,7 @@ Nigerian party culture "sprays" cash on celebrants as joy + status. Ajora digiti
 
 ### Shareable wins
 
-- Every win generates a branded card: *"I chopped X cUSD today with Ajora 💸"*.
+- Every win generates a branded card: *"I chopped X USDm today with Ajora 💸"*.
 - **No loss cards exist** (no-loss game) → sharing is always positive-emotion.
 - Share targets: WhatsApp status/groups (primary), Farcaster (secondary, for crypto-native reach + Celo ecosystem visibility).
 
@@ -244,7 +244,7 @@ prize_per_winner = jara_pot(day) * winner_share / num_winners
 |---|---|---|
 | Contracts | Solidity 0.8.24, Foundry | Fast iteration, fuzzing, mainnet-grade |
 | Chain | Celo mainnet (Alfajores for staging) | Near-zero gas, stablecoin gas, MiniPay-native |
-| Stablecoins | cUSD, cKES, cCOP (Mento) | Local-currency relevance |
+| Stablecoins | USDm, KESm, COPm (Mento) | Local-currency relevance |
 | Frontend | Next.js (App Router) + TypeScript + Tailwind | TS-first, static export keeps the client bundle lean for low-end Android |
 | Web3 lib | viem + wagmi | Lightweight, MiniPay injected provider support |
 | Indexer | Ponder (or The Graph) + Postgres | Fast reads, leaderboards, metrics |
@@ -511,14 +511,14 @@ Stateless workers; all authoritative state is on-chain. Backend is for automatio
 - **Offline-tolerant:** cache last state, queue actions, optimistic UI.
 - **One-thumb operation**, large tap targets, minimal text.
 - **MiniPay injected provider** for wallet (no external wallet connect flow).
-- **Local stablecoin display** (cUSD / cKES / cCOP) — amounts shown in the token the user holds, no fiat conversion required.
+- **Local stablecoin display** (USDm / KESm / COPm) — amounts shown in the token the user holds, no fiat conversion required.
 
 ### Key screens
 
 | Screen | Purpose | Primary CTA |
 |---|---|---|
 | **Home** | Today's pot size, your streak, countdown to 8 PM | "Save now" |
-| **Save** | Amount picker (0.10 / 0.50 / custom cUSD), token select | `contribute()` |
+| **Save** | Amount picker (0.10 / 0.50 / custom USDm), token select | `contribute()` |
 | **Pick** | Number pad 1–9, shows your ticket count | `pickNumber()` |
 | **Crew** | Your crew, member activity, crew pot, spray friends | `spray()` |
 | **Draw (8 PM)** | Live reveal animation, win/lose result | `claimPrize()` |
@@ -530,10 +530,10 @@ Stateless workers; all authoritative state is on-chain. Backend is for automatio
 
 ```
 1. Open in MiniPay → phone already verified by wallet
-2. "Welcome! Here's your free 0.10 cUSD ticket 🎉" → welcomeTicket() (gasless-feel, sponsor pays)
+2. "Welcome! Here's your free 0.10 USDm ticket 🎉" → welcomeTicket() (gasless-feel, sponsor pays)
 3. "Pick your lucky number" → pickNumber()
 4. "Come back at 8 PM to see if you won"
-5. (Optional) "Save your own 0.10 cUSD to double your tickets"
+5. (Optional) "Save your own 0.10 USDm to double your tickets"
 → User has 2+ on-chain txs before spending a cent.
 ```
 
@@ -740,7 +740,7 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 2. **Yield venue:** which audited Celo lending market has best risk-adjusted yield + instant liquidity for the buffer?
 3. **Multicall:** does MiniPay's provider support batched txs for the save+pick+checkin combo? If not, sequence with optimistic UI.
 4. **Sponsor legal:** template agreement for sponsor campaigns; who holds sponsor funds pre-deployment?
-5. **Local stablecoin coverage:** confirm Mento liquidity for cKES/cCOP prizes and FX at cash-out; track **cGHS/cNGN** rollout so Ghana/Nigeria users can hold a Cedi/Naira-pegged **stablecoin** (not fiat). Until those are live, denominate everything in cUSD.
+5. **Local stablecoin coverage:** confirm Mento liquidity for KESm/COPm prizes and FX at cash-out; track **cGHS/cNGN** rollout so Ghana/Nigeria users can hold a Cedi/Naira-pegged **stablecoin** (not fiat). Until those are live, denominate everything in USDm.
 6. **Draw cadence:** validate 8 PM WAT/EAT as optimal engagement window per region (may need per-region draws).
 7. **Proof-of-personhood UX:** Self protocol onboarding friction vs sybil resistance trade-off — measure drop-off.
 
@@ -761,7 +761,7 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 | **No-loss** | Principal always returned; only the bonus is at stake. |
 | **Prize-linked savings (PLS)** | Savings product where yield funds a prize draw; principal is safe. |
 | **MiniPay** | Celo's stablecoin wallet (millions of users, Africa-concentrated). |
-| **Mento stablecoins** | cUSD, cKES, cCOP — local-currency stablecoins on Celo. |
+| **Mento stablecoins** | USDm, KESm, COPm — local-currency stablecoins on Celo. |
 | **Proof of Ship** | Celo's monthly builder program; AI-scored on hard metrics. |
 
 ---

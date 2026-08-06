@@ -12,7 +12,7 @@ import { MockERC20 } from "./mocks/MockERC20.sol";
 import { MockAaveV3Pool } from "./mocks/MockAaveV3Pool.sol";
 
 
-/// @notice Randomized action handler with exact ghost accounting. Every cUSD that enters
+/// @notice Randomized action handler with exact ghost accounting. Every USDm that enters
 ///         the vault is tagged principal / jara / winnings; the invariant demands the
 ///         vault's token balance equals the sum at all times.
 
@@ -82,8 +82,26 @@ contract VaultHandler is Test {
         uint256 periodId = vault.currentPeriod() - daysBack;
         if (vault.principalOf(who, periodId) == 0) return;
         vm.prank(who);
+        // claimPrincipal may queue rather than transfer when the vault is illiquid.
+        // Either way, the amount returned represents the obligation — ghost tracks it
+        // leaving "principal" only when tokens actually leave the vault (drainQueue or
+        // instant pay). For simplicity we subtract immediately; if queued, drainQueue
+        // will not double-subtract (it doesn't touch ghostPrincipal).
         uint256 got = vault.claimPrincipal(periodId);
         ghostPrincipal -= got;
+    }
+
+    function drainQueue(uint256 actorSeed) external {
+        if (vault.totalQueued() == 0) return;
+        // Build a single-user array for the queued actor.
+        address who = _actor(actorSeed);
+        if (vault.pendingWithdrawalOf(who) == 0) return;
+        address[] memory users = new address[](1);
+        users[0] = who;
+        vm.prank(vault.admin());
+        vault.drainQueue(users);
+        // drainQueue pays out queued money — no new ghost adjustment needed since
+        // ghostPrincipal was already decremented in claimPrincipal.
     }
 
     function fundJara(uint256 amount, uint256 daysAhead) external {
@@ -178,7 +196,7 @@ contract VaultInvariantTest is StdInvariant, Test {
 
     function setUp() public {
         vm.warp(20_000 days + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), 0.1e18);
         vault.setDrawManager(drawManager);
         vault.setSprayFaucet(faucet);
@@ -220,6 +238,19 @@ contract VaultInvariantTest is StdInvariant, Test {
             vault.totalPrincipalOutstanding(),
             handler.ghostPrincipal(),
             "totalPrincipalOutstanding != sum of unredeemed contributions"
+        );
+    }
+
+    /// @dev totalQueued must never exceed what the vault+adapter together hold, because
+    ///      every queued entry was already decremented from totalPrincipalOutstanding and
+    ///      must be backed by real assets (either in-vault or in the yield venue).
+    function invariant_QueuedNeverExceedsTotalAssets() public view {
+        uint256 totalAssets = cusd.balanceOf(address(vault)) + adapter.totalDeployed();
+        // totalAssets backs principal+jara+winnings+queued; queued is a subset.
+        assertLe(
+            vault.totalQueued(),
+            totalAssets,
+            "totalQueued exceeds vault total assets"
         );
     }
 }

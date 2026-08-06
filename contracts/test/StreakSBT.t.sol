@@ -23,7 +23,7 @@ contract StreakSBTTest is Test {
 
     function setUp() public {
         treasury = Treasury(address(new MockTreasury()));
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         sbt = new StreakSBT(IERC20(address(cusd)), treasury);
         // Start at a known, non-zero day so day-index arithmetic is realistic.
         vm.warp(20_000 * DAY + 9 hours);

@@ -30,7 +30,7 @@ contract PotVaultStreakIntegrationTest is Test {
     function setUp() public {
         treasury = Treasury(address(new MockTreasury()));
         vm.warp(20_000 * DAY + 12 hours);
-        cusd = new MockERC20("Celo Dollar", "cUSD", 18);
+        cusd = new MockERC20("Mento Dollar", "USDm", 18);
         vault = new PotVault(IERC20(address(cusd)), MIN);
         sbt = new StreakSBT(IERC20(address(cusd)), treasury);
         vault.setStreakSBT(IStreakSBT(address(sbt)));
@@ -54,7 +54,7 @@ contract PotVaultStreakIntegrationTest is Test {
             vm.warp(block.timestamp + DAY);
         }
 
-        // Day 7: same 1.0 cUSD save, different multipliers.
+        // Day 7: same 1.0 USDm save, different multipliers.
         uint256 amaraTickets = _saveAndCheckIn(amara, 1e18); // streak 7 -> 1.5x
         uint256 kevinTickets = _saveAndCheckIn(kevin, 1e18); // streak 1 -> 1.0x
 

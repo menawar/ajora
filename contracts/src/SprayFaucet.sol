@@ -78,7 +78,7 @@ contract SprayFaucet is ISprayFaucet {
         ticketValue = _vault.minContribution();
         admin = msg.sender;
         verifier = _verifier;
-        // Month-1 default: 30 free tickets (~3 cUSD) per human, lifetime. Admin-tunable.
+        // Month-1 default: 30 free tickets (~3 USDm) per human, lifetime. Admin-tunable.
         maxFreeValuePerUser = 30 * ticketValue;
         // The vault pulls jara funding via transferFrom; authorize it once.
         require(token.approve(address(_vault), type(uint256).max), "approve failed");

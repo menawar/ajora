@@ -1,7 +1,7 @@
 "use client";
 
 import { ThemeToggle } from "../../components/ThemeToggle";
-import { LanguageSelector } from "../../components/ui/LanguageSelector";
+
 import { PushToggle } from "../../components/PushToggle";
 import { Globe, Palette, Bell, Volume2 } from "lucide-react";
 import { SettingsGroup } from "../../components/ui/SettingsGroup";
@@ -18,9 +18,7 @@ export function PreferencesSection() {
         description="Dark or Light mode"
         action={<ThemeToggle />}
       />
-      <div className="w-full">
-        <LanguageSelector />
-      </div>
+
       <ToggleItem
         icon={<Bell className="w-5 h-5" />}
         title="Notifications"

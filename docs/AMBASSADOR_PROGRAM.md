@@ -32,9 +32,9 @@ Every Friday, the Growth team pulls a summary from the Indexer using the Crew me
 ```
 🌟 Weekly Campus Leaderboard 🌟
 
-1. 🥇 Univ of Lagos (ajora-lagos-unilag): 145 members | 500 cUSD TVL
-2. 🥈 Univ of Nairobi (ajora-nairobi-uon): 98 members | 350 cUSD TVL
-3. 🥉 Ashesi Univ (ajora-accra-ashesi): 45 members | 120 cUSD TVL
+1. 🥇 Univ of Lagos (ajora-lagos-unilag): 145 members | 500 USDm TVL
+2. 🥈 Univ of Nairobi (ajora-nairobi-uon): 98 members | 350 USDm TVL
+3. 🥉 Ashesi Univ (ajora-accra-ashesi): 45 members | 120 USDm TVL
 
 🔥 Top Converter: [Ambassador Name] with 85% of crew members actively saving!
 ```

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "../lib/i18n";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+
 import { ThemeToggle } from "./ThemeToggle";
 import type { TranslationKey } from "../lib/i18n/dictionaries";
 import { Home, PiggyBank, Target, Dices, Users, Wallet } from "lucide-react";
@@ -28,7 +28,7 @@ export function TabBar() {
       <div className="mx-auto flex max-w-md flex-col">
         <div className="flex justify-center items-center gap-4 pt-2 pb-1">
           <ThemeToggle />
-          <LanguageSwitcher direction="up" />
+
         </div>
         <div className="flex w-full px-2 pb-2">
           {tabs.map((tab) => {
