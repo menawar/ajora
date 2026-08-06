@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getAttributionSuffix } from "../lib/attribution";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
@@ -64,7 +65,7 @@ export function useWelcome() {
         args: [address],
         account: address,
       });
-      const hash = await wallet.writeContract({
+      const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
         ...request,
         feeCurrency: isMiniPay() ? contracts.cusd.address : undefined,
       });

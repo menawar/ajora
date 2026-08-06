@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getAttributionSuffix } from "../lib/attribution";
 import { isAddress } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
@@ -66,7 +67,7 @@ export function useSpray() {
           args: [friend],
           account: address,
         });
-        const hash = await wallet.writeContract({
+        const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
           ...request,
           feeCurrency: isMiniPay() ? contracts.cusd.address : undefined,
         });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getAttributionSuffix } from "../lib/attribution";
 import { useCachedState } from "./useCachedState";
 import { encodeAbiParameters, isHex, keccak256, parseAbiItem } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
@@ -230,7 +231,7 @@ export function useDraw() {
           args: [number],
           account: address,
         });
-        const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+        const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency: feeCurrency() });
         await publicClient.waitForTransactionReceipt({ hash });
         refetch();
       } catch (e) {
@@ -255,10 +256,10 @@ export function useDraw() {
         args: [last.periodId],
         account: address,
       });
-      const h1 = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+      const h1 = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency: feeCurrency() });
       await publicClient.waitForTransactionReceipt({ hash: h1 });
 
-      const h2 = await wallet.writeContract({
+      const h2 = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
         ...contracts.potVault,
         functionName: "claimWinnings",
         args: [last.periodId],
@@ -287,7 +288,7 @@ export function useDraw() {
         args: [last.periodId],
         account: address,
       });
-      const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+      const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency: feeCurrency() });
       await publicClient.waitForTransactionReceipt({ hash });
       refetch();
     } catch (e) {
@@ -311,7 +312,7 @@ export function useDraw() {
           args: [periodId, commitment],
           account: address,
         });
-        const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+        const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency: feeCurrency() });
         await publicClient.waitForTransactionReceipt({ hash });
         refetch();
       } catch (e) {
@@ -337,7 +338,7 @@ export function useDraw() {
           args: [periodId, keeperSecret],
           account: address,
         });
-        const hash = await wallet.writeContract({ ...request, feeCurrency: feeCurrency() });
+        const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency: feeCurrency() });
         await publicClient.waitForTransactionReceipt({ hash });
         refetch();
       } catch (e) {

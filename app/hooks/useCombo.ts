@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { getAttributionSuffix } from "../lib/attribution";
 import { parseUnits } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts } from "../lib/contracts";
@@ -42,7 +43,7 @@ export function useCombo() {
       if (allowance < amount) {
         setStep("approving");
         setProgress(10);
-        const approveHash = await wallet.writeContract({
+        const approveHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
           ...contracts.cusd,
           functionName: "approve",
           args: [contracts.potVault.address, amount],
@@ -61,7 +62,7 @@ export function useCombo() {
         args: [amount],
         account: address,
       });
-      const saveHash = await wallet.writeContract({ ...saveReq, feeCurrency });
+      const saveHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...saveReq, feeCurrency });
       await publicClient.waitForTransactionReceipt({ hash: saveHash });
 
       // 2. Pick
@@ -73,7 +74,7 @@ export function useCombo() {
         args: [pickNumber],
         account: address,
       });
-      const pickHash = await wallet.writeContract({ ...pickReq, feeCurrency });
+      const pickHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...pickReq, feeCurrency });
       await publicClient.waitForTransactionReceipt({ hash: pickHash });
 
       // 3. Check-in
@@ -85,7 +86,7 @@ export function useCombo() {
           functionName: "checkIn",
           account: address,
         });
-        const checkInHash = await wallet.writeContract({ ...checkInReq, feeCurrency });
+        const checkInHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...checkInReq, feeCurrency });
         await publicClient.waitForTransactionReceipt({ hash: checkInHash });
       } catch (e) {
         // Expected if already checked in today; continue to success.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getAttributionSuffix } from "../lib/attribution";
 import { useCachedState } from "./useCachedState";
 import { parseUnits } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
@@ -126,7 +127,7 @@ export function useSave() {
         });
         if (allowance < amount) {
           setStatus({ step: "approving" });
-          const approveHash = await wallet.writeContract({
+          const approveHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
             ...contracts.cusd,
             functionName: "approve",
             args: [contracts.potVault.address, amount],
@@ -144,7 +145,7 @@ export function useSave() {
           args: [amount],
           account: address,
         });
-        const txHash = await wallet.writeContract({ ...request, feeCurrency });
+        const txHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency });
         await publicClient.waitForTransactionReceipt({ hash: txHash });
         setStatus({ step: "success", txHash, tickets: result });
       } catch (e) {
@@ -193,7 +194,7 @@ export function useSponsor() {
         });
         if (allowance < amount) {
           setStatus({ step: "approving" });
-          const approveHash = await wallet.writeContract({
+          const approveHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
             ...contracts.cusd,
             functionName: "approve",
             args: [contracts.potVault.address, amount],
@@ -217,7 +218,7 @@ export function useSponsor() {
           args: [periodId, amount],
           account: address,
         });
-        const txHash = await wallet.writeContract({ ...request, feeCurrency });
+        const txHash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(),  ...request, feeCurrency });
         await publicClient.waitForTransactionReceipt({ hash: txHash });
         setStatus({ step: "success", txHash });
       } catch (e) {

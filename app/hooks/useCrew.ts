@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getAttributionSuffix } from "../lib/attribution";
 import { stringToHex, hexToString } from "viem";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
 import { contracts, crewsEnabled } from "../lib/contracts";
@@ -135,7 +136,7 @@ export function useCrew() {
           args: args as never,
           account: address,
         });
-        const hash = await wallet.writeContract({
+        const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
           ...request,
           feeCurrency: isMiniPay() ? contracts.cusd.address : undefined,
         });

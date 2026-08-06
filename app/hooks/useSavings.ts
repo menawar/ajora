@@ -1,5 +1,6 @@
 "use client";
 import { trackEvent, AnalyticsEvents } from "../lib/analytics";
+import { getAttributionSuffix } from "../lib/attribution";
 
 import { useCallback, useEffect, useState } from "react";
 import { publicClient, walletClient, isMiniPay } from "../lib/clients";
@@ -93,7 +94,7 @@ export function useSavings() {
       trackEvent(AnalyticsEvents.WITHDRAW_INITIATED, { periodId: periodId.toString() });
       try {
         const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
-        const hash = await wallet.writeContract({
+        const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
           ...contracts.potVault,
           functionName: "claimPrincipal",
           args: [periodId],

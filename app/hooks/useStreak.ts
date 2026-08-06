@@ -1,5 +1,6 @@
 "use client";
 import { trackEvent, AnalyticsEvents } from "../lib/analytics";
+import { getAttributionSuffix } from "../lib/attribution";
 
 import { useCallback, useEffect, useState } from "react";
 import { useCachedState } from "./useCachedState";
@@ -105,7 +106,7 @@ export function useStreak() {
     setError(undefined);
     try {
       const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
-      const hash = await wallet.writeContract({
+      const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
         ...contracts.streakSBT,
         functionName: "checkIn",
         account: address,
