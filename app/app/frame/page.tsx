@@ -33,11 +33,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function FramePage() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center p-6 text-center">
-      <h1 className="text-3xl font-bold text-celo-green">Ajora Daily Pot</h1>
+      <h1 className="text-3xl font-bold text-Stellar-green">Ajora Daily Pot</h1>
       <p className="mt-4 text-gray-500">
         This URL provides the Farcaster Frame metadata.
         <br />
-        To play, <Link href="/" className="underline text-celo-green">visit the app</Link>.
+        To play, <Link href="/" className="underline text-Stellar-green">visit the app</Link>.
       </p>
     </main>
   );

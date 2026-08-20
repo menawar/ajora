@@ -20,7 +20,7 @@ export default function WalletError({
         <button
           type="button"
           onClick={reset}
-          className="rounded-2xl bg-celo-green px-5 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] active:scale-95 transition-all"
+          className="rounded-2xl bg-Stellar-green px-5 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] active:scale-95 transition-all"
         >
           Try again
         </button>

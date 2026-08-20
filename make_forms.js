@@ -16,7 +16,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         ref={ref}
-        className={\`w-full rounded-xl border px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-celo-green/50 \${error ? "border-red-500 bg-red-50/50" : "border-gray-200 hover:border-gray-300 bg-white"} \${className}\`}
+        className={\`w-full rounded-xl border px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-Stellar-green/50 \${error ? "border-red-500 bg-red-50/50" : "border-gray-200 hover:border-gray-300 bg-white"} \${className}\`}
         {...props}
       />
     );
@@ -39,7 +39,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         ref={ref}
-        className={\`w-full rounded-xl border px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-celo-green/50 \${error ? "border-red-500 bg-red-50/50" : "border-gray-200 hover:border-gray-300 bg-white"} \${className}\`}
+        className={\`w-full rounded-xl border px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-Stellar-green/50 \${error ? "border-red-500 bg-red-50/50" : "border-gray-200 hover:border-gray-300 bg-white"} \${className}\`}
         {...props}
       />
     );
@@ -84,7 +84,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <input
         type="checkbox"
         ref={ref}
-        className={\`h-4 w-4 rounded border-gray-300 text-celo-green focus:ring-celo-green/50 \${className}\`}
+        className={\`h-4 w-4 rounded border-gray-300 text-Stellar-green focus:ring-Stellar-green/50 \${className}\`}
         {...props}
       />
     );

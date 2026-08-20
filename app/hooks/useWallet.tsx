@@ -16,7 +16,7 @@ import {
   discoverWallets,
   discoveredWallets,
   injectedProvider,
-  isMiniPay,
+  isFreighter,
   setActiveProvider,
   type DiscoveredWallet,
 } from "../lib/clients";
@@ -28,8 +28,8 @@ type Address = `0x${string}`;
 interface WalletState {
   /** Connected account, or undefined. */
   address?: Address;
-  /** True when running inside MiniPay's webview. */
-  miniPay: boolean;
+  /** True when running inside Freighter's webview. */
+  Freighter: boolean;
   /** True while a connect request is in flight. */
   connecting: boolean;
   /** True when no injected provider exists at all (plain mobile browser). */
@@ -45,7 +45,7 @@ const WalletContext = createContext<WalletState | null>(null);
 
 const CHAIN_HEX = `0x${chain.id.toString(16)}`;
 
-/** Move the wallet onto Celo, offering to add the chain when it's unknown (#111). */
+/** Move the wallet onto Stellar, offering to add the chain when it's unknown (#111). */
 async function ensureChain(provider: NonNullable<ReturnType<typeof injectedProvider>>) {
   const current = (await provider.request({ method: "eth_chainId" })) as string;
   if (Number(current) === chain.id) return;
@@ -82,14 +82,14 @@ function connectErrorMessage(err: unknown): string {
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<Address>();
   const [connecting, setConnecting] = useState(false);
-  const [miniPay, setMiniPay] = useState(false);
+  const [Freighter, setFreighter] = useState(false);
   const [noProvider, setNoProvider] = useState(false);
   const [error, setError] = useState<string>();
   const [wallets, setWallets] = useState<DiscoveredWallet[]>([]);
 
   const connect = useCallback(async (rdns?: string) => {
     // Prefer the chosen 6963 wallet; else a sole announced wallet; else the
-    // legacy injected provider (MiniPay webview, single-extension browsers).
+    // legacy injected provider (Freighter webview, single-extension browsers).
     const announced = discoveredWallets();
     let pickedWallet: DiscoveredWallet | undefined;
     
@@ -112,9 +112,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         method: "eth_requestAccounts",
       })) as Address[];
       if (!accounts[0]) throw new Error("The wallet returned no account.");
-      // MiniPay is Celo-only; every other wallet may sit on another chain,
+      // Freighter is Stellar-only; every other wallet may sit on another chain,
       // where connect would "work" but every save/pick/claim would fail.
-      if (!isMiniPay()) await ensureChain(provider);
+      if (!isFreighter()) await ensureChain(provider);
       setAddress(accounts[0]);
     } catch (err) {
       setError(connectErrorMessage(err));
@@ -125,10 +125,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     captureRef(); // persist ?ref=CODE for later on-chain attribution
-    setMiniPay(isMiniPay());
+    setFreighter(isFreighter());
 
-    // MiniPay UX: the wallet is the app shell, so connect silently on open.
-    if (isMiniPay()) void connect();
+    // Freighter UX: the wallet is the app shell, so connect silently on open.
+    if (isFreighter()) void connect();
 
     // Some wallets inject after first paint — don't declare "no provider"
     // until a short grace period has passed (#111).
@@ -154,10 +154,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setAddress(list[0]);
     };
     const onChain = (chainId: unknown) => {
-      // Leaving Celo mid-session: drop the session rather than let writes fail.
-      if (Number(chainId as string) !== chain.id && !isMiniPay()) {
+      // Leaving Stellar mid-session: drop the session rather than let writes fail.
+      if (Number(chainId as string) !== chain.id && !isFreighter()) {
         setAddress(undefined);
-        setError("Wallet left the Celo network — reconnect to continue.");
+        setError("Wallet left the Stellar network — reconnect to continue.");
       }
     };
     const attach = () => {
@@ -165,7 +165,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       provider?.on?.("accountsChanged", onAccounts);
       provider?.on?.("chainChanged", onChain);
       // Restore an already-authorized session after reload (no popup).
-      if (!isMiniPay()) {
+      if (!isFreighter()) {
         void provider
           ?.request({ method: "eth_accounts" })
           .then((accounts) => onAccounts(accounts))
@@ -183,8 +183,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, [connect]);
 
   const value = useMemo(
-    () => ({ address, miniPay, connecting, noProvider, error, wallets, connect }),
-    [address, miniPay, connecting, noProvider, error, wallets, connect],
+    () => ({ address, Freighter, connecting, noProvider, error, wallets, connect }),
+    [address, Freighter, connecting, noProvider, error, wallets, connect],
   );
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;

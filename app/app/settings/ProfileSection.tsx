@@ -29,9 +29,9 @@ export function ProfileSection() {
           address && (
             <button
               onClick={handleCopyAddress}
-              className="p-2 rounded-xl bg-bg-secondary text-text-muted hover:text-celo-green hover:bg-celo-green/10 transition-colors"
+              className="p-2 rounded-xl bg-bg-secondary text-text-muted hover:text-Stellar-green hover:bg-Stellar-green/10 transition-colors"
             >
-              {copied ? <CheckCircle2 className="w-4 h-4 text-celo-green" /> : <Copy className="w-4 h-4" />}
+              {copied ? <CheckCircle2 className="w-4 h-4 text-Stellar-green" /> : <Copy className="w-4 h-4" />}
             </button>
           )
         }
@@ -39,17 +39,17 @@ export function ProfileSection() {
       <ToggleItem
         icon={<ShieldCheck className="w-5 h-5" />}
         title="Verification Status"
-        description="Verified by MiniPay"
-        action={<span className="text-xs font-bold text-celo-green bg-celo-green/10 px-2 py-1 rounded-md">Verified</span>}
+        description="Verified by Freighter"
+        action={<span className="text-xs font-bold text-Stellar-green bg-Stellar-green/10 px-2 py-1 rounded-md">Verified</span>}
       />
       <ToggleItem
         icon={<Wallet className="w-5 h-5" />}
         title="Connected Wallet"
-        description="MiniPay Smart Wallet"
+        description="Freighter Smart Wallet"
         action={null}
       />
       <ToggleItem
-        icon={<Trophy className="w-5 h-5 text-celo-gold" />}
+        icon={<Trophy className="w-5 h-5 text-Stellar-gold" />}
         title="Trophy Room"
         description="View your unlocked achievements"
         action={<ChevronRight className="w-5 h-5 text-text-muted" />}

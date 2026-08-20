@@ -73,12 +73,12 @@ export function SavingsChart({ entries, loading = false, className = "" }: Savin
       <div className="glass-panel rounded-3xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
-          <span className="w-1.5 h-5 bg-celo-green rounded-full block" />
+          <span className="w-1.5 h-5 bg-Stellar-green rounded-full block" />
           Savings Trend
         </h2>
         <div className="text-right">
           <div className="text-xs text-text-muted font-medium">Avg / day</div>
-          <div className="text-sm font-black text-celo-green">{cusd(avg)} USDm</div>
+          <div className="text-sm font-black text-Stellar-green">{cusd(avg)} USDC</div>
         </div>
       </div>
 

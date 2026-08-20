@@ -10,17 +10,17 @@
  */
 import { createPublicClient, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { celo } from "viem/chains";
+import { Stellar } from "viem/chains";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const deployments = JSON.parse(
-  readFileSync(join(here, "../../contracts/deployments/celo-mainnet.json"), "utf8"),
+  readFileSync(join(here, "../../contracts/deployments/Stellar-mainnet.json"), "utf8"),
 );
 
-const RPC_URL = process.env.RPC_URL ?? "https://forno.celo.org";
+const RPC_URL = process.env.RPC_URL ?? "https://forno.Stellar.org";
 const DRY_RUN = process.env.DRY_RUN === "1";
 
 // Post-v5 addresses come from env until deployments.json carries them.
@@ -32,7 +32,7 @@ const INDEXER_URL = process.env.INDEXER_URL;
 const VAULT = deployments.contracts.PotVault.address;
 const DRAW = deployments.contracts.DrawManager.address;
 
-const pub = createPublicClient({ chain: celo, transport: http(RPC_URL) });
+const pub = createPublicClient({ chain: Stellar, transport: http(RPC_URL) });
 
 const pk = process.env.KEEPER_PRIVATE_KEY
   ? process.env.KEEPER_PRIVATE_KEY.startsWith("0x")
@@ -41,7 +41,7 @@ const pk = process.env.KEEPER_PRIVATE_KEY
   : undefined;
 const account = pk ? privateKeyToAccount(pk) : undefined;
 const wallet = account
-  ? createWalletClient({ chain: celo, transport: http(RPC_URL), account })
+  ? createWalletClient({ chain: Stellar, transport: http(RPC_URL), account })
   : undefined;
 
 const vaultAbi = [

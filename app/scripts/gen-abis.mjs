@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Extract contract ABIs from Foundry artifacts into typed viem modules.
- * Run `forge build` in contracts/ first, then `npm run gen:abis` here.
+ * Extract contract ABIs from Soroban CLI artifacts into typed viem modules.
+ * Run `cargo build --target wasm32-unknown-unknown` in contracts/ first, then `npm run gen:abis` here.
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";

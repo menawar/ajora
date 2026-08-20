@@ -37,7 +37,7 @@ export async function GET() {
             Ajora Daily Pot
           </div>
           <div style={{ display: "flex", fontSize: 100, fontWeight: 800, marginTop: 20, color: "#111827" }}>
-            {potSize} USDm
+            {potSize} USDC
           </div>
           <div style={{ display: "flex", fontSize: 36, color: "#4b5563", marginTop: 40 }}>
             Save. Pick a number. Win the pot.
@@ -67,7 +67,7 @@ export async function GET() {
             Ajora Daily Pot
           </div>
           <div style={{ display: "flex", fontSize: 40, color: "#4b5563", marginTop: 20 }}>
-            Play now on MiniPay
+            Play now on Freighter
           </div>
         </div>
       ),

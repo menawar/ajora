@@ -3,7 +3,7 @@ import { trackEvent, AnalyticsEvents } from "../lib/analytics";
 import { getAttributionSuffix } from "../lib/attribution";
 
 import { useCallback, useEffect, useState } from "react";
-import { publicClient, walletClient, isMiniPay } from "../lib/clients";
+import { publicClient, walletClient, isFreighter } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
@@ -93,7 +93,7 @@ export function useSavings() {
       setError(undefined);
       trackEvent(AnalyticsEvents.WITHDRAW_INITIATED, { periodId: periodId.toString() });
       try {
-        const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
+        const feeCurrency = isFreighter() ? contracts.cusd.address : undefined;
         const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
           ...contracts.potVault,
           functionName: "claimPrincipal",

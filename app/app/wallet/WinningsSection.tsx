@@ -33,16 +33,16 @@ export function WinningsSection() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className="glass-panel rounded-3xl p-5 border border-celo-green/20 bg-celo-green/5"
+      className="glass-panel rounded-3xl p-5 border border-Stellar-green/20 bg-Stellar-green/5"
     >
       <div className="flex items-center gap-2 mb-4">
-        <div className="p-2 rounded-xl bg-celo-green/10">
-          <Trophy className="w-5 h-5 text-celo-green" />
+        <div className="p-2 rounded-xl bg-Stellar-green/10">
+          <Trophy className="w-5 h-5 text-Stellar-green" />
         </div>
         <div>
           <h2 className="font-bold text-text-primary text-sm">Unclaimed Winnings</h2>
           <p className="text-xs text-text-muted">
-            {cusd(total)} USDm ready to claim
+            {cusd(total)} USDC ready to claim
           </p>
         </div>
       </div>
@@ -57,14 +57,14 @@ export function WinningsSection() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="flex items-center justify-between bg-bg-primary rounded-2xl px-4 py-3 border border-celo-green/10"
+              className="flex items-center justify-between bg-bg-primary rounded-2xl px-4 py-3 border border-Stellar-green/10"
             >
               <div>
                 <div className="text-sm font-bold text-text-primary">
                   🏆 Won on {dayLabel(entry.periodId)}
                 </div>
-                <div className="text-xs font-semibold text-celo-green mt-0.5">
-                  {cusd(entry.amount)} USDm
+                <div className="text-xs font-semibold text-Stellar-green mt-0.5">
+                  {cusd(entry.amount)} USDC
                 </div>
               </div>
 
@@ -72,7 +72,7 @@ export function WinningsSection() {
                 type="button"
                 onClick={() => void claimWinnings(entry.periodId)}
                 disabled={claiming !== undefined}
-                className="flex items-center gap-1.5 rounded-xl bg-celo-green px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] transition-all active:scale-95 hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
+                className="flex items-center gap-1.5 rounded-xl bg-Stellar-green px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] transition-all active:scale-95 hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
               >
                 {claiming === entry.periodId ? (
                   <>

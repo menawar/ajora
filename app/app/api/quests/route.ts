@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createPublicClient, http, formatUnits, parseAbiItem } from "viem";
-import { celo } from "viem/chains";
+import { Stellar } from "viem/chains";
 
 // ── Supabase (optional) ────────────────────────────────────────────────────────
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
@@ -22,7 +22,7 @@ const DRAWMANAGER = (process.env.NEXT_PUBLIC_DRAWMANAGER_ADDRESS ??
 const CREWREGISTRY = (process.env.NEXT_PUBLIC_CREWREGISTRY_ADDRESS ??
   "0x73F0770aea05298579252dFf193df0454C0B5A8a") as `0x${string}`;
 
-const rpc = createPublicClient({ chain: celo, transport: http() });
+const rpc = createPublicClient({ chain: Stellar, transport: http() });
 
 const contributedAbi = parseAbiItem(
   "event Contributed(address indexed user, uint256 indexed periodId, uint256 amount, uint256 ticketsMinted)",
@@ -49,7 +49,7 @@ const crewAbi = [
 ] as const;
 
 /**
- * Derive quest progress from Celo mainnet contract state.
+ * Derive quest progress from Stellar Pubnet contract state.
  * This is the guaranteed-available fallback when Supabase is not configured.
  */
 async function deriveQuestsFromChain(address: `0x${string}`) {
@@ -104,7 +104,7 @@ async function deriveQuestsFromChain(address: `0x${string}`) {
     {
       id: "daily_save",
       title: "Daily Saver",
-      description: "Save at least 1 USDm into the vault today.",
+      description: "Save at least 1 USDC into the vault today.",
       xpReward: 50,
       progress: savedToday ? 1 : 0,
       total: 1,
@@ -213,7 +213,7 @@ export async function GET(request: Request) {
     }
   }
 
-  // On-chain derivation — always works against Celo mainnet.
+  // On-chain derivation — always works against Stellar Pubnet.
   try {
     const data = await deriveQuestsFromChain(address as `0x${string}`);
     return NextResponse.json(data);

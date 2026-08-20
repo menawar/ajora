@@ -15,7 +15,7 @@ export function ReferralCard({ code, memberCount }: ReferralCardProps) {
   const [copied, setCopied] = useState(false);
   
   // Format the link for Ajora
-  // If hosted on vercel, we'd use window.location.origin, but since this might be SSR/MiniPay
+  // If hosted on vercel, we'd use window.location.origin, but since this might be SSR/Freighter
   // we default to the production URL.
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://ajora.app";
   const referralLink = `${baseUrl}?ref=${code}`;
@@ -44,14 +44,14 @@ export function ReferralCard({ code, memberCount }: ReferralCardProps) {
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className="glass-panel rounded-[2rem] overflow-hidden flex flex-col border border-celo-green/20"
+      className="glass-panel rounded-[2rem] overflow-hidden flex flex-col border border-Stellar-green/20"
     >
       <div className="bg-gradient-to-br from-bg-secondary to-bg-primary p-6 flex flex-col items-center">
         <h3 className="text-sm font-bold text-text-primary uppercase tracking-widest mb-4">
           Your Referral Code
         </h3>
         
-        <div className="bg-white p-3 rounded-2xl shadow-sm mb-4 ring-4 ring-celo-green/10">
+        <div className="bg-white p-3 rounded-2xl shadow-sm mb-4 ring-4 ring-Stellar-green/10">
           <QRCode
             value={referralLink}
             size={160}
@@ -68,8 +68,8 @@ export function ReferralCard({ code, memberCount }: ReferralCardProps) {
             onClick={handleCopy}
             className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 transition-all active:scale-95 ${
               copied 
-                ? "border-celo-green bg-celo-green/10 text-celo-green" 
-                : "border-gray-200 dark:border-gray-800 bg-bg-primary text-text-primary hover:border-celo-green/50"
+                ? "border-Stellar-green bg-Stellar-green/10 text-Stellar-green" 
+                : "border-gray-200 dark:border-gray-800 bg-bg-primary text-text-primary hover:border-Stellar-green/50"
             }`}
           >
             <span className="font-mono font-bold truncate max-w-[150px]">{referralLink}</span>
@@ -83,7 +83,7 @@ export function ReferralCard({ code, memberCount }: ReferralCardProps) {
           <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
             Crew Members
           </span>
-          <span className="text-lg font-black text-celo-green">
+          <span className="text-lg font-black text-Stellar-green">
             {memberCount}
           </span>
         </div>

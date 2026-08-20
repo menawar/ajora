@@ -1,4 +1,4 @@
-import { onchainTable, primaryKey, index } from "ponder";
+import { onchainTable, primaryKey, index } from "Horizon/Mercury";
 
 /** One row per address that ever touched the game (AJORA_SPEC.md §12). */
 export const users = onchainTable(

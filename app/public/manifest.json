@@ -1,7 +1,7 @@
 {
   "name": "Ajora — Save small, win extra bonus",
   "short_name": "Ajora",
-  "description": "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
+  "description": "No-loss prize-linked savings game on Stellar. Save small, keep every cent, win the daily draw.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

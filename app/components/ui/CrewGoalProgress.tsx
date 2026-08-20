@@ -21,13 +21,13 @@ export function CrewGoalProgress({ current, target, label = "Daily Crew Goal" }:
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.15 }}
-          className="absolute inset-0 bg-celo-green blur-3xl pointer-events-none"
+          className="absolute inset-0 bg-Stellar-green blur-3xl pointer-events-none"
         />
       )}
 
       <div className="flex items-center justify-between mb-4 relative z-10">
         <div className="flex items-center gap-2">
-          <div className={`p-2 rounded-xl ${isComplete ? "bg-celo-green text-white" : "bg-bg-secondary text-text-muted"}`}>
+          <div className={`p-2 rounded-xl ${isComplete ? "bg-Stellar-green text-white" : "bg-bg-secondary text-text-muted"}`}>
             <Target className="w-4 h-4" />
           </div>
           <h3 className="font-bold text-sm text-text-primary">{label}</h3>
@@ -45,13 +45,13 @@ export function CrewGoalProgress({ current, target, label = "Daily Crew Goal" }:
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 1.5, type: "spring", stiffness: 100, damping: 20 }}
-          className={`h-full rounded-full ${isComplete ? "bg-celo-gold" : "bg-celo-green"}`}
+          className={`h-full rounded-full ${isComplete ? "bg-Stellar-gold" : "bg-Stellar-green"}`}
         />
       </div>
 
       <div className="mt-2 text-xs font-medium text-text-secondary text-center relative z-10">
         {isComplete ? (
-          <span className="text-celo-gold font-bold">🎉 Goal crushed! Crew multiplier active.</span>
+          <span className="text-Stellar-gold font-bold">🎉 Goal crushed! Crew multiplier active.</span>
         ) : (
           <span>Save <span className="font-bold text-text-primary">{target - current} cUSD</span> more to unlock the crew bonus!</span>
         )}

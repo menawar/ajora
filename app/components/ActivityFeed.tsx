@@ -5,7 +5,7 @@ import { useActivity } from "../hooks/useActivity";
 import { useWallet } from "../hooks/useWallet";
 
 const iconMap = {
-  save:    { Icon: Coins,  color: "text-celo-green",  bg: "bg-celo-green/10" },
+  save:    { Icon: Coins,  color: "text-Stellar-green",  bg: "bg-Stellar-green/10" },
   checkin: { Icon: Award,  color: "text-blue-500",    bg: "bg-blue-500/10" },
   win:     { Icon: Trophy, color: "text-amber-500",   bg: "bg-amber-500/10" },
 } as const;
@@ -17,7 +17,7 @@ export function ActivityFeed() {
   return (
     <div className="glass-panel rounded-3xl p-5 border border-gray-100 dark:border-gray-800">
       <h2 className="font-bold text-text-primary mb-4 flex items-center gap-2">
-        <span className="w-1.5 h-6 bg-celo-green rounded-full block" />
+        <span className="w-1.5 h-6 bg-Stellar-green rounded-full block" />
         Recent Activity
       </h2>
 

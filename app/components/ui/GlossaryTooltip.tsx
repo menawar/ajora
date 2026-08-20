@@ -23,7 +23,7 @@ export function GlossaryTooltip({ term, definition }: GlossaryTooltipProps) {
       role="button"
       aria-expanded={open}
     >
-      <span className="font-bold text-celo-green underline decoration-celo-green/30 decoration-dotted underline-offset-4">{term}</span>
+      <span className="font-bold text-Stellar-green underline decoration-Stellar-green/30 decoration-dotted underline-offset-4">{term}</span>
       <AnimatePresence>
         {open && (
           <motion.div

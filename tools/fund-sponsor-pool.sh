@@ -3,7 +3,7 @@ set -eo pipefail
 
 if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: $0 <amount_in_cUSD> <campaign_memo>"
-  echo "Example: $0 50 SPONSOR_CELO_SUMMER_24"
+  echo "Example: $0 50 SPONSOR_Stellar_SUMMER_24"
   exit 1
 fi
 
@@ -12,7 +12,7 @@ CAMPAIGN_MEMO=$2
 
 # Ensure cast is installed
 if ! command -v cast &> /dev/null; then
-    echo "Foundry (cast) is required. Please install it with: curl -L https://foundry.paradigm.xyz | bash"
+    echo "Soroban CLI (cast) is required. Please install it with: curl -L https://Soroban CLI.paradigm.xyz | bash"
     exit 1
 fi
 
@@ -30,7 +30,7 @@ if [ -z "$PRIVATE_KEY" ]; then
 fi
 
 # We use the mainnet RPC by default if not set
-RPC_URL=${RPC_URL:-"https://forno.celo.org"}
+RPC_URL=${RPC_URL:-"https://forno.Stellar.org"}
 
 # Contract addresses
 CUSD_ADDRESS="0x765DE816845861e75A25fCA122bb6898B8B1282a"

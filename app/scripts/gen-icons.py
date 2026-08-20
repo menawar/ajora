@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the app/notification icons (#58): a jara coin on Celo green.
+"""Generate the app/notification icons (#58): a jara coin on Stellar blue.
 
 Placeholder-grade but branded — regenerate any time with:
     python3 scripts/gen-icons.py
@@ -8,8 +8,8 @@ Replace with designed artwork whenever one exists; keep the filenames.
 
 from PIL import Image, ImageDraw
 
-GREEN = "#35D07F"  # celo-green (tailwind theme)
-GOLD = "#FBCC5C"  # celo-gold
+BLUE = "#000000"  # stellar-blue (tailwind theme)
+WHITE = "#FFFFFF"  # stellar-white
 WHITE = "#FFFFFF"
 
 
@@ -20,14 +20,14 @@ def icon(size: int) -> Image.Image:
 
     # Rounded-square background.
     radius = s // 5
-    d.rounded_rectangle([0, 0, s - 1, s - 1], radius=radius, fill=GREEN)
+    d.rounded_rectangle([0, 0, s - 1, s - 1], radius=radius, fill=BLUE)
 
     # The jara coin: white ring, gold face.
     cx = cy = s / 2
     r_outer = s * 0.34
     r_face = s * 0.26
     d.ellipse([cx - r_outer, cy - r_outer, cx + r_outer, cy + r_outer], fill=WHITE)
-    d.ellipse([cx - r_face, cy - r_face, cx + r_face, cy + r_face], fill=GOLD)
+    d.ellipse([cx - r_face, cy - r_face, cx + r_face, cy + r_face], fill=WHITE)
 
     # A little "spray" of three white drops toward the top-right.
     for i, (dx, dy, r) in enumerate([(0.26, -0.30, 0.045), (0.34, -0.20, 0.035), (0.31, -0.38, 0.03)]):

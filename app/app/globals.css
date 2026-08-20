@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --color-celo-green-base: #35d07f;
-  --color-celo-gold-base: #fbcc5c;
-  --color-celo-dark-base: #1a1a2e;
+  --color-Stellar-green-base: #35d07f;
+  --color-Stellar-gold-base: #fbcc5c;
+  --color-Stellar-dark-base: #1a1a2e;
   
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f3f4f6;
@@ -18,9 +18,9 @@
 }
 
 .dark {
-  --color-celo-green-base: #35d07f;
-  --color-celo-gold-base: #fbcc5c;
-  --color-celo-dark-base: #ffffff;
+  --color-Stellar-green-base: #35d07f;
+  --color-Stellar-gold-base: #fbcc5c;
+  --color-Stellar-dark-base: #ffffff;
   
   --color-bg-primary: #0b0c10;
   --color-bg-secondary: #1a1b26;
@@ -37,8 +37,8 @@
 .forest {
   --color-bg-primary: #f1f8f5;
   --color-bg-secondary: #e2f0e9;
-  --color-celo-green-base: #2a9d8f;
-  --color-celo-gold-base: #e9c46a;
+  --color-Stellar-green-base: #2a9d8f;
+  --color-Stellar-gold-base: #e9c46a;
   --color-text-primary: #1b4332;
   --color-text-secondary: #2d6a4f;
   --color-text-muted: #52b788;
@@ -50,8 +50,8 @@
 .ocean {
   --color-bg-primary: #e0fbfc;
   --color-bg-secondary: #c2dfe3;
-  --color-celo-green-base: #3d5a80;
-  --color-celo-gold-base: #ee6c4d;
+  --color-Stellar-green-base: #3d5a80;
+  --color-Stellar-gold-base: #ee6c4d;
   --color-text-primary: #153243;
   --color-text-secondary: #284b63;
   --color-text-muted: #9db4c0;
@@ -63,8 +63,8 @@
 .sunset {
   --color-bg-primary: #fff3e0;
   --color-bg-secondary: #ffe0b2;
-  --color-celo-green-base: #e76f51;
-  --color-celo-gold-base: #f4a261;
+  --color-Stellar-green-base: #e76f51;
+  --color-Stellar-gold-base: #f4a261;
   --color-text-primary: #bf360c;
   --color-text-secondary: #d84315;
   --color-text-muted: #ff8a65;
@@ -76,8 +76,8 @@
 .midnight {
   --color-bg-primary: #0f172a;
   --color-bg-secondary: #1e293b;
-  --color-celo-green-base: #38bdf8;
-  --color-celo-gold-base: #818cf8;
+  --color-Stellar-green-base: #38bdf8;
+  --color-Stellar-gold-base: #818cf8;
   --color-text-primary: #f8fafc;
   --color-text-secondary: #cbd5e1;
   --color-text-muted: #64748b;
@@ -87,9 +87,9 @@
 }
 
 @theme {
-  --color-celo-green: var(--color-celo-green-base);
-  --color-celo-gold: var(--color-celo-gold-base);
-  --color-celo-dark: var(--color-celo-dark-base);
+  --color-Stellar-green: var(--color-Stellar-green-base);
+  --color-Stellar-gold: var(--color-Stellar-gold-base);
+  --color-Stellar-dark: var(--color-Stellar-dark-base);
   
   --color-bg-primary: var(--color-bg-primary);
   --color-bg-secondary: var(--color-bg-secondary);
@@ -110,7 +110,7 @@
 }
 
 @utility text-gradient {
-  background-image: linear-gradient(90deg, var(--color-celo-green-base), var(--color-celo-gold-base));
+  background-image: linear-gradient(90deg, var(--color-Stellar-green-base), var(--color-Stellar-gold-base));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

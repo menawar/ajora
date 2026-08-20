@@ -21,7 +21,7 @@ const itemVariants: Variants = {
 
 const THEMES = [
   { id: "light", name: "Classic Light", price: 0, unlocked: true, colors: ["#ffffff", "#f3f4f6", "#35d07f"] },
-  { id: "dark", name: "Celo Dark", price: 0, unlocked: true, colors: ["#0b0c10", "#1a1b26", "#35d07f"] },
+  { id: "dark", name: "Stellar Dark", price: 0, unlocked: true, colors: ["#0b0c10", "#1a1b26", "#35d07f"] },
   { id: "forest", name: "Deep Forest", price: 500, unlocked: false, colors: ["#f1f8f5", "#e2f0e9", "#2a9d8f"] },
   { id: "ocean", name: "Pacific Ocean", price: 500, unlocked: false, colors: ["#e0fbfc", "#c2dfe3", "#3d5a80"] },
   { id: "sunset", name: "Sahara Sunset", price: 1000, unlocked: false, colors: ["#fff3e0", "#ffe0b2", "#e76f51"] },
@@ -110,7 +110,7 @@ export default function ThemesPage() {
         </div>
         
         <div className="flex flex-col items-end gap-1">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-celo-gold bg-celo-gold/10 px-3 py-1.5 rounded-xl border border-celo-gold/20">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-Stellar-gold bg-Stellar-gold/10 px-3 py-1.5 rounded-xl border border-Stellar-gold/20">
             {xpBalance} XP
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function ThemesPage() {
                 }}
                 className={`relative w-full text-left p-4 rounded-2xl border-2 transition-all h-full flex flex-col ${
                   isSelected 
-                    ? "border-celo-green bg-celo-green/5 shadow-[0_0_15px_rgba(53,208,127,0.15)]" 
+                    ? "border-Stellar-green bg-Stellar-green/5 shadow-[0_0_15px_rgba(53,208,127,0.15)]" 
                     : isUnlocked 
                       ? "border-gray-200 dark:border-gray-800 bg-bg-secondary hover:border-gray-300 dark:hover:border-gray-700"
                       : "border-gray-200 dark:border-gray-800 bg-bg-secondary opacity-50 grayscale"
@@ -144,7 +144,7 @@ export default function ThemesPage() {
               >
                 {isSelected && (
                   <div className="absolute top-2 right-2">
-                    <CheckCircle2 className="w-4 h-4 text-celo-green" />
+                    <CheckCircle2 className="w-4 h-4 text-Stellar-green" />
                   </div>
                 )}
                 
@@ -159,7 +159,7 @@ export default function ThemesPage() {
                 </div>
 
                 <div className="mt-auto">
-                  <h3 className={`font-bold text-sm ${isSelected ? "text-celo-green" : "text-text-primary"}`}>
+                  <h3 className={`font-bold text-sm ${isSelected ? "text-Stellar-green" : "text-text-primary"}`}>
                     {t.name}
                   </h3>
                   

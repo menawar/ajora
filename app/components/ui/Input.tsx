@@ -25,14 +25,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             value={value}
-            className={`w-full rounded-2xl border border-gray-200 dark:border-gray-800 bg-bg-secondary px-4 py-3.5 text-[15px] outline-none transition-all placeholder:text-gray-400 focus:border-celo-green focus:bg-bg-primary focus:ring-4 focus:ring-celo-green/10 ${
+            className={`w-full rounded-2xl border border-gray-200 dark:border-gray-800 bg-bg-secondary px-4 py-3.5 text-[15px] outline-none transition-all placeholder:text-gray-400 focus:border-Stellar-green focus:bg-bg-primary focus:ring-4 focus:ring-Stellar-green/10 ${
               error ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
             } ${prefixNode ? "pl-11" : ""} ${suffixNode || loading || (hasValue && onClear) ? "pr-12" : ""} ${className}`}
             {...props}
           />
 
           <div className="absolute right-4 flex items-center justify-center gap-2 text-text-muted">
-            {loading && <Loader2 className="w-4 h-4 animate-spin text-celo-green" />}
+            {loading && <Loader2 className="w-4 h-4 animate-spin text-Stellar-green" />}
             {!loading && hasValue && onClear && (
               <button
                 type="button"

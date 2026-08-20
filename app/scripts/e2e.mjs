@@ -2,8 +2,8 @@
 /**
  * E2E happy path over the app's exact user flow, against a local anvil chain:
  * deploy core -> verify user -> approve -> contribute -> checkIn -> pickNumber,
- * then assert every read the UI depends on. Requires `forge build` artifacts
- * and the `anvil` binary (Foundry).
+ * then assert every read the UI depends on. Requires `cargo build --target wasm32-unknown-unknown` artifacts
+ * and the `anvil` binary (Soroban CLI).
  */
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -19,7 +19,7 @@ import {
   parseUnits,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { foundry } from "viem/chains";
+import { Soroban CLI } from "viem/chains";
 
 const out = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "contracts", "out");
 const artifact = (name) =>
@@ -48,7 +48,7 @@ function ok(msg) {
 const anvil = spawn("anvil", ["--port", String(PORT), "--silent"], { stdio: "ignore" });
 try {
   // Wait for RPC to come up.
-  const publicClient = createPublicClient({ chain: foundry, transport: http(rpc) });
+  const publicClient = createPublicClient({ chain: Soroban CLI, transport: http(rpc) });
   for (let i = 0; ; i++) {
     try {
       await publicClient.getChainId();
@@ -59,7 +59,7 @@ try {
     }
   }
 
-  const wallet = (account) => createWalletClient({ account, chain: foundry, transport: http(rpc) });
+  const wallet = (account) => createWalletClient({ account, chain: Soroban CLI, transport: http(rpc) });
   const deploy = async (name, args = []) => {
     const a = artifact(name);
     const hash = await wallet(deployer).deployContract({
@@ -79,7 +79,7 @@ try {
 
   // ---- deploy + wire the core exactly like Deploy.s.sol ----
   const MIN = parseUnits("0.1", 18);
-  const cusd = await deploy("MockERC20", ["Mento Dollar", "USDm", 18]);
+  const cusd = await deploy("MockERC20", ["Stellar Dollar", "USDC", 18]);
   const vault = await deploy("PotVault", [cusd.address, MIN]);
   const streak = await deploy("StreakSBT", []);
   const faucet = await deploy("SprayFaucet", [vault.address, deployer.address]);
@@ -112,7 +112,7 @@ try {
   ok("all UI reads consistent (tickets, principal, streak, pick, periodInfo)");
 
   // ---- the full draw cycle: fund -> commit -> mine past anchor -> reveal ----
-  const testClient = createTestClient({ chain: foundry, mode: "anvil", transport: http(rpc) });
+  const testClient = createTestClient({ chain: Soroban CLI, mode: "anvil", transport: http(rpc) });
   const potFunding = parseUnits("1", 18);
   await write(deployer, cusd, "mint", [deployer.address, potFunding]);
   await write(deployer, cusd, "approve", [vault.address, potFunding]);

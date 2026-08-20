@@ -22,7 +22,7 @@ export function StatCard({ title, value, icon, subtitle, trend, delay = 0 }: Sta
       transition={{ delay, type: "spring", stiffness: 300, damping: 24 }}
       className="glass-panel rounded-3xl p-5 flex flex-col gap-2 relative overflow-hidden group"
     >
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-celo-green/10 transition-colors pointer-events-none" />
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-Stellar-green/10 transition-colors pointer-events-none" />
       
       <div className="flex items-center justify-between text-text-muted">
         <h3 className="text-xs font-bold uppercase tracking-widest">{title}</h3>
@@ -37,7 +37,7 @@ export function StatCard({ title, value, icon, subtitle, trend, delay = 0 }: Sta
         <div className="mt-2 flex items-center justify-between text-xs font-medium">
           {subtitle && <span className="text-text-secondary">{subtitle}</span>}
           {trend && (
-            <span className={`px-2 py-1 rounded-md ${trend.value >= 0 ? "bg-celo-green/10 text-celo-green" : "bg-red-500/10 text-red-500"}`}>
+            <span className={`px-2 py-1 rounded-md ${trend.value >= 0 ? "bg-Stellar-green/10 text-Stellar-green" : "bg-red-500/10 text-red-500"}`}>
               {trend.value >= 0 ? "↑" : "↓"} {Math.abs(trend.value)}% {trend.label}
             </span>
           )}

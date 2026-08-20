@@ -50,7 +50,7 @@ function RevealNumber({ value }: { value: number }) {
           <div
             key={i}
             className={`flex h-28 w-28 shrink-0 items-center justify-center text-6xl font-black text-text-primary transition-all duration-500 ${
-              settled && i === digits.length - 1 ? "bg-celo-green text-white shadow-[inset_0_0_20px_rgba(0,0,0,0.1)]" : ""
+              settled && i === digits.length - 1 ? "bg-Stellar-green text-white shadow-[inset_0_0_20px_rgba(0,0,0,0.1)]" : ""
             }`}
           >
             {d}
@@ -176,7 +176,7 @@ export default function DrawPage() {
                     {last.winners.length === 1 && (
                       <div className="mt-3 flex items-center justify-between text-xs font-medium">
                         <span className="text-text-secondary">Share: <strong className="text-text-primary">{cusd(last.winners[0].share)} cUSD</strong></span>
-                        <span className={`px-2 py-1 rounded-md ${last.winners[0].claimed ? "bg-celo-green/10 text-celo-green" : "bg-amber-100 text-amber-700"}`}>
+                        <span className={`px-2 py-1 rounded-md ${last.winners[0].claimed ? "bg-Stellar-green/10 text-Stellar-green" : "bg-amber-100 text-amber-700"}`}>
                           {last.winners[0].claimed ? "Claimed" : "Unclaimed"}
                         </span>
                       </div>
@@ -188,9 +188,9 @@ export default function DrawPage() {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", bounce: 0.5, delay: 2.5 }}
-                    className="flex flex-col gap-4 bg-celo-green/5 p-4 rounded-2xl border border-celo-green/20"
+                    className="flex flex-col gap-4 bg-Stellar-green/5 p-4 rounded-2xl border border-Stellar-green/20"
                   >
-                    <p className="font-black text-celo-green text-xl text-center tracking-tight">
+                    <p className="font-black text-Stellar-green text-xl text-center tracking-tight">
                       You won{last.claimed ? "!" : ` ${cusd(last.prize)} cUSD!`} 🎉
                     </p>
                     {!last.claimed ? (
@@ -211,7 +211,7 @@ export default function DrawPage() {
                           type="button"
                           onClick={() => void claimPrize()}
                           disabled={claiming}
-                          className="rounded-2xl bg-celo-green px-4 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                          className="rounded-2xl bg-Stellar-green px-4 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                         >
                           {claiming ? "Claiming…" : `Claim ${cusd(last.prize)} cUSD`}
                         </button>
@@ -265,7 +265,7 @@ export default function DrawPage() {
       </section>
 
       {/* ---- tonight ---- */}
-      <section className="rounded-3xl bg-gradient-to-br from-celo-green via-[#2ebf73] to-celo-gold p-6 text-center text-white shadow-xl relative overflow-hidden">
+      <section className="rounded-3xl bg-gradient-to-br from-Stellar-green via-[#2ebf73] to-Stellar-gold p-6 text-center text-white shadow-xl relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="text-sm font-bold uppercase tracking-widest opacity-90 mb-2 relative z-10">Tonight&apos;s pot so far</div>
         <div className="text-4xl font-black tracking-tight drop-shadow-md mb-3 relative z-10">
@@ -274,7 +274,7 @@ export default function DrawPage() {
         </div>
         <div className="text-sm font-medium bg-white/20 p-3 rounded-xl backdrop-blur-md border border-white/20 relative z-10">
           {myPick.number !== 0
-            ? <span className="flex items-center justify-center gap-2">You're in with <strong className="bg-white text-celo-green px-2 py-0.5 rounded-md">{myPick.weight.toString()}</strong> tickets on <strong className="bg-white text-celo-green px-2 py-0.5 rounded-md text-lg">{myPick.number}</strong></span>
+            ? <span className="flex items-center justify-center gap-2">You're in with <strong className="bg-white text-Stellar-green px-2 py-0.5 rounded-md">{myPick.weight.toString()}</strong> tickets on <strong className="bg-white text-Stellar-green px-2 py-0.5 rounded-md text-lg">{myPick.number}</strong></span>
             : "Save + pick to enter"}
         </div>
       </section>
@@ -294,7 +294,7 @@ export default function DrawPage() {
               setSponsorAmount(e.target.value.replace(/[^0-9.]/g, ""));
               resetSponsor();
             }}
-            className="min-w-0 flex-1 rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm font-bold outline-none focus:ring-2 focus:ring-celo-green transition-all placeholder:font-normal placeholder:text-text-muted"
+            className="min-w-0 flex-1 rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm font-bold outline-none focus:ring-2 focus:ring-Stellar-green transition-all placeholder:font-normal placeholder:text-text-muted"
           />
           <button
             type="button"
@@ -310,7 +310,7 @@ export default function DrawPage() {
           </button>
         </div>
         {sponsorStatus.step === "success" && (
-          <p className="mt-3 text-sm font-bold text-celo-green bg-celo-green/10 p-3 rounded-xl text-center">
+          <p className="mt-3 text-sm font-bold text-Stellar-green bg-Stellar-green/10 p-3 rounded-xl text-center">
             Jara added — tonight&apos;s winners chop your love 🎉
           </p>
         )}

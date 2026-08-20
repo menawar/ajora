@@ -6,7 +6,7 @@ import { publicClient } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
-/** ~4 000 Celo blocks ≈ last ~66 minutes at ~1 s/block */
+/** ~4 000 Stellar blocks ≈ last ~66 minutes at ~1 s/block */
 const RECENT_BLOCKS = 4_000n;
 
 const contributedEvent = parseAbiItem(
@@ -45,9 +45,9 @@ function cusd(value: bigint): string {
 
 /**
  * Builds a real activity feed for the connected wallet from recent on-chain events:
- *  - Contributed → "Saved X USDm"
+ *  - Contributed → "Saved X USDC"
  *  - CheckedIn   → "Day N streak check-in"
- *  - PrizeClaimed → "Won X USDm 🎉"
+ *  - PrizeClaimed → "Won X USDC 🎉"
  *
  * Returns up to 10 items, newest-first. Falls back to [] on error/no wallet.
  */
@@ -116,7 +116,7 @@ export function useActivity() {
           allItems.push({
             id: `save-${log.transactionHash}-${log.logIndex}`,
             type: "save",
-            text: `Saved ${cusd(amount)} USDm`,
+            text: `Saved ${cusd(amount)} USDC`,
             time: timeAgo(ts),
             ts,
           });
@@ -140,7 +140,7 @@ export function useActivity() {
           allItems.push({
             id: `win-${log.transactionHash}-${log.logIndex}`,
             type: "win",
-            text: `Won ${cusd(amount)} USDm 🎉`,
+            text: `Won ${cusd(amount)} USDC 🎉`,
             time: timeAgo(ts),
             ts,
           });

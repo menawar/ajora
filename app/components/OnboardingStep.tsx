@@ -11,8 +11,8 @@ interface OnboardingStepProps {
 }
 
 const colorStyles = {
-  green: "from-celo-green/20 to-celo-green/5 text-celo-green border-celo-green/30",
-  gold: "from-celo-gold/20 to-amber-100/5 text-amber-500 border-celo-gold/30",
+  green: "from-Stellar-green/20 to-Stellar-green/5 text-Stellar-green border-Stellar-green/30",
+  gold: "from-Stellar-gold/20 to-amber-100/5 text-amber-500 border-Stellar-gold/30",
   purple: "from-purple-500/20 to-purple-100/5 text-purple-500 border-purple-500/30",
 };
 

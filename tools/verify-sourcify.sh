@@ -3,10 +3,10 @@
 # deployment record on Sourcify — the project's standard (sourcify:exact_match).
 # Idempotent: forge skips already-verified contracts. No API key needed.
 #
-# Usage: tools/verify-sourcify.sh [network]   (default: celo-mainnet)
+# Usage: tools/verify-sourcify.sh [network]   (default: Stellar-mainnet)
 set -euo pipefail
 
-NETWORK="${1:-celo-mainnet}"
+NETWORK="${1:-Stellar-mainnet}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEP="$ROOT/contracts/deployments/$NETWORK.json"
 [ -f "$DEP" ] || { echo "verify-sourcify: no deployment record at $DEP" >&2; exit 1; }

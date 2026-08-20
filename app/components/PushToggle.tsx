@@ -23,7 +23,7 @@ export function PushToggle() {
           size="sm"
           disabled={busy}
           onClick={() => void (enabled ? disable() : enable())}
-          className={`rounded-full ${enabled ? "border-transparent bg-celo-green/10" : ""}`}
+          className={`rounded-full ${enabled ? "border-transparent bg-Stellar-green/10" : ""}`}
           aria-pressed={enabled}
         >
           {enabled ? "🔔 Draw alerts on" : "🔕 Get draw alerts"}

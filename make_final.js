@@ -7,7 +7,7 @@ const components = [
   { name: "Grid.tsx", code: 'export function Grid({children}: {children: React.ReactNode}) { return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{children}</div>; }', msg: "feat(ui): add Grid layout component" },
   { name: "Divider.tsx", code: 'export function Divider() { return <hr className="my-4 border-gray-200" />; }', msg: "feat(ui): add Divider component" },
   { name: "Skeleton.tsx", code: 'export function Skeleton({className=""}: {className?: string}) { return <div className={"animate-pulse bg-gray-200 rounded " + className} />; }', msg: "feat(ui): add Skeleton loader component" },
-  { name: "Spinner.tsx", code: 'export function Spinner() { return <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-celo-green" />; }', msg: "feat(ui): add Spinner component" },
+  { name: "Spinner.tsx", code: 'export function Spinner() { return <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-Stellar-green" />; }', msg: "feat(ui): add Spinner component" },
   { name: "Alert.tsx", code: 'export function Alert({msg}: {msg: string}) { return <div className="p-4 bg-red-100 text-red-700 rounded-lg">{msg}</div>; }', msg: "feat(ui): add Alert component" },
   { name: "Toast.tsx", code: 'export function Toast({msg}: {msg: string}) { return <div className="fixed bottom-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-lg">{msg}</div>; }', msg: "feat(ui): add Toast component" },
   { name: "Popover.tsx", code: 'export function Popover({children}: {children: React.ReactNode}) { return <div className="absolute z-10 bg-white shadow-lg rounded-xl p-4">{children}</div>; }', msg: "feat(ui): add Popover component" },

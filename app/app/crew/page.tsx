@@ -63,7 +63,7 @@ function SpraySection() {
           placeholder="Friend's wallet address 0x…"
           value={friend}
           onChange={(e) => setFriend(e.target.value.trim())}
-          className="min-w-0 flex-1 rounded-2xl bg-bg-secondary border-none px-4 py-3 text-sm focus:ring-2 focus:ring-celo-green outline-none transition-all placeholder:text-text-muted"
+          className="min-w-0 flex-1 rounded-2xl bg-bg-secondary border-none px-4 py-3 text-sm focus:ring-2 focus:ring-Stellar-green outline-none transition-all placeholder:text-text-muted"
         />
         <button
           type="button"
@@ -72,13 +72,13 @@ function SpraySection() {
             trackEvent(AnalyticsEvents.SPRAY_INITIATED, { friend });
             void spray(friend);
           }}
-          className="rounded-2xl bg-celo-gold px-5 py-3 font-bold text-white shadow-md disabled:opacity-50 hover:bg-[#eab308] hover:shadow-lg transition-all active:scale-95"
+          className="rounded-2xl bg-Stellar-gold px-5 py-3 font-bold text-white shadow-md disabled:opacity-50 hover:bg-[#eab308] hover:shadow-lg transition-all active:scale-95"
         >
           {spraying ? "…" : "Spray"}
         </button>
       </div>
       {done && (
-        <p className="mt-4 animate-bounce text-center text-lg font-bold text-celo-green">🎉 🎊 🎉 Sprayed! 🎉 🎊 🎉</p>
+        <p className="mt-4 animate-bounce text-center text-lg font-bold text-Stellar-green">🎉 🎊 🎉 Sprayed! 🎉 🎊 🎉</p>
       )}
       {error && <p className="mt-3 text-center text-sm font-semibold text-red-500 bg-red-50 p-2 rounded-lg">{error}</p>}
     </section>
@@ -119,14 +119,14 @@ export default function CrewPage() {
             <button
               type="button"
               onClick={() => setMode("join")}
-              className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${mode === "join" ? "bg-white text-celo-green shadow-sm" : "text-text-muted hover:text-text-primary"}`}
+              className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${mode === "join" ? "bg-white text-Stellar-green shadow-sm" : "text-text-muted hover:text-text-primary"}`}
             >
               Join a crew
             </button>
             <button
               type="button"
               onClick={() => setMode("create")}
-              className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${mode === "create" ? "bg-white text-celo-green shadow-sm" : "text-text-muted hover:text-text-primary"}`}
+              className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${mode === "create" ? "bg-white text-Stellar-green shadow-sm" : "text-text-muted hover:text-text-primary"}`}
             >
               Start a crew
             </button>
@@ -137,14 +137,14 @@ export default function CrewPage() {
                 placeholder="Inviter's code"
                 value={inviter}
                 onChange={(e) => setInviter(e.target.value)}
-                className="w-full rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-celo-green transition-all"
+                className="w-full rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-Stellar-green transition-all"
               />
             )}
             <input
               placeholder="Choose your own code (e.g. amara-lagos)"
               value={myCode}
               onChange={(e) => setMyCode(e.target.value)}
-              className="w-full rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-celo-green transition-all"
+              className="w-full rounded-2xl bg-bg-secondary border-none px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-Stellar-green transition-all"
             />
             <button
               type="button"
@@ -152,7 +152,7 @@ export default function CrewPage() {
               onClick={() =>
                 void (mode === "join" ? crew.joinCrew(inviter, myCode) : crew.createCrew(myCode))
               }
-              className="mt-2 w-full rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+              className="mt-2 w-full rounded-2xl bg-Stellar-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
             >
               {crew.busy ? "Confirming…" : mode === "join" ? "Join Crew" : "Create Crew"}
             </button>
@@ -161,7 +161,7 @@ export default function CrewPage() {
         </section>
       ) : (
         <section className="flex flex-col gap-4">
-          <div className="rounded-3xl bg-gradient-to-br from-celo-green via-[#2ebf73] to-celo-gold p-6 text-white shadow-xl relative overflow-hidden">
+          <div className="rounded-3xl bg-gradient-to-br from-Stellar-green via-[#2ebf73] to-Stellar-gold p-6 text-white shadow-xl relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
             <div className="flex justify-between text-sm font-medium opacity-90 relative z-10">
               <span className="bg-white/20 px-2 py-1 rounded-md">Crew #{crew.crewId.toString()}</span>
@@ -182,7 +182,7 @@ export default function CrewPage() {
       {crew.members && crew.members.length > 0 && (
         <section className="glass-panel rounded-3xl p-5">
           <h2 className="font-bold text-text-primary mb-4 flex items-center gap-2">
-            <Users2 className="w-5 h-5 text-celo-green" /> Crew Roster
+            <Users2 className="w-5 h-5 text-Stellar-green" /> Crew Roster
           </h2>
           <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
             {crew.members.map((m) => (

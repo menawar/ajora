@@ -58,7 +58,7 @@ export function PullToRefresh({ onRefresh, children, pullThreshold = 80 }: PullT
             isRefreshing ? "opacity-100" : "opacity-0"
           }`}
         >
-          <RefreshCw className="w-5 h-5 text-celo-green" />
+          <RefreshCw className="w-5 h-5 text-Stellar-green" />
         </motion.div>
       </div>
 

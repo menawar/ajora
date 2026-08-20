@@ -4,7 +4,7 @@ import { getAttributionSuffix } from "../lib/attribution";
 
 import { useCallback, useEffect, useState } from "react";
 import { useCachedState } from "./useCachedState";
-import { publicClient, walletClient, isMiniPay } from "../lib/clients";
+import { publicClient, walletClient, isFreighter } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
@@ -105,7 +105,7 @@ export function useStreak() {
     setCheckingIn(true);
     setError(undefined);
     try {
-      const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
+      const feeCurrency = isFreighter() ? contracts.cusd.address : undefined;
       const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
         ...contracts.streakSBT,
         functionName: "checkIn",

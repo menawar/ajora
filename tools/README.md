@@ -6,8 +6,8 @@ Small, dependency-light helpers that run the repeatable steps after a mainnet
 ## Single command (recommended)
 
 ```bash
-tools/post-deploy.sh                              # default: celo-mainnet
-tools/post-deploy.sh --network alfajores
+tools/post-deploy.sh                              # default: Stellar-mainnet
+tools/post-deploy.sh --network Stellar Testnet
 tools/post-deploy.sh --broadcast <run-latest.json> # right after forge script --broadcast
 tools/post-deploy.sh --check                       # CI: verify everything is in sync
 ```
@@ -20,8 +20,8 @@ addresses — in one shot.
 ### 1. Verify sources on Sourcify
 
 ```bash
-tools/verify-sourcify.sh            # default network: celo-mainnet
-tools/verify-sourcify.sh alfajores  # or a named network record
+tools/verify-sourcify.sh            # default network: Stellar-mainnet
+tools/verify-sourcify.sh Stellar Testnet  # or a named network record
 ```
 
 Reads every contract + its constructor args from
@@ -41,7 +41,7 @@ node tools/sync-env.mjs --print   # print the block, write nothing
 
 Generates `app/.env.local` (`NEXT_PUBLIC_*` addresses + chain id) straight from
 the deployment record — the step where core_v4/v5 address drift used to creep
-in. The **indexer** (`indexer/ponder.config.ts`) and **simulator**
+in. The **indexer** (`indexer/Horizon/Mercury.config.ts`) and **simulator**
 (`ajora-sim/.env`) consume the same addresses; the script prints them so you can
 paste them across.
 
@@ -57,7 +57,7 @@ so do this the same hour as the deploy:
 - [ ] Update the addresses in the root `README.md` deployment table.
 - [ ] Run `tools/post-deploy.sh` (or the individual scripts below).
 - [ ] Redeploy the frontend so the live app points at the new core.
-- [ ] Post a `/celo` Farcaster update linked to the deploy PR (score booster).
+- [ ] Post a `/Stellar` Farcaster update linked to the deploy PR (score booster).
 
 > These scripts read only the committed deployment record — they never hold a
 > private key. Signing (deploy, verify submission) is done separately with your

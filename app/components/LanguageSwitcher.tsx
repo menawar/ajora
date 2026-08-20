@@ -36,7 +36,7 @@ export function LanguageSwitcher({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 rounded-full bg-white/50 px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-celo-green"
+        className="flex items-center gap-1.5 rounded-full bg-white/50 px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-Stellar-green"
         aria-label={t("language.label")}
         aria-expanded={isOpen}
       >
@@ -66,7 +66,7 @@ export function LanguageSwitcher({
                     setIsOpen(false);
                   }}
                   className={`group flex w-full items-center justify-between px-4 py-2 text-sm ${
-                    locale === l ? "text-celo-green font-semibold bg-celo-green/5" : "text-gray-700 hover:bg-gray-50"
+                    locale === l ? "text-Stellar-green font-semibold bg-Stellar-green/5" : "text-gray-700 hover:bg-gray-50"
                   }`}
                   role="menuitem"
                 >

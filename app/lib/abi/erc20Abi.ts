@@ -1,4 +1,4 @@
-// Minimal ERC20 surface used against Mento stablecoins (USDm).
+// Minimal ERC20 surface used against Stellar USDC (USDC).
 export const erc20Abi = [
   {
     type: "function",

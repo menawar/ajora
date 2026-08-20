@@ -127,8 +127,8 @@ export default function StatsPage() {
       animate="show"
     >
       <motion.header variants={itemVariants} className="text-center pt-4 flex flex-col items-center">
-        <div className="w-12 h-12 rounded-full bg-celo-green/10 flex items-center justify-center mb-3">
-          <Activity className="w-6 h-6 text-celo-green" />
+        <div className="w-12 h-12 rounded-full bg-Stellar-green/10 flex items-center justify-center mb-3">
+          <Activity className="w-6 h-6 text-Stellar-green" />
         </div>
         <h1 className="text-3xl font-black tracking-tight text-gradient">Global Stats</h1>
         <p className="mt-2 text-sm text-text-secondary">Network health and community metrics.</p>
@@ -215,11 +215,11 @@ export default function StatsPage() {
 
       <motion.section
         variants={itemVariants}
-        className="glass-panel rounded-3xl p-5 border-l-4 border-l-celo-green"
+        className="glass-panel rounded-3xl p-5 border-l-4 border-l-Stellar-green"
       >
         <h3 className="text-sm font-bold text-text-primary mb-1">System Health: On-Chain</h3>
         <p className="text-xs text-text-secondary">
-          All data is read live from Celo mainnet contracts. The keeper bot manages daily draws and yield harvesting. Smart contracts are fully collateralized.
+          All data is read live from Stellar Pubnet contracts. The keeper bot manages daily draws and yield harvesting. Smart contracts are fully collateralized.
         </p>
       </motion.section>
 
@@ -229,7 +229,7 @@ export default function StatsPage() {
       >
         <Link
           href="/"
-          className="text-sm font-bold text-celo-green underline decoration-celo-green/30 decoration-dotted underline-offset-4 transition hover:text-[#2ebf73]"
+          className="text-sm font-bold text-Stellar-green underline decoration-Stellar-green/30 decoration-dotted underline-offset-4 transition hover:text-[#2ebf73]"
         >
           ← Back to home
         </Link>

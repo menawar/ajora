@@ -23,7 +23,7 @@ export function ToggleItem({
   const content = (
     <>
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-bg-secondary text-text-secondary group-hover:text-celo-green group-hover:bg-celo-green/10 transition-colors shrink-0">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-bg-secondary text-text-secondary group-hover:text-Stellar-green group-hover:bg-Stellar-green/10 transition-colors shrink-0">
           {icon}
         </div>
         <div className="flex flex-col flex-1 min-w-0">

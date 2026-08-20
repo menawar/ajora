@@ -3,14 +3,14 @@
 import { useCallback, useState } from "react";
 import { getAttributionSuffix } from "../lib/attribution";
 import { parseUnits } from "viem";
-import { publicClient, walletClient, isMiniPay } from "../lib/clients";
+import { publicClient, walletClient, isFreighter } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
 export type ComboStep = "idle" | "approving" | "saving" | "picking" | "checking_in" | "success" | "error";
 
 /**
- * Optimistic sequential UX orchestrator for #92 (MiniPay multicall spike fallback).
+ * Optimistic sequential UX orchestrator for #92 (Freighter multicall spike fallback).
  * Executes Save -> Pick -> Check-in sequentially, presenting a unified progress flow.
  */
 export function useCombo() {
@@ -30,7 +30,7 @@ export function useCombo() {
     setError(undefined);
     setProgress(0);
     const amount = parseUnits(amountCusd, 18);
-    const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
+    const feeCurrency = isFreighter() ? contracts.cusd.address : undefined;
 
     try {
       // 1. Approve & Save

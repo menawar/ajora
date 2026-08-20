@@ -56,7 +56,7 @@ export default function BoardPage() {
     <button
       onClick={() => toggleSort(field)}
       className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-lg transition-colors ${
-        sortBy === field ? "bg-celo-green text-white" : "text-text-muted hover:bg-bg-secondary hover:text-text-primary"
+        sortBy === field ? "bg-Stellar-green text-white" : "text-text-muted hover:bg-bg-secondary hover:text-text-primary"
       }`}
     >
       {label}
@@ -75,13 +75,13 @@ export default function BoardPage() {
         <div className="mt-4 flex justify-center gap-2">
           <button
             onClick={() => setBoardType("savings")}
-            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${boardType === "savings" ? "bg-celo-green text-white" : "bg-bg-secondary text-text-muted hover:text-text-primary"}`}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${boardType === "savings" ? "bg-Stellar-green text-white" : "bg-bg-secondary text-text-muted hover:text-text-primary"}`}
           >
             Savings
           </button>
           <button
             onClick={() => setBoardType("xp")}
-            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${boardType === "xp" ? "bg-celo-green text-white" : "bg-bg-secondary text-text-muted hover:text-text-primary"}`}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${boardType === "xp" ? "bg-Stellar-green text-white" : "bg-bg-secondary text-text-muted hover:text-text-primary"}`}
           >
             Quests XP
           </button>
@@ -91,7 +91,7 @@ export default function BoardPage() {
           <div className="mt-4 flex justify-center">
             <button 
               onClick={() => setShowSybilAdjusted(!showSybilAdjusted)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${showSybilAdjusted ? "bg-celo-green/10 text-celo-green border border-celo-green/20" : "bg-bg-secondary text-text-muted border border-gray-200"}`}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${showSybilAdjusted ? "bg-Stellar-green/10 text-Stellar-green border border-Stellar-green/20" : "bg-bg-secondary text-text-muted border border-gray-200"}`}
             >
               {showSybilAdjusted ? (
                 <><Shield className="w-4 h-4" /> Protected Mode</>
@@ -140,7 +140,7 @@ export default function BoardPage() {
         {error && (
           <div className="text-center text-sm p-4 glass-panel rounded-2xl border-red-100 flex flex-col items-center gap-2">
             <p className="text-red-500 font-bold">{error}</p>
-            <button type="button" onClick={refetch} className="flex items-center gap-2 text-celo-green font-semibold bg-celo-green/10 px-4 py-2 rounded-xl">
+            <button type="button" onClick={refetch} className="flex items-center gap-2 text-Stellar-green font-semibold bg-Stellar-green/10 px-4 py-2 rounded-xl">
               <RefreshCw className="w-4 h-4" /> Retry
             </button>
           </div>
@@ -160,7 +160,7 @@ export default function BoardPage() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: i * 0.03, type: "spring", stiffness: 400, damping: 30 }}
                 className={`flex items-center justify-between rounded-2xl px-4 py-3 transition-colors ${
-                  me ? "border-celo-green bg-celo-green/10 border-2" : "glass-panel"
+                  me ? "border-Stellar-green bg-Stellar-green/10 border-2" : "glass-panel"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -175,7 +175,7 @@ export default function BoardPage() {
                       <span className="font-mono font-bold text-text-primary text-sm">
                         {`${r.address.slice(0, 6)}…${r.address.slice(-4)}`}
                       </span>
-                      {me && <span className="text-[10px] font-black bg-celo-green text-white px-1.5 py-0.5 rounded-md uppercase tracking-wide">You</span>}
+                      {me && <span className="text-[10px] font-black bg-Stellar-green text-white px-1.5 py-0.5 rounded-md uppercase tracking-wide">You</span>}
                     </div>
                   </div>
                 </div>
@@ -184,7 +184,7 @@ export default function BoardPage() {
                   <div className="text-lg font-black text-text-primary leading-tight">
                     {boardType === "savings" ? cusd(r.total) : r.total.toString()}
                     <span className="text-[10px] text-text-muted uppercase tracking-widest font-bold block -mt-1">
-                      {boardType === "savings" ? "USDm" : "XP"}
+                      {boardType === "savings" ? "USDC" : "XP"}
                     </span>
                   </div>
                 </div>
@@ -201,7 +201,7 @@ export default function BoardPage() {
             type="button"
             disabled={page === 0}
             onClick={() => setPage(page - 1)}
-            className="rounded-xl border-2 border-gray-200 dark:border-gray-800 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-celo-green hover:text-celo-green transition-colors"
+            className="rounded-xl border-2 border-gray-200 dark:border-gray-800 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-Stellar-green hover:text-Stellar-green transition-colors"
           >
             ← Prev
           </button>
@@ -210,7 +210,7 @@ export default function BoardPage() {
             type="button"
             disabled={page >= totalPages - 1}
             onClick={() => setPage(page + 1)}
-            className="rounded-xl border-2 border-gray-200 dark:border-gray-800 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-celo-green hover:text-celo-green transition-colors"
+            className="rounded-xl border-2 border-gray-200 dark:border-gray-800 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-Stellar-green hover:text-Stellar-green transition-colors"
           >
             Next →
           </button>

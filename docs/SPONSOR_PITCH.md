@@ -14,7 +14,7 @@ Focus on brands operating in regions where mobile-first engagement is critical (
 **Body**:
 Hi [Name],
 
-I’m working with Ajora, a prize-linked savings protocol on Celo with a rapidly growing, engaged user base in [Region]. We've gamified saving money—users keep their principal safe and win the pooled yield daily.
+I’m working with Ajora, a prize-linked savings protocol on Stellar with a rapidly growing, engaged user base in [Region]. We've gamified saving money—users keep their principal safe and win the pooled yield daily.
 
 **Why sponsor Ajora?**
 Unlike traditional SMS drops or billboards, our users log in every single day to check their draw results. By sponsoring our daily "Spray Pool" (which allows users to gift free tickets to friends), your brand gets:

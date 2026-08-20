@@ -42,7 +42,7 @@ function useOnChainQuests(address: string | undefined): Quest[] {
       {
         id: "daily_save",
         title: "Daily Saver",
-        description: "Save at least 1 USDm into the vault today.",
+        description: "Save at least 1 USDC into the vault today.",
         reward: 50,
         type: "daily",
         progress: { current: entries.filter((e) => e.isToday).length > 0 ? 1 : 0, target: 1 },
@@ -191,7 +191,7 @@ export default function QuestsPage() {
         </div>
 
         <div className="flex flex-col items-end gap-1 pt-10">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-celo-gold bg-celo-gold/10 px-3 py-1.5 rounded-xl border border-celo-gold/20">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-Stellar-gold bg-Stellar-gold/10 px-3 py-1.5 rounded-xl border border-Stellar-gold/20">
             <Flame className="w-4 h-4" />
             {xpEarned} XP
           </div>
@@ -228,7 +228,7 @@ export default function QuestsPage() {
       {weeklyQuests.length > 0 && (
         <motion.section variants={itemVariants} className="flex flex-col gap-4 mt-4">
           <h2 className="text-sm font-bold text-text-primary uppercase tracking-widest flex items-center gap-2">
-            <span className="w-1.5 h-4 bg-celo-gold rounded-full block" />
+            <span className="w-1.5 h-4 bg-Stellar-gold rounded-full block" />
             Weekly Challenges
           </h2>
           {loading ? (
@@ -242,7 +242,7 @@ export default function QuestsPage() {
       {onetimeQuests.length > 0 && (
         <motion.section variants={itemVariants} className="flex flex-col gap-4 mt-4">
           <h2 className="text-sm font-bold text-text-primary uppercase tracking-widest flex items-center gap-2">
-            <span className="w-1.5 h-4 bg-celo-green rounded-full block" />
+            <span className="w-1.5 h-4 bg-Stellar-green rounded-full block" />
             One-Time Goals
           </h2>
           {loading ? (

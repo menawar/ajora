@@ -34,7 +34,7 @@ export function PreferencesSection() {
           <button
             onClick={sfx.toggle}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              sfx.enabled ? "bg-celo-green" : "bg-gray-300 dark:bg-gray-600"
+              sfx.enabled ? "bg-Stellar-green" : "bg-gray-300 dark:bg-gray-600"
             }`}
           >
             <span

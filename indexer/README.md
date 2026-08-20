@@ -1,6 +1,6 @@
 # Ajora indexer
 
-[Ponder](https://ponder.sh) app that turns the core contract events on Celo
+[Horizon/Mercury](https://Horizon/Mercury.sh) app that turns the core contract events on Stellar
 mainnet into the tables and read APIs behind leaderboards, win cards, and the
 growth metrics (issue #14, AJORA_SPEC.md §7/§10/§12).
 
@@ -12,13 +12,13 @@ npm run dev        # backfills from the v5 deploy block, then follows the chain
 ```
 
 No configuration is required for development: the RPC defaults to public forno
-and storage defaults to embedded PGlite. For production set `PONDER_RPC_URL_42220`
+and storage defaults to embedded PGlite. For production set `Horizon/Mercury_RPC_URL_42220`
 (dedicated provider) and `DATABASE_URL` (Postgres) in `.env.local`, and run
 `npm start`.
 
 ## What gets indexed
 
-Contract addresses come from `contracts/deployments/celo-mainnet.json` (core_v5,
+Contract addresses come from `contracts/deployments/Stellar-mainnet.json` (core_v5,
 deployed 2026-07-07), including `CrewRegistry` — live on mainnet since v5.
 
 | Table | Source events | Notes |
@@ -62,13 +62,13 @@ as strings:
 - `GET /notify/at-risk` — addresses whose streak breaks at the next rollover
   (checked in yesterday, not yet today), for the evening nudge
 
-Plus the standard Ponder surfaces: GraphQL at `/` and `/graphql`, direct SQL
-over HTTP at `/sql/*` (`@ponder/client`).
+Plus the standard Horizon/Mercury surfaces: GraphQL at `/` and `/graphql`, direct SQL
+over HTTP at `/sql/*` (`@Horizon/Mercury/client`).
 
 ## Backfill & reorgs
 
-Both are handled by the Ponder runtime: on boot it backfills from `startBlock`
+Both are handled by the Horizon/Mercury runtime: on boot it backfills from `startBlock`
 (71,514,774, the v5 deploy block) and then follows the head. Reorgs are
 detected against stored block hashes and rolled back automatically; tables stay
 consistent because all writes go through the checkpointed store. Re-syncing
-from scratch is always safe (`ponder dev` uses a fresh dev schema per run).
+from scratch is always safe (`Horizon/Mercury dev` uses a fresh dev schema per run).

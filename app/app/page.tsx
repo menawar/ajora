@@ -38,7 +38,7 @@ function cusd(value: bigint): string {
 }
 
 /**
- * Home: live view of today's pot straight from Celo mainnet, plus the
+ * Home: live view of today's pot straight from Stellar Pubnet, plus the
  * one-tap save. Full Save/Pick/Crew screens land with #9/#10/#11.
  */
 export default function Home() {
@@ -61,7 +61,7 @@ export default function Home() {
         <h1 className="text-5xl font-black tracking-tight text-gradient text-center mb-2">Ajora</h1>
         <Link 
           href="/notifications"
-          className="absolute right-0 top-6 p-2 rounded-full bg-bg-secondary text-text-secondary hover:text-celo-green hover:bg-celo-green/10 transition-colors"
+          className="absolute right-0 top-6 p-2 rounded-full bg-bg-secondary text-text-secondary hover:text-Stellar-green hover:bg-Stellar-green/10 transition-colors"
         >
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500/50 animate-pulse" />
@@ -69,19 +69,19 @@ export default function Home() {
         <p className="mt-1 text-text-secondary text-sm font-medium flex items-center justify-center gap-3">
           <span>{t("home.tagline")}</span>
           <span className="text-gray-300 dark:text-gray-700">|</span>
-          <Link href="/faq" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+          <Link href="/faq" className="text-Stellar-green underline hover:text-[#2ebf73] transition-colors">
             {t("home.faqLink", { defaultValue: "FAQ" })}
           </Link>
           <span className="text-gray-300 dark:text-gray-700">|</span>
-          <Link href="/stats" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+          <Link href="/stats" className="text-Stellar-green underline hover:text-[#2ebf73] transition-colors">
             Stats
           </Link>
           <span className="text-gray-300 dark:text-gray-700">|</span>
-          <Link href="/quests" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+          <Link href="/quests" className="text-Stellar-green underline hover:text-[#2ebf73] transition-colors">
             Quests
           </Link>
           <span className="text-gray-300 dark:text-gray-700">|</span>
-          <Link href="/board" className="text-celo-green underline hover:text-[#2ebf73] transition-colors">
+          <Link href="/board" className="text-Stellar-green underline hover:text-[#2ebf73] transition-colors">
             Rank
           </Link>
         </p>
@@ -93,11 +93,11 @@ export default function Home() {
       <motion.div variants={itemVariants}><PushToggle /></motion.div>
 
       <motion.section variants={itemVariants} className="glass-panel rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-bg-secondary to-bg-primary">
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-celo-green/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-celo-gold/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-Stellar-green/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-Stellar-gold/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative z-10">
-          <div className="text-sm font-bold uppercase tracking-widest text-celo-green mb-1">Today&apos;s Pot</div>
+          <div className="text-sm font-bold uppercase tracking-widest text-Stellar-green mb-1">Today&apos;s Pot</div>
           <div className="text-5xl font-black text-text-primary tracking-tight">
             {pot.loading ? <Skeleton className="h-12 w-3/4 mb-2" /> : (
               <>
@@ -122,7 +122,7 @@ export default function Home() {
               </span>
             </div>
             
-            <Link href="/board" className="flex justify-between items-center text-sm font-medium text-celo-green bg-celo-green/5 px-3 py-2 rounded-xl border border-celo-green/10 hover:bg-celo-green/10 transition-colors">
+            <Link href="/board" className="flex justify-between items-center text-sm font-medium text-Stellar-green bg-Stellar-green/5 px-3 py-2 rounded-xl border border-Stellar-green/10 hover:bg-Stellar-green/10 transition-colors">
               <span>Total Tickets</span>
               <span className="font-bold flex items-center gap-1">{pot.loading ? "…" : pot.totalTickets.toString()} &rarr;</span>
             </Link>
@@ -144,7 +144,7 @@ export default function Home() {
           <div className="glass-panel rounded-2xl p-4 text-center">
             <p 
               className="text-sm font-medium text-text-secondary"
-              dangerouslySetInnerHTML={{ __html: t("home.status", { tickets: `<strong class="text-text-primary">${pot.myTickets.toString()}</strong>`, balance: `<strong class="text-text-primary text-celo-green">${cusd(pot.myPrincipal)}</strong>` }) }}
+              dangerouslySetInnerHTML={{ __html: t("home.status", { tickets: `<strong class="text-text-primary">${pot.myTickets.toString()}</strong>`, balance: `<strong class="text-text-primary text-Stellar-green">${cusd(pot.myPrincipal)}</strong>` }) }}
             />
           </div>
         )}
@@ -152,7 +152,7 @@ export default function Home() {
         {address && pot.myTickets > 0n && myPick.number === 0 && (
           <Link
             href="/pick"
-            className="rounded-2xl border-2 border-celo-gold bg-celo-gold/10 px-4 py-4 text-center font-bold text-amber-700 shadow-[0_0_15px_rgba(251,204,92,0.2)] hover:bg-celo-gold/20 transition-all animate-pulse"
+            className="rounded-2xl border-2 border-Stellar-gold bg-Stellar-gold/10 px-4 py-4 text-center font-bold text-amber-700 shadow-[0_0_15px_rgba(251,204,92,0.2)] hover:bg-Stellar-gold/20 transition-all animate-pulse"
           >
             {t("home.pickPrompt")}
           </Link>

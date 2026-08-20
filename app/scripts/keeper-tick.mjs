@@ -27,14 +27,14 @@ import {
   numberToHex,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { celo } from "viem/chains";
+import { Stellar } from "viem/chains";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const deployments = JSON.parse(
-  readFileSync(join(here, "..", "..", "contracts", "deployments", "celo-mainnet.json"), "utf8"),
+  readFileSync(join(here, "..", "..", "contracts", "deployments", "Stellar-mainnet.json"), "utf8"),
 );
 
-const RPC_URL = process.env.RPC_URL ?? "https://forno.celo.org";
+const RPC_URL = process.env.RPC_URL ?? "https://forno.Stellar.org";
 const DRY_RUN = process.env.DRY_RUN === "1";
 
 const vaultAbi = [
@@ -53,7 +53,7 @@ const drawAbi = [
 const vault = { address: deployments.contracts.PotVault.address, abi: vaultAbi };
 const draw = { address: deployments.contracts.DrawManager.address, abi: drawAbi };
 
-const pub = createPublicClient({ chain: celo, transport: http(RPC_URL) });
+const pub = createPublicClient({ chain: Stellar, transport: http(RPC_URL) });
 
 const pk = process.env.KEEPER_PRIVATE_KEY
   ? process.env.KEEPER_PRIVATE_KEY.startsWith("0x")
@@ -66,7 +66,7 @@ if (!pk && !DRY_RUN) {
 }
 const account = pk ? privateKeyToAccount(pk) : undefined;
 const wallet = account
-  ? createWalletClient({ account, chain: celo, transport: http(RPC_URL) })
+  ? createWalletClient({ account, chain: Stellar, transport: http(RPC_URL) })
   : undefined;
 
 /** Deterministic per-period secret only the keeper can derive. */

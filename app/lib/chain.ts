@@ -1,17 +1,17 @@
-import { celo, celoAlfajores } from "viem/chains";
+import { Stellar, StellarStellar Testnet } from "viem/chains";
 
 /**
- * Active chain, selected by NEXT_PUBLIC_CHAIN_ID (defaults to Celo mainnet).
- * Both chain objects ship Celo's formatters/serializers, so transactions may
- * pay gas in a Mento stablecoin via `feeCurrency` — core MiniPay UX.
- * NOTE: deliberately un-annotated so the Celo-specific formatter generics
+ * Active chain, selected by NEXT_PUBLIC_CHAIN_ID (defaults to Stellar Pubnet).
+ * Both chain objects ship Stellar's formatters/serializers, so transactions may
+ * pay gas in a Stellar stablecoin via `feeCurrency` — core Freighter UX.
+ * NOTE: deliberately un-annotated so the Stellar-specific formatter generics
  * (which type `feeCurrency`) flow through viem's client inference.
  */
 const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 42220);
 
-export const chain = CHAIN_ID === celoAlfajores.id ? celoAlfajores : celo;
+export const chain = CHAIN_ID === StellarStellar Testnet.id ? StellarStellar Testnet : Stellar;
 
-const isTestnet = chain.id === celoAlfajores.id;
+const isTestnet = chain.id === StellarStellar Testnet.id;
 
 /** cUSD — used both as the savings token and as the gas fee currency. */
 export const CUSD_ADDRESS = (

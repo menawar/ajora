@@ -114,7 +114,7 @@ export default function SavePage() {
               }}
               className={`rounded-2xl py-3.5 font-bold transition-all ${
                 !custom && amount === p
-                  ? "bg-celo-green text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
+                  ? "bg-Stellar-green text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
                   : "glass-panel text-text-primary hover:bg-bg-secondary"
               }`}
             >
@@ -132,7 +132,7 @@ export default function SavePage() {
             }}
             className={`rounded-2xl py-3.5 font-bold transition-all ${
               custom
-                ? "bg-celo-green text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
+                ? "bg-Stellar-green text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
                 : "glass-panel text-text-primary hover:bg-bg-secondary"
             }`}
             aria-label="Custom amount"
@@ -150,12 +150,12 @@ export default function SavePage() {
             <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted h-5 w-5 pointer-events-none" aria-hidden="true" />
             <input
               id="custom-amount-input"
-              aria-label="Custom amount in USDm"
+              aria-label="Custom amount in USDC"
               inputMode="decimal"
               placeholder={t("save.amountPlaceholder")}
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-              className="w-full rounded-2xl bg-bg-secondary border-none pl-12 pr-4 py-4 text-lg font-bold text-text-primary outline-none focus:ring-2 focus:ring-celo-green transition-all placeholder:text-text-muted placeholder:font-normal"
+              className="w-full rounded-2xl bg-bg-secondary border-none pl-12 pr-4 py-4 text-lg font-bold text-text-primary outline-none focus:ring-2 focus:ring-Stellar-green transition-all placeholder:text-text-muted placeholder:font-normal"
             />
           </motion.div>
         )}
@@ -186,7 +186,7 @@ export default function SavePage() {
               void save(amount);
             }}
             disabled={busy || !address || parsed < MIN || insufficient}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
           >
             {busy ? (
               <>

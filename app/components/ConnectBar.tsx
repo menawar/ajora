@@ -12,9 +12,9 @@ function shorten(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
-/** Account chip inside MiniPay / injected wallets; guidance everywhere else. */
+/** Account chip inside Freighter / injected wallets; guidance everywhere else. */
 export function ConnectBar() {
-  const { address, miniPay, connecting, noProvider, error, wallets, connect } = useWallet();
+  const { address, Freighter, connecting, noProvider, error, wallets, connect } = useWallet();
   const online = useOnline();
 
   if (address) {
@@ -23,7 +23,7 @@ export function ConnectBar() {
         <div className="flex items-center justify-center gap-2 text-sm text-gray-700 glass-panel px-4 py-2 rounded-full mx-auto w-fit">
           <Avatar address={address} size="sm" />
           <span className="font-medium">{shorten(address)}</span>
-          {miniPay && <span className="rounded-md bg-celo-green/20 px-2 py-0.5 text-[10px] font-bold text-celo-green uppercase tracking-wider">MiniPay</span>}
+          {Freighter && <span className="rounded-md bg-Stellar-green/20 px-2 py-0.5 text-[10px] font-bold text-Stellar-green uppercase tracking-wider">Freighter</span>}
         </div>
         {!online && (
           <span className="flex items-center gap-1 text-[10px] font-medium text-amber-500 uppercase tracking-wide">
@@ -37,7 +37,7 @@ export function ConnectBar() {
   if (noProvider) {
     return (
       <p className="text-center text-sm text-gray-500">
-        Open Ajora inside <strong>MiniPay</strong> to play — Opera Mini &gt; MiniPay &gt; Discover.
+        Open Ajora inside <strong>Freighter</strong> to play — Opera Mini &gt; Freighter &gt; Discover.
       </p>
     );
   }

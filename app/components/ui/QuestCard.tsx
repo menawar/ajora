@@ -41,7 +41,7 @@ export function QuestCard({ quest, onClaim }: QuestCardProps) {
   const getIcon = () => {
     switch (quest.type) {
       case "daily": return <Clock className="w-5 h-5 text-blue-500" />;
-      case "weekly": return <Star className="w-5 h-5 text-celo-gold" />;
+      case "weekly": return <Star className="w-5 h-5 text-Stellar-gold" />;
       case "one-time": return <Gift className="w-5 h-5 text-purple-500" />;
     }
   };
@@ -65,7 +65,7 @@ export function QuestCard({ quest, onClaim }: QuestCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2 mb-1">
             <h3 className="font-bold text-sm text-text-primary truncate">{quest.title}</h3>
-            <span className="text-[10px] font-bold text-celo-gold bg-celo-gold/10 px-2 py-0.5 rounded-full whitespace-nowrap">
+            <span className="text-[10px] font-bold text-Stellar-gold bg-Stellar-gold/10 px-2 py-0.5 rounded-full whitespace-nowrap">
               +{quest.reward} XP
             </span>
           </div>
@@ -85,20 +85,20 @@ export function QuestCard({ quest, onClaim }: QuestCardProps) {
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPercent}%` }}
                   transition={{ duration: 1, delay: 0.2, type: "spring" }}
-                  className={`h-full rounded-full ${isCompleted ? "bg-celo-green" : "bg-blue-500"}`}
+                  className={`h-full rounded-full ${isCompleted ? "bg-Stellar-green" : "bg-blue-500"}`}
                 />
               </div>
             </div>
 
             {isClaimed ? (
-              <button disabled className="shrink-0 flex items-center justify-center gap-1 text-[10px] font-bold text-celo-green bg-celo-green/10 px-3 py-1.5 rounded-xl border border-transparent">
+              <button disabled className="shrink-0 flex items-center justify-center gap-1 text-[10px] font-bold text-Stellar-green bg-Stellar-green/10 px-3 py-1.5 rounded-xl border border-transparent">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Claimed
               </button>
             ) : isCompleted ? (
               <Ripple className="shrink-0 rounded-xl" as="div">
                 <button 
                   onClick={handleClaim}
-                  className="w-full h-full flex items-center justify-center gap-1 text-[10px] font-bold text-white bg-celo-green hover:bg-[#2ebf73] px-3 py-1.5 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
+                  className="w-full h-full flex items-center justify-center gap-1 text-[10px] font-bold text-white bg-Stellar-green hover:bg-[#2ebf73] px-3 py-1.5 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(53,208,127,0.39)]"
                 >
                   Claim
                 </button>

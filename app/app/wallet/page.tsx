@@ -55,7 +55,7 @@ export default function WalletPage() {
       <motion.header variants={itemVariants} className="text-center pt-4">
         <h1 className="text-3xl font-black tracking-tight text-gradient">Wallet</h1>
         <p className="mt-2 text-sm font-medium text-text-secondary">
-          <span className="text-celo-green font-bold">No-loss:</span> every cent you saved is yours,
+          <span className="text-Stellar-green font-bold">No-loss:</span> every cent you saved is yours,
           withdrawable any time.
         </p>
       </motion.header>
@@ -81,7 +81,7 @@ export default function WalletPage() {
                 decimals={2}
                 duration={1200}
               />
-              <span className="text-sm font-bold text-text-muted ml-1">USDm</span>
+              <span className="text-sm font-bold text-text-muted ml-1">USDC</span>
             </div>
           )}
         </div>
@@ -101,7 +101,7 @@ export default function WalletPage() {
                 decimals={2}
                 duration={1200}
               />
-              <span className="text-sm font-bold text-text-muted ml-1">USDm</span>
+              <span className="text-sm font-bold text-text-muted ml-1">USDC</span>
             </div>
           )}
         </div>
@@ -115,11 +115,11 @@ export default function WalletPage() {
             <div>
               <span className="font-bold text-text-primary">{streakDays.toString()}-day</span>
               <span className="text-text-secondary"> streak · </span>
-              <span className="font-bold text-celo-green">{multiplierLabel(multiplierX10)} tickets</span>
+              <span className="font-bold text-Stellar-green">{multiplierLabel(multiplierX10)} tickets</span>
             </div>
           </div>
           {myPick.number !== 0 ? (
-            <span className="rounded-xl bg-celo-green/10 text-celo-green px-3 py-1.5 text-xs font-bold border border-celo-green/20">
+            <span className="rounded-xl bg-Stellar-green/10 text-Stellar-green px-3 py-1.5 text-xs font-bold border border-Stellar-green/20">
               In draw #{myPick.number} 🎯
             </span>
           ) : (
@@ -154,7 +154,7 @@ export default function WalletPage() {
           </div>
           <Link
             href="/history"
-            className="text-xs font-semibold text-celo-green hover:underline transition-colors"
+            className="text-xs font-semibold text-Stellar-green hover:underline transition-colors"
           >
             View full history →
           </Link>
@@ -179,7 +179,7 @@ export default function WalletPage() {
             <p className="text-xs text-text-secondary mb-4">Start saving today to enter the daily draw</p>
             <Link
               href="/save"
-              className="inline-block rounded-2xl bg-celo-green px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95"
+              className="inline-block rounded-2xl bg-Stellar-green px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95"
             >
               Start Saving
             </Link>
@@ -202,10 +202,10 @@ export default function WalletPage() {
           >
             <div>
               <div className="font-bold text-text-primary">{dayLabel(e.periodId, e.isToday)}</div>
-              <div className="text-sm font-semibold text-celo-green mt-0.5">{cusd(e.principal)} USDm</div>
+              <div className="text-sm font-semibold text-Stellar-green mt-0.5">{cusd(e.principal)} USDC</div>
             </div>
             {e.isToday ? (
-              <span className="rounded-xl bg-celo-gold/15 px-3 py-2 text-xs font-bold text-amber-700 border border-celo-gold/20">
+              <span className="rounded-xl bg-Stellar-gold/15 px-3 py-2 text-xs font-bold text-amber-700 border border-Stellar-gold/20">
                 In draw 🎯
               </span>
             ) : (
@@ -213,7 +213,7 @@ export default function WalletPage() {
                 type="button"
                 onClick={() => void claimPrincipal(e.periodId)}
                 disabled={claiming !== undefined}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-celo-green px-3 py-2 text-xs font-bold text-celo-green hover:bg-celo-green hover:text-white transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                className="flex items-center gap-1.5 rounded-xl border-2 border-Stellar-green px-3 py-2 text-xs font-bold text-Stellar-green hover:bg-Stellar-green hover:text-white transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
               >
                 {claiming === e.periodId ? (
                   <><Loader2 className="w-3 h-3 animate-spin" />Withdrawing…</>

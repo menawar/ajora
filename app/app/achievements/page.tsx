@@ -64,7 +64,7 @@ export default function AchievementsPage() {
           Settings
         </Link>
         <h1 className="text-3xl font-black tracking-tight text-gradient flex items-center gap-3">
-          {t("achievements.title")} <Medal className="w-6 h-6 text-celo-gold" />
+          {t("achievements.title")} <Medal className="w-6 h-6 text-Stellar-gold" />
         </h1>
         <p className="mt-1 text-sm text-text-secondary font-medium">
           {address
@@ -86,7 +86,7 @@ export default function AchievementsPage() {
             initial={{ width: 0 }}
             animate={{ width: total > 0 ? `${(unlockedCount / total) * 100}%` : "0%" }}
             transition={{ duration: 1.5, type: "spring" }}
-            className="h-full bg-celo-green rounded-full"
+            className="h-full bg-Stellar-green rounded-full"
           />
         </div>
       </motion.div>
@@ -105,7 +105,7 @@ export default function AchievementsPage() {
                 onClick={() => handleBadgeClick(achievement.title, achievement.unlocked)}
                 className={`glass-panel rounded-2xl p-4 text-left flex flex-col gap-3 transition-all border-2 ${
                   achievement.unlocked
-                    ? "border-celo-green/40 bg-celo-green/5"
+                    ? "border-Stellar-green/40 bg-Stellar-green/5"
                     : "border-transparent opacity-60"
                 }`}
               >
@@ -119,7 +119,7 @@ export default function AchievementsPage() {
                   </p>
                 </div>
                 {achievement.unlocked && (
-                  <span className="text-[10px] font-bold text-celo-green uppercase tracking-wider">
+                  <span className="text-[10px] font-bold text-Stellar-green uppercase tracking-wider">
                     ✓ Unlocked
                   </span>
                 )}

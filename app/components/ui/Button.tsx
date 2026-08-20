@@ -13,9 +13,9 @@ export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
 }
 
 const variantStyles = {
-  primary: "bg-celo-green text-celo-dark font-bold shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]",
+  primary: "bg-Stellar-green text-Stellar-dark font-bold shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]",
   secondary: "bg-bg-secondary text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800",
-  outline: "border-2 border-celo-green text-celo-green hover:bg-celo-green/10",
+  outline: "border-2 border-Stellar-green text-Stellar-green hover:bg-Stellar-green/10",
   danger: "bg-red-500 text-white shadow-[0_4px_14px_0_rgba(239,68,68,0.39)] hover:bg-red-600 hover:shadow-[0_6px_20px_rgba(239,68,68,0.23)]",
   ghost: "bg-transparent text-text-secondary hover:bg-bg-secondary hover:text-text-primary",
 };
@@ -35,7 +35,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         whileHover={isDisabled ? {} : { scale: 1.03, y: -1 }}
         whileTap={isDisabled ? {} : { scale: 0.96 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        className={`rounded-2xl transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-offset-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+        className={`rounded-2xl transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-Stellar-green focus-visible:ring-offset-2 ${variantStyles[variant]} ${sizeStyles[size]} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
         disabled={isDisabled}
         {...props}
       >

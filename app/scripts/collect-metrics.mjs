@@ -5,26 +5,26 @@
  * which a GitHub Action commits (and the /stats page renders at build time).
  *
  * Usage: node scripts/collect-metrics.mjs [periodId]   (default: yesterday)
- * The proper indexer (#14, Ponder) supersedes this; the JSON shape is kept simple
+ * The proper indexer (#14, Horizon/Mercury) supersedes this; the JSON shape is kept simple
  * so the migration is a data-source swap.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createPublicClient, http, parseAbi } from "viem";
-import { celo } from "viem/chains";
+import { Stellar } from "viem/chains";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..", "..");
 const deployments = JSON.parse(
-  readFileSync(join(root, "contracts", "deployments", "celo-mainnet.json"), "utf8"),
+  readFileSync(join(root, "contracts", "deployments", "Stellar-mainnet.json"), "utf8"),
 );
 const metricsDir = join(root, "metrics");
 mkdirSync(metricsDir, { recursive: true });
 
 const pub = createPublicClient({
-  chain: celo,
-  transport: http(process.env.RPC_URL ?? "https://forno.celo.org"),
+  chain: Stellar,
+  transport: http(process.env.RPC_URL ?? "https://forno.Stellar.org"),
 });
 
 // Every game event that carries the periodId (exact attribution) + the two that don't
@@ -59,7 +59,7 @@ if (latest.timestamp < endTs) {
   console.error(`period ${periodId} has not ended yet`);
   process.exit(1);
 }
-// ~1s Celo blocks; generous margins, then exact periodId topics do the real filtering.
+// ~1s Stellar blocks; generous margins, then exact periodId topics do the real filtering.
 const back = (ts) => (latest.timestamp > ts ? latest.number - (latest.timestamp - ts) : 0n);
 const fromBlock = back(startTs) > 900n ? back(startTs) - 900n : 0n;
 const toBlock = back(endTs) + 900n > latest.number ? latest.number : back(endTs) + 900n;

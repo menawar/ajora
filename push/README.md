@@ -8,11 +8,11 @@ zero native deps (`node:sqlite`).
 
 ```
 indexer /notify/draw/:id ─┐
-indexer /notify/at-risk ──┤→ jobs (policy-gated) → web-push → MiniPay/browser
+indexer /notify/at-risk ──┤→ jobs (policy-gated) → web-push → Freighter/browser
 subscriptions (SQLite) ───┘
 ```
 
-- **Draw job**: after the 00:08 UTC reveal, winners get "You won X USDm", other
+- **Draw job**: after the 00:08 UTC reveal, winners get "You won X USDC", other
   pickers get the winning number. Target period defaults to yesterday.
 - **Streak job**: users whose `lastCheckInDay == today - 1` (live streak, not yet
   checked in) get one nudge in the 18:00–24:00 UTC window.

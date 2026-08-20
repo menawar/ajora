@@ -15,17 +15,17 @@ export const publicClient = createPublicClient({
 
 declare global {
   interface Window {
-    ethereum?: EIP1193Provider & { isMiniPay?: boolean };
+    ethereum?: EIP1193Provider & { isFreighter?: boolean };
   }
 }
 
-/** True when running inside MiniPay's webview (its injected provider self-identifies). */
-export function isMiniPay(): boolean {
-  return typeof window !== "undefined" && Boolean(window.ethereum?.isMiniPay);
+/** True when running inside Freighter's webview (its injected provider self-identifies). */
+export function isFreighter(): boolean {
+  return typeof window !== "undefined" && Boolean(window.ethereum?.isFreighter);
 }
 
-/** Any injected EIP-1193 provider: MiniPay in production, MetaMask etc. in dev. */
-export function injectedProvider(): (EIP1193Provider & { isMiniPay?: boolean }) | undefined {
+/** Any injected EIP-1193 provider: Freighter in production, MetaMask etc. in dev. */
+export function injectedProvider(): (EIP1193Provider & { isFreighter?: boolean }) | undefined {
   return typeof window === "undefined" ? undefined : window.ethereum;
 }
 
@@ -74,7 +74,7 @@ export function setActiveProvider(provider: EIP1193Provider | undefined, rdns?: 
   }
 }
 
-export function activeProvider(): (EIP1193Provider & { isMiniPay?: boolean }) | undefined {
+export function activeProvider(): (EIP1193Provider & { isFreighter?: boolean }) | undefined {
   if (active) return active;
   if (typeof window !== "undefined") {
     const saved = window.localStorage.getItem("ajora:wallet:rdns");

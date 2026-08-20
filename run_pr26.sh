@@ -54,7 +54,7 @@ cat << 'INNER_EOF' > app/components/ActivityFeed.tsx
 import { Coins, Trophy, Award } from "lucide-react";
 
 const mockActivity = [
-  { id: 1, text: "You saved 1.5 cUSD", time: "2h ago", icon: Coins, color: "text-celo-green" },
+  { id: 1, text: "You saved 1.5 cUSD", time: "2h ago", icon: Coins, color: "text-Stellar-green" },
   { id: 2, text: "Earned First Save badge!", time: "5h ago", icon: Award, color: "text-blue-500" },
   { id: 3, text: "Won 0.5 cUSD", time: "1d ago", icon: Trophy, color: "text-amber-500" }
 ];
@@ -93,7 +93,7 @@ import { Coins, Trophy, Award } from "lucide-react";
 import { motion } from "framer-motion";
 
 const mockActivity = [
-  { id: 1, text: "You saved 1.5 cUSD", time: "2h ago", icon: Coins, color: "text-celo-green" },
+  { id: 1, text: "You saved 1.5 cUSD", time: "2h ago", icon: Coins, color: "text-Stellar-green" },
   { id: 2, text: "Earned First Save badge!", time: "5h ago", icon: Award, color: "text-blue-500" },
   { id: 3, text: "Won 0.5 cUSD", time: "1d ago", icon: Trophy, color: "text-amber-500" }
 ];

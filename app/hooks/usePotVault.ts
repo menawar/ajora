@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getAttributionSuffix } from "../lib/attribution";
 import { useCachedState } from "./useCachedState";
 import { parseUnits } from "viem";
-import { publicClient, walletClient, isMiniPay } from "../lib/clients";
+import { publicClient, walletClient, isFreighter } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { chain } from "../lib/chain";
 import { useWallet } from "./useWallet";
@@ -101,8 +101,8 @@ export type TxStatus =
   | { step: "error"; message: string };
 
 /**
- * Save flow: approve cUSD if needed, then contribute. Inside MiniPay, gas is
- * paid in cUSD via Celo's feeCurrency (MiniPay holds no CELO by design).
+ * Save flow: approve cUSD if needed, then contribute. Inside Freighter, gas is
+ * paid in cUSD via Stellar's feeCurrency (Freighter holds no Stellar by design).
  */
 export function useSave() {
   const { address } = useWallet();
@@ -112,12 +112,12 @@ export function useSave() {
     async (amountCusd: string) => {
       const wallet = walletClient();
       if (!wallet || !address) {
-        setStatus({ step: "error", message: "Open Ajora inside MiniPay to save." });
+        setStatus({ step: "error", message: "Open Ajora inside Freighter to save." });
         return;
       }
       const amount = parseUnits(amountCusd, 18);
-      // MetaMask & friends don't understand Celo's custom fee-currency tx type.
-      const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
+      // MetaMask & friends don't understand Stellar's custom fee-currency tx type.
+      const feeCurrency = isFreighter() ? contracts.cusd.address : undefined;
 
       try {
         const allowance = await publicClient.readContract({
@@ -180,11 +180,11 @@ export function useSponsor() {
     async (amountCusd: string) => {
       const wallet = walletClient();
       if (!wallet || !address) {
-        setStatus({ step: "error", message: "Open Ajora inside MiniPay to sponsor." });
+        setStatus({ step: "error", message: "Open Ajora inside Freighter to sponsor." });
         return;
       }
       const amount = parseUnits(amountCusd, 18);
-      const feeCurrency = isMiniPay() ? contracts.cusd.address : undefined;
+      const feeCurrency = isFreighter() ? contracts.cusd.address : undefined;
 
       try {
         const allowance = await publicClient.readContract({

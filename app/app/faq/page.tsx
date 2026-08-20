@@ -36,7 +36,7 @@ const FAQ_DATA = [
     q: "How do I win?",
     a: (
       <>
-        You earn <GlossaryTooltip term="Tickets" definition="Chances to win in the daily draw. 1 USDm saved = 1 base ticket." /> 
+        You earn <GlossaryTooltip term="Tickets" definition="Chances to win in the daily draw. 1 USDC saved = 1 base ticket." /> 
         by saving. Every day at 20:00 UTC, a random winning number (1-9) is drawn by the 
         <GlossaryTooltip term="Keeper" definition="An automated backend script that triggers the draw and harvests yield." />. 
         If your picked number matches, your tickets receive a proportional share of the pot!
@@ -60,7 +60,7 @@ const FAQ_DATA = [
     a: (
       <>
         Winnings automatically accrue to your wallet&apos;s internal Ajora balance. You can see your 
-        unclaimed winnings on the Wallet page and tap &quot;Claim&quot; to withdraw them straight to your MiniPay wallet as USDm.
+        unclaimed winnings on the Wallet page and tap &quot;Claim&quot; to withdraw them straight to your Freighter wallet as USDC.
       </>
     )
   },
@@ -154,7 +154,7 @@ export default function FaqPage() {
               <p className="text-sm text-text-muted">We couldn&apos;t find an answer for &quot;{search}&quot;</p>
               <button 
                 onClick={() => setSearch("")}
-                className="mt-4 text-sm font-bold text-celo-green hover:text-[#2ebf73] px-4 py-2 bg-celo-green/10 rounded-xl"
+                className="mt-4 text-sm font-bold text-Stellar-green hover:text-[#2ebf73] px-4 py-2 bg-Stellar-green/10 rounded-xl"
               >
                 Clear Search
               </button>
@@ -163,7 +163,7 @@ export default function FaqPage() {
         </AnimatePresence>
       </div>
 
-      <Link href="/" className="mt-8 text-center text-sm font-bold text-celo-green underline decoration-celo-green/30 decoration-dotted underline-offset-4 transition hover:text-[#2ebf73]">
+      <Link href="/" className="mt-8 text-center text-sm font-bold text-Stellar-green underline decoration-Stellar-green/30 decoration-dotted underline-offset-4 transition hover:text-[#2ebf73]">
         ← Back to today&apos;s pot
       </Link>
     </main>

@@ -61,7 +61,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
               className={`pointer-events-auto flex items-center gap-3 rounded-xl px-4 py-3 shadow-lg min-w-[300px] text-white ${
-                t.type === "success" ? "bg-celo-green" : t.type === "error" ? "bg-red-500" : "bg-gray-800"
+                t.type === "success" ? "bg-Stellar-green" : t.type === "error" ? "bg-red-500" : "bg-gray-800"
               }`}
             >
               {t.type === "success" && <CheckCircle className="h-5 w-5" />}

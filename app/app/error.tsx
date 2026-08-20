@@ -40,7 +40,7 @@ export default function ErrorPage({
           <Ripple className="w-full rounded-2xl">
             <button
               onClick={() => reset()}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-celo-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]"
             >
               <RefreshCw className="w-5 h-5" /> Try Again
             </button>

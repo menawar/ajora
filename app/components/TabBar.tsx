@@ -39,18 +39,18 @@ export function TabBar() {
                 key={tab.href}
                 href={tab.href}
                 aria-label={t(tab.labelKey)}
-                className="relative flex flex-1 flex-col items-center focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:outline-none rounded-xl"
+                className="relative flex flex-1 flex-col items-center focus-visible:ring-2 focus-visible:ring-Stellar-green focus-visible:outline-none rounded-xl"
               >
                 <motion.div
                   whileTap={{ scale: 0.8 }}
                   className={`relative flex w-full flex-col items-center gap-1 py-2 text-[10px] sm:text-xs transition-colors ${
-                    active ? "font-bold text-celo-green" : "text-text-muted hover:text-text-primary"
+                    active ? "font-bold text-Stellar-green" : "text-text-muted hover:text-text-primary"
                   }`}
                 >
                   {active && (
                     <motion.div
                       layoutId="tab-indicator"
-                      className="absolute inset-0 z-0 mx-auto w-12 sm:w-14 rounded-2xl bg-celo-green/10 shadow-[0_0_15px_rgba(53,208,127,0.3)]"
+                      className="absolute inset-0 z-0 mx-auto w-12 sm:w-14 rounded-2xl bg-Stellar-green/10 shadow-[0_0_15px_rgba(53,208,127,0.3)]"
                       transition={{ type: "spring", stiffness: 350, damping: 20 }}
                     />
                   )}

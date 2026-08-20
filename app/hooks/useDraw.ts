@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getAttributionSuffix } from "../lib/attribution";
 import { useCachedState } from "./useCachedState";
 import { encodeAbiParameters, isHex, keccak256, parseAbiItem } from "viem";
-import { publicClient, walletClient, isMiniPay } from "../lib/clients";
+import { publicClient, walletClient, isFreighter } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
@@ -205,7 +205,7 @@ export function useDraw() {
     return () => clearInterval(t);
   }, [refetch]);
 
-  const feeCurrency = () => (isMiniPay() ? contracts.cusd.address : undefined);
+  const feeCurrency = () => (isFreighter() ? contracts.cusd.address : undefined);
 
   const assertBytes32Hex = (secret: string): `0x${string}` => {
     if (!isHex(secret, { strict: true }) || secret.length !== 66) {

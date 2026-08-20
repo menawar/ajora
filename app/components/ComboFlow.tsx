@@ -26,8 +26,8 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
 
   const stepMessages: Record<ComboStep, string> = {
     idle: "",
-    approving: "Approving USDm...",
-    saving: "Saving to Celo...",
+    approving: "Approving USDC...",
+    saving: "Saving to Stellar...",
     picking: "Picking number...",
     checking_in: "Updating streak...",
     success: "All set for tonight's draw! 🎉",
@@ -41,7 +41,7 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
         whileTap={{ scale: 0.98 }}
         type="button"
         onClick={() => void execute(amountCusd, pickNumber)}
-        className="w-full flex justify-center items-center gap-2 rounded-xl bg-gradient-to-r from-celo-green to-[#2ebf73] px-4 py-4 text-lg font-bold text-white shadow-md shadow-celo-green/20 transition-all hover:shadow-lg hover:shadow-celo-green/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-offset-2"
+        className="w-full flex justify-center items-center gap-2 rounded-xl bg-gradient-to-r from-Stellar-green to-[#2ebf73] px-4 py-4 text-lg font-bold text-white shadow-md shadow-Stellar-green/20 transition-all hover:shadow-lg hover:shadow-Stellar-green/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-Stellar-green focus-visible:ring-offset-2"
       >
         <span>Play Today (Save + Pick)</span>
       </motion.button>
@@ -60,10 +60,10 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", bounce: 0.5 }}
           >
-            <CheckCircle2 className="h-5 w-5 text-celo-green" />
+            <CheckCircle2 className="h-5 w-5 text-Stellar-green" />
           </motion.div>
         ) : step === "error" ? (
-          <button onClick={reset} className="text-gray-400 underline hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green rounded px-1">Try again</button>
+          <button onClick={reset} className="text-gray-400 underline hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-Stellar-green rounded px-1">Try again</button>
         ) : (
           <span className="text-gray-400">{progress}%</span>
         )}
@@ -71,7 +71,7 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
 
       <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
         <motion.div
-          className={`h-full ${step === "error" ? "bg-red-400" : "bg-celo-green"}`}
+          className={`h-full ${step === "error" ? "bg-red-400" : "bg-Stellar-green"}`}
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ ease: "easeOut", duration: 0.5 }}
@@ -80,7 +80,7 @@ export function ComboFlow({ amountCusd, pickNumber }: ComboFlowProps) {
       
       {step !== "success" && step !== "error" && (
         <div className="flex items-center gap-2 text-xs text-gray-500">
-          <Loader2 className="h-3 w-3 animate-spin text-celo-green" />
+          <Loader2 className="h-3 w-3 animate-spin text-Stellar-green" />
           <span>Please sign transactions in your wallet...</span>
         </div>
       )}

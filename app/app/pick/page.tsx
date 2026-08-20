@@ -96,9 +96,9 @@ export default function PickPage() {
             onClick={() => setSelected(n)}
             aria-label={`Pick number ${n}`}
             aria-pressed={active === n}
-            className={`relative aspect-square rounded-[1.25rem] text-4xl font-black transition-all focus:outline-none focus:ring-4 focus:ring-celo-green/50 flex items-center justify-center ${
+            className={`relative aspect-square rounded-[1.25rem] text-4xl font-black transition-all focus:outline-none focus:ring-4 focus:ring-Stellar-green/50 flex items-center justify-center ${
               active === n
-                ? "border-none bg-celo-green text-white shadow-[0_8px_24px_rgba(53,208,127,0.4)] shadow-[inset_0_-4px_rgba(0,0,0,0.1)] scale-105 z-10"
+                ? "border-none bg-Stellar-green text-white shadow-[0_8px_24px_rgba(53,208,127,0.4)] shadow-[inset_0_-4px_rgba(0,0,0,0.1)] scale-105 z-10"
                 : "bg-bg-secondary text-text-primary hover:bg-white dark:hover:bg-gray-800 shadow-sm border border-transparent hover:border-gray-200 dark:hover:border-gray-700 disabled:opacity-40 disabled:hover:bg-bg-secondary disabled:hover:scale-100 disabled:cursor-not-allowed"
             }`}
           >
@@ -110,7 +110,7 @@ export default function PickPage() {
 
       {myPick.number !== 0 && (
         <motion.p variants={itemVariants} className="text-center text-sm font-medium text-text-secondary bg-bg-secondary p-3 rounded-xl mx-4">
-          <span dangerouslySetInnerHTML={{ __html: t("pick.current", { number: `<strong class="text-celo-green text-lg">${myPick.number.toString()}</strong>`, weight: `<strong class="text-text-primary">${myPick.weight.toString()}</strong>` }) }} />
+          <span dangerouslySetInnerHTML={{ __html: t("pick.current", { number: `<strong class="text-Stellar-green text-lg">${myPick.number.toString()}</strong>`, weight: `<strong class="text-text-primary">${myPick.weight.toString()}</strong>` }) }} />
           {selected && selected !== myPick.number && <span className="block mt-1 text-xs text-text-muted">{t("pick.current.replaces")}</span>}
         </motion.p>
       )}
@@ -122,7 +122,7 @@ export default function PickPage() {
               type="button"
               disabled={!selected || picking || selected === myPick.number}
               onClick={() => selected && void pick(selected)}
-              className="w-full rounded-2xl bg-celo-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
+              className="w-full rounded-2xl bg-Stellar-green px-4 py-4 text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] disabled:opacity-50 disabled:pointer-events-none"
             >
               {picking
                 ? t("pick.locking")
@@ -134,7 +134,7 @@ export default function PickPage() {
         ) : (
           <Link
             href="/save"
-            className="block w-full rounded-2xl bg-celo-gold px-4 py-4 text-center text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(251,204,92,0.39)] transition-all hover:bg-[#eab308] hover:shadow-[0_6px_20px_rgba(251,204,92,0.23)] active:scale-95"
+            className="block w-full rounded-2xl bg-Stellar-gold px-4 py-4 text-center text-lg font-bold text-white shadow-[0_4px_14px_0_rgba(251,204,92,0.39)] transition-all hover:bg-[#eab308] hover:shadow-[0_6px_20px_rgba(251,204,92,0.23)] active:scale-95"
           >
             {t("pick.cta.save")}
           </Link>

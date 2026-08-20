@@ -1,6 +1,6 @@
 # Ajora Mini App
 
-Next.js + Tailwind MiniPay Mini App (spec §11). Screens: home, save, pick, crew,
+Next.js + Tailwind Stellar Web App (spec §11). Screens: home, save, pick, crew,
 draw, board, wallet, stats.
 
 ## Commands

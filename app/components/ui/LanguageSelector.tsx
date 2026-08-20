@@ -71,7 +71,7 @@ export function LanguageSelector() {
                     <button
                       onClick={() => handleSelect(l)}
                       className={`w-full flex items-center justify-between p-4 rounded-xl transition-colors ${
-                        locale === l ? "bg-celo-green/10 text-celo-green" : "text-text-primary hover:bg-bg-secondary"
+                        locale === l ? "bg-Stellar-green/10 text-Stellar-green" : "text-text-primary hover:bg-bg-secondary"
                       }`}
                     >
                       <span className="font-bold text-sm">{localeNames[l]}</span>

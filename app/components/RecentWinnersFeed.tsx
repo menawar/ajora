@@ -27,10 +27,10 @@ export function RecentWinnersFeed() {
       <div className="glass-panel rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
         <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
           <h3 className="text-xs font-bold uppercase tracking-widest text-text-primary flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-celo-gold" />
+            <Trophy className="w-4 h-4 text-Stellar-gold" />
             Recent Winners
           </h3>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-celo-green bg-celo-green/10 px-2 py-0.5 rounded-md">Live</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-Stellar-green bg-Stellar-green/10 px-2 py-0.5 rounded-md">Live</span>
         </div>
         <div className="flex items-center justify-center gap-2 py-6 text-text-muted text-sm">
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -45,11 +45,11 @@ export function RecentWinnersFeed() {
       <div className="glass-panel rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
         <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
           <h3 className="text-xs font-bold uppercase tracking-widest text-text-primary flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-celo-gold" />
+            <Trophy className="w-4 h-4 text-Stellar-gold" />
             Recent Winners
           </h3>
           {last?.resolved && (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-celo-green bg-celo-green/10 px-2 py-0.5 rounded-md">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-Stellar-green bg-Stellar-green/10 px-2 py-0.5 rounded-md">
               #{last.periodId.toString()}
             </span>
           )}
@@ -73,7 +73,7 @@ export function RecentWinnersFeed() {
     <div className="glass-panel rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800">
       <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
         <h3 className="text-xs font-bold uppercase tracking-widest text-text-primary flex items-center gap-2">
-          <Trophy className="w-4 h-4 text-celo-gold" />
+          <Trophy className="w-4 h-4 text-Stellar-gold" />
           Last Draw Winners
           {last && (
             <span className="text-[10px] font-normal text-text-muted">
@@ -81,7 +81,7 @@ export function RecentWinnersFeed() {
             </span>
           )}
         </h3>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-celo-green bg-celo-green/10 px-2 py-0.5 rounded-md">Live</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-Stellar-green bg-Stellar-green/10 px-2 py-0.5 rounded-md">Live</span>
       </div>
 
       {/* Marquee Container */}
@@ -99,7 +99,7 @@ export function RecentWinnersFeed() {
                 key={`${w.address}-${i}`}
                 className="flex items-center gap-3 bg-bg-primary rounded-xl px-4 py-2 shadow-sm border border-gray-100 dark:border-gray-800 shrink-0"
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-celo-gold to-orange-400 flex items-center justify-center text-white font-bold text-xs">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-Stellar-gold to-orange-400 flex items-center justify-center text-white font-bold text-xs">
                   {initials}
                 </div>
                 <div className="flex flex-col">
@@ -107,11 +107,11 @@ export function RecentWinnersFeed() {
                     {shortAddr(w.address as Address)}
                   </span>
                   <span className="text-sm font-black text-text-primary">
-                    +{shareStr} <span className="text-[10px] text-text-muted font-bold">USDm</span>
+                    +{shareStr} <span className="text-[10px] text-text-muted font-bold">USDC</span>
                   </span>
                 </div>
                 {w.claimed && (
-                  <span className="text-[10px] text-celo-green font-bold ml-1">✓</span>
+                  <span className="text-[10px] text-Stellar-green font-bold ml-1">✓</span>
                 )}
               </div>
             );

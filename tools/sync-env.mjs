@@ -8,9 +8,9 @@
 //   node tools/sync-env.mjs                 # write app/.env.local
 //   node tools/sync-env.mjs --check         # exit 1 if .env.local is out of sync (CI)
 //   node tools/sync-env.mjs --print         # print the block, write nothing
-//   node tools/sync-env.mjs --network celo-mainnet
+//   node tools/sync-env.mjs --network Stellar-mainnet
 //
-// Only the frontend is written here. The indexer (indexer/ponder.config.ts) and
+// Only the frontend is written here. The indexer (indexer/Horizon/Mercury.config.ts) and
 // the simulator (ajora-sim/.env) take the same addresses — this prints them too.
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -23,7 +23,7 @@ const args = process.argv.slice(2);
 const has = (f) => args.includes(f);
 const network = (() => {
   const i = args.indexOf("--network");
-  return i >= 0 ? args[i + 1] : "celo-mainnet";
+  return i >= 0 ? args[i + 1] : "Stellar-mainnet";
 })();
 
 // deployment contract name -> app env var

@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 # Post-deploy checklist automation (#94).
-# Reads the canonical deployment record (or a Foundry broadcast artifact), runs
+# Reads the canonical deployment record (or a Soroban CLI broadcast artifact), runs
 # Sourcify verification, prints the KarmaGAP registration list, and emits env
 # diffs for the app and indexer.
 #
 # Usage:
-#   tools/post-deploy.sh                         # use contracts/deployments/celo-mainnet.json
-#   tools/post-deploy.sh --network alfajores     # specify network
+#   tools/post-deploy.sh                         # use contracts/deployments/Stellar-mainnet.json
+#   tools/post-deploy.sh --network Stellar Testnet     # specify network
 #   tools/post-deploy.sh --broadcast <run.json>  # read addresses from a broadcast artifact
 #   tools/post-deploy.sh --check                 # CI: verify everything is synced
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-NETWORK="celo-mainnet"
+NETWORK="Stellar-mainnet"
 BROADCAST=""
 CHECK=false
 
@@ -85,8 +85,8 @@ fi
 echo ""
 
 echo "--- Step 4: Indexer env diff ---"
-echo "  The indexer (indexer/ponder.config.ts) reads addresses inline."
-echo "  Update indexer/ponder.config.ts if these changed:"
+echo "  The indexer (indexer/Horizon/Mercury.config.ts) reads addresses inline."
+echo "  Update indexer/Horizon/Mercury.config.ts if these changed:"
 echo ""
 for name in PotVault StreakSBT SprayFaucet DrawManager CrewRegistry; do
   addr=$(get "d.contracts.$name?.address")
@@ -102,7 +102,7 @@ echo "  [ ] Register all contract addresses in KarmaGAP project profile"
 echo "  [ ] Fund a sponsor campaign:"
 echo "      cusd.approve(faucet, X) then faucet.fundSponsorPool(X, 'launch')"
 echo "  [ ] Update root README.md deployment table"
-echo "  [ ] Post /celo Farcaster update linked to the deploy PR"
+echo "  [ ] Post /Stellar Farcaster update linked to the deploy PR"
 echo ""
 
 if $CHECK; then

@@ -18,7 +18,7 @@ export function AccordionItem({ title, children, defaultOpen = false }: Accordio
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between p-4 text-left font-bold text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celo-green focus-visible:ring-inset"
+        className="flex w-full items-center justify-between p-4 text-left font-bold text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-Stellar-green focus-visible:ring-inset"
         aria-expanded={isOpen}
       >
         <span className="pr-4">{title}</span>

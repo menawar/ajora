@@ -1,4 +1,4 @@
-import { ponder, type Context } from "ponder:registry";
+import { Horizon/Mercury, type Context } from "Horizon/Mercury:registry";
 import {
   users,
   contributions,
@@ -16,7 +16,7 @@ import {
   referralVests,
   dailyMetrics,
   globalStats,
-} from "ponder:schema";
+} from "Horizon/Mercury:schema";
 
 type EventWithLog = { transaction: { hash: `0x${string}` }; log: { logIndex: number } };
 const logId = (event: EventWithLog) => `${event.transaction.hash}-${event.log.logIndex}`;
@@ -24,7 +24,7 @@ const logId = (event: EventWithLog) => `${event.transaction.hash}-${event.log.lo
 /** Mirrors PotVault.currentPeriod(): one period per UTC day. */
 const periodOf = (timestamp: bigint) => timestamp / 86_400n;
 
-/** The vault's stablecoin (USDm, single-token v3). Multi-vault configs map this per vault. */
+/** The vault's stablecoin (USDC, single-token v3). Multi-vault configs map this per vault. */
 const STABLECOIN = "0x765DE816845861e75A25fCA122bb6898B8B1282a" as const;
 
 interface UserDelta {
@@ -38,7 +38,7 @@ interface UserDelta {
   verified?: boolean;
 }
 
-ponder.on("PotVault:Contributed", async ({ event, context }) => {
+Horizon/Mercury.on("PotVault:Contributed", async ({ event, context }) => {
   await context.db.insert(contributions).values({
     id: logId(event),
     user: event.args.user,
@@ -61,13 +61,13 @@ ponder.on("PotVault:Contributed", async ({ event, context }) => {
   await touch(context, event.args.user, event.block.timestamp);
 });
 
-ponder.on("PotVault:TicketsCredited", async ({ event, context }) => {
+Horizon/Mercury.on("PotVault:TicketsCredited", async ({ event, context }) => {
   await upsertUser(context, event.args.user, event.block.timestamp, {
     tickets: event.args.tickets,
   });
 });
 
-ponder.on("PotVault:PrincipalClaimed", async ({ event, context }) => {
+Horizon/Mercury.on("PotVault:PrincipalClaimed", async ({ event, context }) => {
   await context.db.insert(payouts).values({
     id: logId(event),
     user: event.args.user,
@@ -88,7 +88,7 @@ ponder.on("PotVault:PrincipalClaimed", async ({ event, context }) => {
 });
 
 // Cash-out of already-settled winnings. totalWon was counted at PrizeClaimed.
-ponder.on("PotVault:WinningsClaimed", async ({ event, context }) => {
+Horizon/Mercury.on("PotVault:WinningsClaimed", async ({ event, context }) => {
   await context.db.insert(payouts).values({
     id: logId(event),
     user: event.args.user,
@@ -108,7 +108,7 @@ ponder.on("PotVault:WinningsClaimed", async ({ event, context }) => {
   await touch(context, event.args.user, event.block.timestamp);
 });
 
-ponder.on("DrawManager:NumberPicked", async ({ event, context }) => {
+Horizon/Mercury.on("DrawManager:NumberPicked", async ({ event, context }) => {
   await context.db
     .insert(picks)
     .values({
@@ -131,7 +131,7 @@ ponder.on("DrawManager:NumberPicked", async ({ event, context }) => {
   await touch(context, event.args.user, event.block.timestamp);
 });
 
-ponder.on("DrawManager:DrawResolved", async ({ event, context }) => {
+Horizon/Mercury.on("DrawManager:DrawResolved", async ({ event, context }) => {
   await context.db.insert(draws).values({
     periodId: event.args.periodId,
     winningNumber: event.args.winningNumber,
@@ -146,7 +146,7 @@ ponder.on("DrawManager:DrawResolved", async ({ event, context }) => {
 
 // Prize settled into the vault's winnings ledger — this is the "win" moment.
 // Withdrawal to the wallet arrives later as PotVault:WinningsClaimed.
-ponder.on("DrawManager:PrizeClaimed", async ({ event, context }) => {
+Horizon/Mercury.on("DrawManager:PrizeClaimed", async ({ event, context }) => {
   await context.db.insert(wins).values({
     user: event.args.user,
     periodId: event.args.periodId,
@@ -164,14 +164,14 @@ ponder.on("DrawManager:PrizeClaimed", async ({ event, context }) => {
 
 // Tickets are NOT counted here: SprayFaucet credits odds through
 // PotVault.creditTickets, which emits TicketsCredited in the same tx.
-ponder.on("SprayFaucet:CampaignActivated", async ({ event, context }) => {
+Horizon/Mercury.on("SprayFaucet:CampaignActivated", async ({ event, context }) => {
   await context.db
     .insert(campaignState)
     .values({ id: "active", campaignId: event.args.campaignId })
     .onConflictDoUpdate({ campaignId: event.args.campaignId });
 });
 
-ponder.on("SprayFaucet:Sprayed", async ({ event, context }) => {
+Horizon/Mercury.on("SprayFaucet:Sprayed", async ({ event, context }) => {
   const active = await context.db.find(campaignState, { id: "active" });
   await context.db.insert(sprays).values({
     id: logId(event),
@@ -192,17 +192,17 @@ ponder.on("SprayFaucet:Sprayed", async ({ event, context }) => {
 
 // Ticket count arrives via TicketsCredited; claiming the welcome is the
 // recipient's own action, so it marks them active for the day.
-ponder.on("SprayFaucet:WelcomeTicket", async ({ event, context }) => {
+Horizon/Mercury.on("SprayFaucet:WelcomeTicket", async ({ event, context }) => {
   await touch(context, event.args.user, event.block.timestamp);
 });
 
-ponder.on("SprayFaucet:Verified", async ({ event, context }) => {
+Horizon/Mercury.on("SprayFaucet:Verified", async ({ event, context }) => {
   await upsertUser(context, event.args.user, event.block.timestamp, {
     verified: event.args.verified,
   });
 });
 
-ponder.on("SprayFaucet:ReferralBonus", async ({ event, context }) => {
+Horizon/Mercury.on("SprayFaucet:ReferralBonus", async ({ event, context }) => {
   await context.db.insert(referrals).values({
     id: logId(event),
     referrer: event.args.referrer,
@@ -217,7 +217,7 @@ ponder.on("SprayFaucet:ReferralBonus", async ({ event, context }) => {
   });
 });
 
-ponder.on("StreakSBT:CheckedIn", async ({ event, context }) => {
+Horizon/Mercury.on("StreakSBT:CheckedIn", async ({ event, context }) => {
   await upsertUser(context, event.args.user, event.block.timestamp, {
     streak: Number(event.args.streakDays),
     multiplierX10: Number(event.args.multiplierX10),
@@ -228,7 +228,7 @@ ponder.on("StreakSBT:CheckedIn", async ({ event, context }) => {
 
 // ------------------------------------------------------------------- crews (#63)
 
-ponder.on("CrewRegistry:CrewCreated", async ({ event, context }) => {
+Horizon/Mercury.on("CrewRegistry:CrewCreated", async ({ event, context }) => {
   await context.db.insert(crews).values({
     id: event.args.crewId,
     founder: event.args.founder,
@@ -248,7 +248,7 @@ ponder.on("CrewRegistry:CrewCreated", async ({ event, context }) => {
 });
 
 // The crew row always exists here — you cannot join a crew that was never created.
-ponder.on("CrewRegistry:CrewJoined", async ({ event, context }) => {
+Horizon/Mercury.on("CrewRegistry:CrewJoined", async ({ event, context }) => {
   await context.db.insert(crewMembers).values({
     address: event.args.member,
     crewId: event.args.crewId,
@@ -263,7 +263,7 @@ ponder.on("CrewRegistry:CrewJoined", async ({ event, context }) => {
 
 // Mirror of PotVault:Contributed for crew members — the vault calls back into the
 // registry, so this fires in the same tx. Feeds the crew leaderboard (spec §12).
-ponder.on("CrewRegistry:ContributionRecorded", async ({ event, context }) => {
+Horizon/Mercury.on("CrewRegistry:ContributionRecorded", async ({ event, context }) => {
   await context.db
     .insert(crewSavingsDaily)
     .values({
@@ -277,7 +277,7 @@ ponder.on("CrewRegistry:ContributionRecorded", async ({ event, context }) => {
     .set((row) => ({ totalSaved: row.totalSaved + event.args.amount }));
 });
 
-ponder.on("CrewRegistry:ReferralVested", async ({ event, context }) => {
+Horizon/Mercury.on("CrewRegistry:ReferralVested", async ({ event, context }) => {
   await context.db.insert(referralVests).values({
     referred: event.args.referred,
     referrer: event.args.referrer,

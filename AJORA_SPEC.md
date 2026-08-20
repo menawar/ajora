@@ -1,13 +1,13 @@
 # Ajora — Full Product & Technical Specification
 
-> **Ajora 🎉** — *"Save 0.10 USDm a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe."*
+> **Ajora 🎉** — *"Save 0.10 USDC a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe."*
 >
 > *The name blends **Ajo** (the trusted savings circle) with **jara** (the free bonus you always keep). "Ajora" also means "deep" in Wolaita — a deep pool of savings. Tagline: "Save small, keep every cent, chop jara."*
 
 **Version:** 1.0
-**Status:** Build-ready spec for Celo Proof of Ship submission
-**Target platform:** MiniPay Mini App (Celo mainnet)
-**Build window:** 4 weeks, small team (Solidity + TypeScript/React)
+**Status:** Build-ready spec for Stellar Proof of Ship submission
+**Target platform:** Stellar Web App (Stellar Pubnet)
+**Build window:** 4 weeks, small team (Rust + TypeScript/React)
 
 ---
 
@@ -36,9 +36,9 @@
 
 ## 1. Product Overview
 
-**Ajora** is a **no-loss prize-linked savings game** built as a MiniPay Mini App on Celo. It digitizes the continent's most-trusted money ritual — the rotating savings group (**Ajo** in Nigeria, **Esusu**, **Chama** in Kenya, **Susu** in Ghana) — and makes the organizer impossible: the smart contract holds funds, so nobody can run away with the money.
+**Ajora** is a **no-loss prize-linked savings game** built as a Stellar Web App on Stellar. It digitizes the continent's most-trusted money ritual — the rotating savings group (**Ajo** in Nigeria, **Esusu**, **Chama** in Kenya, **Susu** in Ghana) — and makes the organizer impossible: the smart contract holds funds, so nobody can run away with the money.
 
-Users save tiny amounts of Mento stablecoins (USDm / KESm / COPm) daily. **Principal is always returned in full** (no-loss). A daily draw distributes a **jara pot** (the bonus), funded by yield on pooled savings + sponsors + rake — never by principal. A Nigerian *owambe*-inspired **"spray"** mechanic lets users gift free, sponsor-funded tickets to friends, which is the core viral loop.
+Users save tiny amounts of Stellar USDC (USDC) daily. **Principal is always returned in full** (no-loss). A daily draw distributes a **jara pot** (the bonus), funded by yield on pooled savings + sponsors + rake — never by principal. A Nigerian *owambe*-inspired **"spray"** mechanic lets users gift free, sponsor-funded tickets to friends, which is the core viral loop.
 
 **Why it's not play-to-earn slop:** there is no speculative token to buy, no principal at risk, and every reward traces to real external revenue. The on-chain design exists for a genuine reason — a shared, custody-free money pool that must be provably fair.
 
@@ -91,12 +91,12 @@ A session is **~40 seconds**. Target **3–6 on-chain transactions per active us
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  1. OPEN (in MiniPay)                                        │
-│     → New user: free 0.10 USDm welcome ticket, sponsor-paid  │
+│  1. OPEN (in Freighter)                                        │
+│     → New user: free 0.10 USDC welcome ticket, sponsor-paid  │
 │       (welcomeTicket() tx). Can win day one, zero spend.     │
 ├─────────────────────────────────────────────────────────────┤
 │  2. SAVE                                                     │
-│     → Tap "Save" → contribute() ~$0.10+ USDm into today's    │
+│     → Tap "Save" → contribute() ~$0.10+ USDC into today's    │
 │       PotVault. This is the real deposit. [1 tx]             │
 ├─────────────────────────────────────────────────────────────┤
 │  3. PICK                                                     │
@@ -114,7 +114,7 @@ A session is **~40 seconds**. Target **3–6 on-chain transactions per active us
 ├─────────────────────────────────────────────────────────────┤
 │  6. CLAIM + SHARE                                            │
 │     → claimPrize() / claimWinnings() [1 tx, occasional]      │
-│     → Auto-generated "I chopped 2 USDm 💸" card → WhatsApp   │
+│     → Auto-generated "I chopped 2 USDC 💸" card → WhatsApp   │
 │     → Streak multiplier ticks up (checkIn() tx)              │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -154,9 +154,9 @@ Nigerian party culture "sprays" cash on celebrants as joy + status. Ajora digiti
 
 ### Shareable wins
 
-- Every win generates a branded card: *"I chopped X USDm today with Ajora 💸"*.
+- Every win generates a branded card: *"I chopped X USDC today with Ajora 💸"*.
 - **No loss cards exist** (no-loss game) → sharing is always positive-emotion.
-- Share targets: WhatsApp status/groups (primary), Farcaster (secondary, for crypto-native reach + Celo ecosystem visibility).
+- Share targets: WhatsApp status/groups (primary), Farcaster (secondary, for crypto-native reach + Stellar ecosystem visibility).
 
 ### Viral coefficient model
 
@@ -173,11 +173,11 @@ Daily return trigger:       8 PM draw + streak
 
 ## 6. Reward Economics
 
-**No Ajora token exists.** Rewards are paid in Mento stablecoins. Principal is always returned. The **jara (bonus)** is funded by real external revenue:
+**No Ajora token exists.** Rewards are paid in Stellar USDC. Principal is always returned. The **jara (bonus)** is funded by real external revenue:
 
 | Source | Description | Timeline |
 |---|---|---|
-| **1. Yield on pooled savings** | All contributions routed to a low-risk Celo lending market; yield funds prizes (PoolTogether model). Principal untouched. | Scales with TVL |
+| **1. Yield on pooled savings** | All contributions routed to a low-risk Stellar lending market; yield funds prizes (PoolTogether model). Principal untouched. | Scales with TVL |
 | **2. Sponsors (primary early)** | Telecoms (Safaricom, MTN, Airtel), fintechs, FMCG fund branded draws ("MTN Mega Jara") + buy spray tickets. Cheaper user acquisition than their current CAC → real marketing budget. | Week 3+ |
 | **3. Rake on paid "Big Pot" tiers** | Free tier stays free; optional whale pots take a small rake. | Week 3+ |
 | **4. Sinks** | "Boost odds" micro-purchases; broken streaks forfeit only the multiplier; unclaimed prizes recycle. | Week 2+ |
@@ -209,19 +209,19 @@ prize_per_winner = jara_pot(day) * winner_share / num_winners
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                         MiniPay (Celo wallet)                    │
+│                         Freighter (Stellar wallet)                    │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │              Ajora Mini App (Next.js/TS)                  │   │
 │  │  - Save / Pick / Spray / Claim UI                        │   │
 │  │  - Win-card generator + WhatsApp/Farcaster share         │   │
-│  │  - viem/wagmi + MiniPay injected provider                │   │
+│  │  - @stellar/stellar-sdk + Freighter injected provider                │   │
 │  └───────────────┬──────────────────────────┬───────────────┘   │
 └──────────────────┼──────────────────────────┼───────────────────┘
                    │ read (indexer/RPC)        │ write (txs)
                    ▼                            ▼
         ┌──────────────────┐        ┌──────────────────────────┐
-        │  Indexer/API     │        │   Celo mainnet contracts │
-        │  (Ponder/Subgraph│◀───────│  PotVault, DrawManager,  │
+        │  Indexer/API     │        │   Stellar Pubnet contracts │
+        │  (Mercury/Horizon│◀───────│  PotVault, DrawManager,  │
         │   + Postgres)    │  events│  SprayFaucet, Crew, SBT, │
         │  leaderboards,   │        │  YieldAdapter, Treasury  │
         │  metrics, cards  │        └───────────┬──────────────┘
@@ -242,16 +242,16 @@ prize_per_winner = jara_pot(day) * winner_share / num_winners
 
 | Layer | Choice | Rationale |
 |---|---|---|
-| Contracts | Solidity 0.8.24, Foundry | Fast iteration, fuzzing, mainnet-grade |
-| Chain | Celo mainnet (Alfajores for staging) | Near-zero gas, stablecoin gas, MiniPay-native |
-| Stablecoins | USDm, KESm, COPm (Mento) | Local-currency relevance |
+| Contracts | Rust, Soroban SDK | Fast iteration, fuzzing, mainnet-grade |
+| Chain | Stellar Pubnet (Stellar Testnet for staging) | Near-zero gas, stablecoin gas, Freighter-native |
+| Stablecoins | USDC, KESm, COPm (Stellar) | Local-currency relevance |
 | Frontend | Next.js (App Router) + TypeScript + Tailwind | TS-first, static export keeps the client bundle lean for low-end Android |
-| Web3 lib | viem + wagmi | Lightweight, MiniPay injected provider support |
-| Indexer | Ponder (or The Graph) + Postgres | Fast reads, leaderboards, metrics |
+| Web3 lib | viem + wagmi | Lightweight, Freighter injected provider support |
+| Indexer | Horizon/Mercury (or The Graph) + Postgres | Fast reads, leaderboards, metrics |
 | Keeper | Node.js cron worker | Draw resolution, yield harvest |
-| Randomness | drand / VRF oracle + commit-reveal | Verifiable, Celo-compatible |
-| Yield | Audited Celo lending market (e.g., Aave-family/Moola-style) | Sustainable prize funding |
-| Push | Web push / MiniPay notifications | Retention |
+| Randomness | drand / VRF oracle + commit-reveal | Verifiable, Stellar-compatible |
+| Yield | Audited Stellar lending market (e.g., Aave-family/Moola-style) | Sustainable prize funding |
+| Push | Web push / Freighter notifications | Retention |
 
 ---
 
@@ -273,39 +273,33 @@ prize_per_winner = jara_pot(day) * winner_share / num_winners
 
 Holds all contributions for a given period (daily pot). Tracks tickets. Guarantees principal return.
 
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+```rust
+#![no_std]
+use soroban_sdk::{contract, contractimpl, contracttype, Address, Env};
 
-interface IPotVault {
-    struct Period {
-        uint256 id;             // e.g., YYYYMMDD
-        uint256 totalPrincipal; // sum of all contributions (always redeemable)
-        uint256 jaraPot;        // bonus pool (yield + sponsor + rake)
-        uint256 totalTickets;
-        bool    resolved;
-        uint256 vrfSeed;
-    }
+#[contracttype]
+pub struct Period {
+    pub id: u32,             // e.g., YYYYMMDD
+    pub total_principal: i128, // sum of all contributions
+    pub jara_pot: i128,        // bonus pool (yield + sponsor + rake)
+    pub total_tickets: i128,
+    pub resolved: bool,
+    pub vrf_seed: u64,
+}
 
-    event Contributed(address indexed user, uint256 indexed periodId, uint256 amount, uint256 ticketsMinted);
-    event PrincipalClaimed(address indexed user, uint256 indexed periodId, uint256 amount);
-    event WinningsClaimed(address indexed user, uint256 indexed periodId, uint256 amount);
-
-    /// @notice Deposit stablecoin into the current period. Mints tickets.
-    /// @dev Reverts if amount < MIN_CONTRIBUTION. Applies streak multiplier to tickets.
-    function contribute(uint256 amount, address token) external returns (uint256 ticketsMinted);
-
-    /// @notice Withdraw your principal for a period (no-loss guarantee). Always available post-resolve.
-    function claimPrincipal(uint256 periodId) external returns (uint256 amount);
-
-    /// @notice Claim winnings if you won (settled by DrawManager).
-    function claimWinnings(uint256 periodId) external returns (uint256 amount);
-
-    /// @notice Current active period id.
-    function currentPeriod() external view returns (uint256);
-
-    function ticketsOf(address user, uint256 periodId) external view returns (uint256);
-    function principalOf(address user, uint256 periodId) external view returns (uint256);
+pub trait PotVaultTrait {
+    /// Deposit stablecoin into the current period. Mints tickets.
+    fn contribute(env: Env, user: Address, amount: i128, token: Address) -> i128;
+    
+    /// Withdraw your principal for a period (no-loss guarantee).
+    fn claim_principal(env: Env, user: Address, period_id: u32) -> i128;
+    
+    /// Claim winnings if you won.
+    fn claim_winnings(env: Env, user: Address, period_id: u32) -> i128;
+    
+    fn current_period(env: Env) -> u32;
+    fn tickets_of(env: Env, user: Address, period_id: u32) -> i128;
+    fn principal_of(env: Env, user: Address, period_id: u32) -> i128;
 }
 ```
 
@@ -314,30 +308,24 @@ interface IPotVault {
 - Tickets = `amount_normalized * streakMultiplier(user)`. Streak multiplier comes from `StreakSBT` (1x–3x).
 - Principal is escrowed separately from `jaraPot` — **contracts must never pay prizes from principal** (enforced by accounting invariant + tests).
 - Idle principal is forwarded to `YieldAdapter`; a liquidity buffer (e.g., 10%) stays in-vault for instant withdrawals.
-- `token` restricted to whitelisted Mento stablecoins.
+- `token` restricted to whitelisted Stellar USDC.
 
 ### 8.2 `DrawManager`
 
 Resolves the daily draw using verifiable randomness and splits the jara pot.
 
-```solidity
-interface IDrawManager {
-    event NumberPicked(address indexed user, uint256 indexed periodId, uint8 number);
-    event DrawResolved(uint256 indexed periodId, uint256 vrfSeed, uint8 winningNumber, uint256 numWinners, uint256 potSplit);
-    event PrizeClaimed(address indexed user, uint256 indexed periodId, uint256 amount);
+```rust
+pub trait DrawManagerTrait {
+    /// Commit your lucky number (1–9) for the current period.
+    fn pick_number(env: Env, user: Address, number: u32);
 
-    /// @notice Commit your lucky number (1–9) for the current period.
-    /// @dev One pick per user per period. Weighted by ticket count for odds.
-    function pickNumber(uint8 number) external;
+    /// Keeper-only. Consumes PRNG seed, derives winning number, splits jara_pot.
+    fn resolve_draw(env: Env, period_id: u32);
 
-    /// @notice Keeper-only. Consumes VRF seed, derives winning number, splits jaraPot.
-    /// @dev Reverts if VRF not yet fulfilled or period not ended.
-    function resolveDraw(uint256 periodId) external;
+    /// Claim prize into PotVault balance for later withdrawal.
+    fn claim_prize(env: Env, user: Address, period_id: u32) -> i128;
 
-    /// @notice Claim prize into PotVault balance for later withdrawal (or auto-forward).
-    function claimPrize(uint256 periodId) external returns (uint256 amount);
-
-    function isWinner(address user, uint256 periodId) external view returns (bool);
+    fn is_winner(env: Env, user: Address, period_id: u32) -> bool;
 }
 ```
 
@@ -351,29 +339,23 @@ interface IDrawManager {
 
 Holds sponsor money; dispenses free tickets for onboarding and spraying.
 
-```solidity
-interface ISprayFaucet {
-    event SponsorFunded(address indexed sponsor, uint256 amount, bytes32 campaignId);
-    event WelcomeTicket(address indexed user, uint256 value);
-    event Sprayed(address indexed from, address indexed to, uint256 value);
+```rust
+pub trait SprayFaucetTrait {
+    /// Sponsor deposits budget for a campaign.
+    fn fund_sponsor_pool(env: Env, sponsor: Address, amount: i128, campaign_id: u32);
 
-    /// @notice Sponsor deposits budget for a campaign.
-    function fundSponsorPool(uint256 amount, bytes32 campaignId) external;
+    /// One-time free ticket for a newly verified user.
+    fn welcome_ticket(env: Env, user: Address);
 
-    /// @notice One-time free ticket for a newly verified user.
-    /// @dev Gated by proof-of-personhood; caps free value per human.
-    function welcomeTicket(address user) external;
+    /// Gift a free (sponsor-funded) ticket to a friend.
+    fn spray(env: Env, from: Address, to: Address);
 
-    /// @notice Gift a free (sponsor-funded) ticket to a friend.
-    /// @dev Rate-limited per sender per day. Only to phone-verified recipients.
-    function spray(address friend) external;
-
-    function dailySpraysLeft(address user) external view returns (uint256);
+    fn daily_sprays_left(env: Env, user: Address) -> u32;
 }
 ```
 
 **Anti-drain rules:**
-- `welcomeTicket` gated by MiniPay phone verification + Self protocol; hard cap on free value per human.
+- `welcomeTicket` gated by Freighter phone verification + Self protocol; hard cap on free value per human.
 - `spray` rate-limited (e.g., 3/day), only to phone-verified recipients.
 - Sponsor budget is the settlement source; faucet cannot exceed funded balance.
 
@@ -381,20 +363,16 @@ interface ISprayFaucet {
 
 Squads and on-chain referral attribution.
 
-```solidity
-interface ICrewRegistry {
-    event CrewCreated(uint256 indexed crewId, address indexed owner, bytes32 refCode);
-    event CrewJoined(uint256 indexed crewId, address indexed member, address indexed referrer);
-    event ReferralVested(address indexed referrer, address indexed referred, uint256 reward);
+```rust
+pub trait CrewRegistryTrait {
+    fn create_crew(env: Env, owner: Address, ref_code: u32) -> u32;
+    fn join_crew(env: Env, member: Address, ref_code: u32) -> u32;
 
-    function createCrew(bytes32 refCode) external returns (uint256 crewId);
-    function joinCrew(bytes32 refCode) external returns (uint256 crewId);
+    /// Called by keeper after referred user completes 3 self-funded saves.
+    fn vest_referral(env: Env, referred: Address);
 
-    /// @dev Called by keeper after referred user completes 3 self-funded saves.
-    function vestReferral(address referred) external;
-
-    function crewOf(address user) external view returns (uint256);
-    function crewSavings(uint256 crewId, uint256 periodId) external view returns (uint256);
+    fn crew_of(env: Env, user: Address) -> u32;
+    fn crew_savings(env: Env, crew_id: u32, period_id: u32) -> i128;
 }
 ```
 
@@ -404,19 +382,15 @@ interface ICrewRegistry {
 
 Non-transferable (soulbound) tokens recording streaks + badges. Drives ticket multiplier.
 
-```solidity
-interface IStreakSBT {
-    event CheckedIn(address indexed user, uint256 streakDays, uint8 multiplier);
-    event BadgeMinted(address indexed user, uint256 badgeId);
+```rust
+pub trait StreakSBTTrait {
+    /// Records a daily check-in; extends or resets streak.
+    fn check_in(env: Env, user: Address);
 
-    /// @notice Records a daily check-in; extends or resets streak.
-    function checkIn() external;
+    /// Ticket multiplier from current streak (1x–3x, capped).
+    fn multiplier_of(env: Env, user: Address) -> u32;
 
-    /// @notice Ticket multiplier from current streak (1x–3x, capped).
-    function multiplierOf(address user) external view returns (uint8);
-
-    function streakOf(address user) external view returns (uint256);
-    // Soulbound: transfer functions revert.
+    fn streak_of(env: Env, user: Address) -> u32;
 }
 ```
 
@@ -424,18 +398,14 @@ interface IStreakSBT {
 
 ### 8.6 `YieldAdapter`
 
-Routes idle pooled principal to an audited Celo lending market; harvests yield into `jaraPot`.
+Routes idle pooled principal to an audited Stellar lending market; harvests yield into `jaraPot`.
 
-```solidity
-interface IYieldAdapter {
-    event Deposited(uint256 amount);
-    event Withdrawn(uint256 amount);
-    event Harvested(uint256 yieldAmount, uint256 indexed periodId);
-
-    function deposit(uint256 amount) external;         // vault-only
-    function withdraw(uint256 amount) external;         // vault-only, honors buffer
-    function harvest(uint256 periodId) external;        // keeper; sends yield to PotVault.jaraPot
-    function totalDeployed() external view returns (uint256);
+```rust
+pub trait YieldAdapterTrait {
+    fn deposit(env: Env, amount: i128);
+    fn withdraw(env: Env, amount: i128);
+    fn harvest(env: Env, period_id: u32);
+    fn total_deployed(env: Env) -> i128;
 }
 ```
 
@@ -445,13 +415,10 @@ interface IYieldAdapter {
 
 Collects rake/fees, holds protocol funds, funds recycled prizes.
 
-```solidity
-interface ITreasury {
-    event RakeCollected(uint256 amount, uint256 indexed periodId);
-    event FeeWithdrawn(address indexed to, uint256 amount);
-
-    function collectRake(uint256 amount, uint256 periodId) external;   // from paid Big Pots
-    function sweepUnclaimed(uint256 periodId) external;                // recycle after N days
+```rust
+pub trait TreasuryTrait {
+    fn collect_rake(env: Env, amount: i128, period_id: u32);
+    fn sweep_unclaimed(env: Env, period_id: u32);
 }
 ```
 
@@ -471,7 +438,7 @@ Paid Big Pot rake ──▶ Treasury ──recycle unclaimed──▶ jaraPot
 
 ## 9. Randomness & Draw Resolution
 
-**Requirement:** publicly verifiable, manipulation-resistant randomness on Celo. Celo lacks turnkey Chainlink VRF everywhere — treat this as real engineering, not a checkbox.
+**Requirement:** publicly verifiable, manipulation-resistant randomness on Stellar. Stellar lacks turnkey Chainlink VRF everywhere — treat this as real engineering, not a checkbox.
 
 **Approach (layered):**
 
@@ -510,15 +477,15 @@ Stateless workers; all authoritative state is on-chain. Backend is for automatio
 - **Bundle < 300 KB gzipped** initial load (low-end Android, mobile data).
 - **Offline-tolerant:** cache last state, queue actions, optimistic UI.
 - **One-thumb operation**, large tap targets, minimal text.
-- **MiniPay injected provider** for wallet (no external wallet connect flow).
-- **Local stablecoin display** (USDm / KESm / COPm) — amounts shown in the token the user holds, no fiat conversion required.
+- **Freighter injected provider** for wallet (no external wallet connect flow).
+- **Local stablecoin display** (USDC) — amounts shown in the token the user holds, no fiat conversion required.
 
 ### Key screens
 
 | Screen | Purpose | Primary CTA |
 |---|---|---|
 | **Home** | Today's pot size, your streak, countdown to 8 PM | "Save now" |
-| **Save** | Amount picker (0.10 / 0.50 / custom USDm), token select | `contribute()` |
+| **Save** | Amount picker (0.10 / 0.50 / custom USDC), token select | `contribute()` |
 | **Pick** | Number pad 1–9, shows your ticket count | `pickNumber()` |
 | **Crew** | Your crew, member activity, crew pot, spray friends | `spray()` |
 | **Draw (8 PM)** | Live reveal animation, win/lose result | `claimPrize()` |
@@ -529,11 +496,11 @@ Stateless workers; all authoritative state is on-chain. Backend is for automatio
 ### Onboarding flow (zero-deposit)
 
 ```
-1. Open in MiniPay → phone already verified by wallet
-2. "Welcome! Here's your free 0.10 USDm ticket 🎉" → welcomeTicket() (gasless-feel, sponsor pays)
+1. Open in Freighter → phone already verified by wallet
+2. "Welcome! Here's your free 0.10 USDC ticket 🎉" → welcomeTicket() (gasless-feel, sponsor pays)
 3. "Pick your lucky number" → pickNumber()
 4. "Come back at 8 PM to see if you won"
-5. (Optional) "Save your own 0.10 USDm to double your tickets"
+5. (Optional) "Save your own 0.10 USDC to double your tickets"
 → User has 2+ on-chain txs before spending a cent.
 ```
 
@@ -600,7 +567,7 @@ daily_metrics(date, dau, new_users, tx_count, principal_in, jara_paid,
 
 | Vector | Mitigation |
 |---|---|
-| Fake accounts farming welcome tickets | Gate `welcomeTicket` behind MiniPay phone verification + **Self protocol** (proof-of-personhood). Hard cap free value per human. |
+| Fake accounts farming welcome tickets | Gate `welcomeTicket` behind Freighter phone verification + **Self protocol** (proof-of-personhood). Hard cap free value per human. |
 | Spray farming | Rate-limit `spray` (3/day); only to phone-verified recipients; sprayed value can't be withdrawn until recipient self-funds. |
 | Referral farming | **Referral vests only after referred user completes 3 self-funded saves.** Fake accounts earn nothing. |
 | Wash/self-dealing | On-chain heuristics in indexer; flag ring patterns; exclude from leaderboards & rewards. |
@@ -608,7 +575,7 @@ daily_metrics(date, dau, new_users, tx_count, principal_in, jara_paid,
 
 ### Smart contract security
 
-- **Foundry test suite:** unit + fuzz + invariant tests. Core invariant: `sum(prizes) <= jaraPot` and `principal never pays prizes`.
+- **Soroban CLI test suite:** unit + fuzz + invariant tests. Core invariant: `sum(prizes) <= jaraPot` and `principal never pays prizes`.
 - **Reentrancy guards** on all external value transfers (checks-effects-interactions).
 - **Access control:** roles for keeper, sponsor, admin (OpenZeppelin `AccessControl`).
 - **Deposit caps** during month 1 (limit blast radius).
@@ -658,9 +625,9 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 
 - [ ] `PotVault`: `contribute`, `claimPrincipal`, `claimWinnings`, ticket accounting.
 - [ ] `SprayFaucet`: `welcomeTicket` (zero-deposit onboarding).
-- [ ] Foundry tests: principal-safety invariant.
-- [ ] Deploy to **Alfajores testnet**.
-- [ ] MiniPay Mini App shell (React + viem + MiniPay provider).
+- [ ] Soroban CLI tests: principal-safety invariant.
+- [ ] Deploy to **Stellar Testnet**.
+- [ ] Stellar Web App shell (React + viem + Freighter provider).
 - [ ] End-to-end: welcome → save → (mock draw) → claim.
 - **PoS milestone:** daily commits; working testnet demo.
 
@@ -671,14 +638,14 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 - [ ] `SprayFaucet.spray` + rate limits.
 - [ ] `CrewRegistry` + on-chain referral.
 - [ ] Shareable win cards + WhatsApp deep links.
-- [ ] Draw keeper service + indexer (Ponder + Postgres).
-- [ ] **Deploy core to Celo mainnet with tight deposit caps.**
+- [ ] Draw keeper service + indexer (Horizon/Mercury + Postgres).
+- [ ] **Deploy core to Stellar Pubnet with tight deposit caps.**
 - [ ] Onboard first ~100 real users (friends & family + 1 community).
 - **PoS milestone:** first mainnet users + txs; retention cohort begins.
 
 ### Week 3 — Yield, sponsors, growth
 
-- [ ] `YieldAdapter` → audited Celo lending venue; `harvest` keeper.
+- [ ] `YieldAdapter` → audited Stellar lending venue; `harvest` keeper.
 - [ ] `Treasury` rake + unclaimed recycle.
 - [ ] Sponsor pool live; sign **1–2 anchor sponsors** (LOIs → funded campaigns).
 - [ ] Leaderboards, crew competitions, Farcaster share.
@@ -706,7 +673,7 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 **Threat:** fake accounts farm free spray tickets + referral bonuses → inflate fake users, drain sponsor pool, and the AI scorer discounts obviously-farmed metrics.
 
 **Mitigation:**
-- Gate free tickets behind MiniPay phone verification + **Self protocol** (proof-of-personhood); cap free value per human.
+- Gate free tickets behind Freighter phone verification + **Self protocol** (proof-of-personhood); cap free value per human.
 - **Referral rewards vest only after 3 days of self-funded saves** by the referred user.
 - Rate-limit sprays; sprayed value unwithdrawable until recipient self-funds.
 - On-chain ring-detection heuristics; exclude flagged accounts from rewards & leaderboards.
@@ -736,11 +703,11 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 
 ## 17. Open Questions
 
-1. **VRF source:** confirm drand vs a Celo-compatible VRF oracle — verify availability and latency on mainnet.
-2. **Yield venue:** which audited Celo lending market has best risk-adjusted yield + instant liquidity for the buffer?
-3. **Multicall:** does MiniPay's provider support batched txs for the save+pick+checkin combo? If not, sequence with optimistic UI.
+1. **VRF source:** confirm drand vs a Stellar-compatible VRF oracle — verify availability and latency on mainnet.
+2. **Yield venue:** which audited Stellar lending market has best risk-adjusted yield + instant liquidity for the buffer?
+3. **Multicall:** does Freighter's provider support batched txs for the save+pick+checkin combo? If not, sequence with optimistic UI.
 4. **Sponsor legal:** template agreement for sponsor campaigns; who holds sponsor funds pre-deployment?
-5. **Local stablecoin coverage:** confirm Mento liquidity for KESm/COPm prizes and FX at cash-out; track **cGHS/cNGN** rollout so Ghana/Nigeria users can hold a Cedi/Naira-pegged **stablecoin** (not fiat). Until those are live, denominate everything in USDm.
+5. **Local stablecoin coverage:** confirm Stellar liquidity for KESm/COPm prizes and FX at cash-out; track **cGHS/cNGN** rollout so Ghana/Nigeria users can hold a Cedi/Naira-pegged **stablecoin** (not fiat). Until those are live, denominate everything in USDC.
 6. **Draw cadence:** validate 8 PM WAT/EAT as optimal engagement window per region (may need per-region draws).
 7. **Proof-of-personhood UX:** Self protocol onboarding friction vs sybil resistance trade-off — measure drop-off.
 
@@ -760,9 +727,9 @@ Proof of Ship rewards **commit consistency + climbing metrics + demo quality**. 
 | **Crew** | A squad/team of players with a shared bonus pot. |
 | **No-loss** | Principal always returned; only the bonus is at stake. |
 | **Prize-linked savings (PLS)** | Savings product where yield funds a prize draw; principal is safe. |
-| **MiniPay** | Celo's stablecoin wallet (millions of users, Africa-concentrated). |
-| **Mento stablecoins** | USDm, KESm, COPm — local-currency stablecoins on Celo. |
-| **Proof of Ship** | Celo's monthly builder program; AI-scored on hard metrics. |
+| **Freighter** | Stellar's stablecoin wallet (millions of users, Africa-concentrated). |
+| **Stellar USDC** | USDC, KESm, COPm — local-currency stablecoins on Stellar. |
+| **Proof of Ship** | Stellar's monthly builder program; AI-scored on hard metrics. |
 
 ---
 

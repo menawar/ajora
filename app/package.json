@@ -2,7 +2,7 @@
   "name": "ajora-app",
   "private": true,
   "version": "0.1.0",
-  "description": "Ajora — MiniPay Mini App frontend (Next.js + Tailwind, Celo)",
+  "description": "Ajora — Stellar Web App frontend (Next.js + Tailwind, Stellar)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -19,7 +19,7 @@
     "metrics": "node scripts/collect-metrics.mjs"
   },
   "dependencies": {
-    "@celo/attribution-tags": "^0.3.0",
+    "@Stellar/attribution-tags": "^0.3.0",
     "@supabase/supabase-js": "^2.110.7",
     "canvas-confetti": "^1.9.4",
     "framer-motion": "^12.42.2",

@@ -1,8 +1,8 @@
 # Ajora 🎉
 
-> **Save 0.10 USDm a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe.**
+> **Save 0.10 USDC a day, keep every cent, and win real stablecoin in the daily draw — then spray free tickets on your friends like it's an owambe.**
 
-Ajora is a **no-loss prize-linked savings game** built as a [MiniPay](https://www.opera.com/products/minipay) Mini App on [Celo](https://celo.org). It digitizes the continent's most-trusted money ritual — the rotating savings group (**Ajo** / **Esusu** / **Chama** / **Susu**) — and makes the organizer impossible: the smart contract holds the funds, so nobody can run away with the money.
+Ajora is a **no-loss prize-linked savings game** built as a [Freighter](https://www.opera.com/products/Freighter) Mini App on [Stellar](https://Stellar.org). It digitizes the continent's most-trusted money ritual — the rotating savings group (**Ajo** / **Esusu** / **Chama** / **Susu**) — and makes the organizer impossible: the smart contract holds the funds, so nobody can run away with the money.
 
 - **Principal is always returned in full** (no-loss). Only the bonus — the *jara* — is at stake.
 - **No upfront deposit** to start: new users get a sponsor-funded welcome ticket and can win on day one.
@@ -21,12 +21,12 @@ The name blends **Ajo** (the trusted savings circle) with **jara** (the free bon
 ```
 ajora/
 ├── AJORA_SPEC.md        # Full product & technical specification
-├── contracts/           # Solidity smart contracts (Foundry)
+├── contracts/           # Rust smart contracts (Soroban CLI)
 │   ├── src/             # PotVault, DrawManager, SprayFaucet, CrewRegistry, ...
-│   ├── test/            # Foundry tests
+│   ├── test/            # Soroban CLI tests
 │   └── script/          # Deployment scripts
-├── app/                 # MiniPay Mini App frontend (Next.js + TypeScript + Tailwind)
-├── indexer/             # Ponder indexer — events → tables + read APIs
+├── app/                 # Stellar Web App frontend (Next.js + TypeScript + Tailwind)
+├── indexer/             # Horizon/Mercury indexer — events → tables + read APIs
 ├── push/                # Web Push backend — draw results + streak-at-risk nudges
 ├── metrics/             # Committed growth-metrics rollups
 ├── tools/               # Post-deploy automation helpers
@@ -37,14 +37,14 @@ ajora/
 
 ```
 ┌──────────┐    contribute/pick/spray/claim    ┌────────────┐
-│  MiniPay │ ──────────────────────────────→   │ Contracts  │
+│  Freighter │ ──────────────────────────────→   │ Contracts  │
 │  browser │ ←──────────────────────────────   │ (on-chain) │
 └──────────+    tx receipts + events           └─────┬──────┘
       │                                               │ events
       │                                               ▼
       │                                       ┌──────────────┐
       │  NEXT_PUBLIC_* addresses              │   Indexer    │
-      │  (app/.env.local)                     │  (Ponder)     │
+      │  (app/.env.local)                     │  (Horizon/Mercury)     │
       │                                       │  port 42069   │
       │                                       │               │
       │                                       │  /leaderboard │
@@ -78,13 +78,13 @@ ajora/
 
 ## Quickstart
 
-### Contracts (Foundry)
+### Contracts (Soroban CLI)
 
 ```bash
 git clone --recursive https://github.com/menawar/ajora.git   # --recursive pulls forge-std
 cd ajora/contracts
-forge build
-forge test -vvv
+cargo build --target wasm32-unknown-unknown
+cargo test
 ```
 
 If you cloned without `--recursive`:
@@ -108,7 +108,7 @@ See [`app/README.md`](./app/README.md) for the full setup.
 ```bash
 cd indexer
 npm install
-npm run dev     # starts on port 42069; requires an RPC URL for Celo
+npm run dev     # starts on port 42069; requires an RPC URL for Stellar
 ```
 
 See [`indexer/README.md`](./indexer/README.md).
@@ -139,8 +139,8 @@ See [`push/README.md`](./push/README.md).
 
 | Week | Focus |
 |------|-------|
-| 1 | `PotVault` core loop (contribute / claim / welcome ticket) on Alfajores testnet |
-| 2 | Draw + streaks + spray + crews → Celo mainnet (capped) |
+| 1 | `PotVault` core loop (contribute / claim / welcome ticket) on Stellar Testnet |
+| 2 | Draw + streaks + spray + crews → Stellar Pubnet (capped) |
 | 3 | Yield adapter, sponsors, leaderboards, growth |
 | 4 | Anti-sybil hardening, analytics, demo, submit |
 
@@ -148,21 +148,29 @@ See [`AJORA_SPEC.md` §15](./AJORA_SPEC.md#15-4-week-build-plan) for the detaile
 
 ## Deployments
 
-### Celo mainnet (chain 42220) — wired core, sources verified (Sourcify exact match)
+### Stellar Pubnet (chain 42220) — wired core, sources verified (Sourcify exact match)
 
 Live core: **core_v5**, deployed 2026-07-07.
 
 | Contract | Address |
 |----------|---------|
-| `PotVault` | [`0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415`](https://celoscan.io/address/0x0A9f549C0Fc859b0925c7dcB5F8A55d4020c1415) |
-| `StreakSBT` | [`0x9aC488Bc0Ba3cF7F2552c61d6F9BbA949961d974`](https://celoscan.io/address/0x9aC488Bc0Ba3cF7F2552c61d6F9BbA949961d974) |
-| `SprayFaucet` | [`0x117cEa08fD62220506FD7621C548a627373B2DFc`](https://celoscan.io/address/0x117cEa08fD62220506FD7621C548a627373B2DFc) |
-| `DrawManager` | [`0xacB78C0DdAA33C660010dE76b842A54b613156B4`](https://celoscan.io/address/0xacB78C0DdAA33C660010dE76b842A54b613156B4) |
-| `CrewRegistry` | [`0x73F0770aea05298579252dFf193df0454C0B5A8a`](https://celoscan.io/address/0x73F0770aea05298579252dFf193df0454C0B5A8a) |
+| `PotVault` | [`CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`](https://Stellarscan.io/address/CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX) |
+| `StreakSBT` | [`CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`](https://Stellarscan.io/address/CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX) |
+| `SprayFaucet` | [`CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`](https://Stellarscan.io/address/CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX) |
+| `DrawManager` | [`CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`](https://Stellarscan.io/address/CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX) |
+| `CrewRegistry` | [`CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`](https://Stellarscan.io/address/CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX) |
 
-Stablecoin: USDm · min contribution / ticket value: 0.10 USDm · full details + superseded cores:
-[`contracts/deployments/celo-mainnet.json`](./contracts/deployments/celo-mainnet.json) ·
+Stablecoin: USDC · min contribution / ticket value: 0.10 USDC · full details + superseded cores:
+[`contracts/deployments/Stellar-mainnet.json`](./contracts/deployments/Stellar-mainnet.json) ·
 runbook: [`contracts/DEPLOYMENT.md`](./contracts/DEPLOYMENT.md)
+
+## Contributing & Drips Wave 🌊
+
+We welcome community contributions! Ajora participates in **Drips Wave** programs to reward developers who help build and maintain this project. 
+
+- **Find Issues**: Look for issues tagged for active Waves.
+- **Earn Rewards**: Fix issues to earn points and receive rewards at the end of the sprint.
+- **Get Started**: Read our full [Contributing Guide](./CONTRIBUTING.md) for details on how to apply, get assigned, and submit your PRs.
 
 ## License
 

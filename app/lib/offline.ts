@@ -1,6 +1,6 @@
 // Offline tolerance (#91). A tiny localStorage cache so read screens can show the
 // last-known state when the network drops — a real case on the spotty mobile
-// connections in the MiniPay market. Cached values routinely contain `bigint`
+// connections in the Freighter market. Cached values routinely contain `bigint`
 // (wei amounts), which JSON can't represent, so bigints are tagged on write and
 // revived on read.
 

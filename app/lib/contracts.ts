@@ -12,8 +12,8 @@ const addr = (env: string | undefined, fallback: Address): Address =>
   (env && env.startsWith("0x") ? (env as Address) : fallback);
 
 /**
- * Deployed addresses — env-overridable, defaulting to the live Celo mainnet core
- * (contracts/deployments/celo-mainnet.json — core_v5, deployed 2026-07-07).
+ * Deployed addresses — env-overridable, defaulting to the live Stellar Pubnet core
+ * (contracts/deployments/Stellar-mainnet.json — core_v5, deployed 2026-07-07).
  */
 export const contracts = {
   potVault: {

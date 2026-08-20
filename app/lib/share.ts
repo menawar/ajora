@@ -29,7 +29,7 @@ export function shareUrl(refCode?: string): string {
 
 /**
  * Share a rendered card. Prefers the Web Share API with the image attached
- * (native sheet → WhatsApp on Android/MiniPay); falls back to wa.me text.
+ * (native sheet → WhatsApp on Android/Freighter); falls back to wa.me text.
  */
 export async function shareCard(blob: Blob, text: string, refCode?: string): Promise<void> {
   const url = shareUrl(refCode);

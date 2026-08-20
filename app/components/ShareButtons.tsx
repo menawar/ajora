@@ -65,10 +65,10 @@ export function ShareButtons({
       
       <button
         onClick={handleCopy}
-        className="flex items-center justify-center gap-2 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-bg-primary px-4 py-3 text-sm font-bold text-text-primary hover:border-celo-green hover:text-celo-green transition-colors active:scale-95"
+        className="flex items-center justify-center gap-2 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-bg-primary px-4 py-3 text-sm font-bold text-text-primary hover:border-Stellar-green hover:text-Stellar-green transition-colors active:scale-95"
       >
         {copied ? (
-          <><CheckCircle2 className="w-4 h-4 text-celo-green" /> Copied</>
+          <><CheckCircle2 className="w-4 h-4 text-Stellar-green" /> Copied</>
         ) : (
           <><Copy className="w-4 h-4" /> Copy Link</>
         )}

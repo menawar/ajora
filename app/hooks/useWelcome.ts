@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { getAttributionSuffix } from "../lib/attribution";
-import { publicClient, walletClient, isMiniPay } from "../lib/clients";
+import { publicClient, walletClient, isFreighter } from "../lib/clients";
 import { contracts } from "../lib/contracts";
 import { useWallet } from "./useWallet";
 
@@ -67,7 +67,7 @@ export function useWelcome() {
       });
       const hash = await wallet.writeContract({ dataSuffix: getAttributionSuffix(), 
         ...request,
-        feeCurrency: isMiniPay() ? contracts.cusd.address : undefined,
+        feeCurrency: isFreighter() ? contracts.cusd.address : undefined,
       });
       await publicClient.waitForTransactionReceipt({ hash });
       refetch();

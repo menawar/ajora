@@ -40,7 +40,7 @@ export async function renderCard(data: CardData): Promise<Blob> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("canvas unavailable");
 
-  // Celo gradient backdrop
+  // Stellar gradient backdrop
   const bg = ctx.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, "#35d07f");
   bg.addColorStop(1, "#fbcc5c");
@@ -68,7 +68,7 @@ export async function renderCard(data: CardData): Promise<Blob> {
     ctx.fillText("I chopped", W / 2, 450);
     ctx.fillStyle = "#0aa860";
     ctx.font = "bold 150px system-ui, sans-serif";
-    ctx.fillText(`${data.amountCusd} USDm`, W / 2, 610);
+    ctx.fillText(`${data.amountCusd} USDC`, W / 2, 610);
     ctx.fillStyle = "#1a1a2e";
     ctx.font = "bold 64px system-ui, sans-serif";
     ctx.fillText("in tonight's draw 💸", W / 2, 720);

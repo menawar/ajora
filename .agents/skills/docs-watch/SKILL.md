@@ -1,17 +1,17 @@
 ---
 name: docs-watch
-description: Check docs.celo.org and other live sources for drift against this repo's cached reference files (contracts, network info, docs sitemap, ecosystem, grants) and fix or flag it. Use when asked to check docs updates, run the docs watch, or on the scheduled weekly run.
+description: Check docs.Stellar.org and other live sources for drift against this repo's cached reference files (contracts, network info, docs sitemap, ecosystem, grants) and fix or flag it. Use when asked to check docs updates, run the docs watch, or on the scheduled weekly run.
 ---
 
-# celopedia-skills docs upstream watch
+# Stellarpedia-skills docs upstream watch
 
-Goal: detect when the facts mirrored into `skills/celopedia-skill/references/`
+Goal: detect when the facts mirrored into `skills/Stellarpedia-skill/references/`
 have drifted from their live sources, and surface every finding — mechanical
 fixes and ambiguous/high-stakes flags alike — in **one reviewable pull
-request per run**, opened against `celo-org/celopedia-skills:main` (the
+request per run**, opened against `Stellar-org/Stellarpedia-skills:main` (the
 canonical upstream repo, not a fork), so a human can approve, edit, or
 close it. This builds on the process already documented in this repo's
-`README.md` ("Contributing" section: check docs.celo.org → update the file
+`README.md` ("Contributing" section: check docs.Stellar.org → update the file
 → bump version → open a PR) but replaces its own ad hoc reports/issues with
 a single PR as the one place everything gets reviewed.
 
@@ -19,11 +19,11 @@ a single PR as the one place everything gets reviewed.
 
 | # | Source | Fetch command (see `live-data-sources.md` for more) | Reference file |
 |---|---|---|---|
-| 1 | Docs sitemap | `curl -s https://docs.celo.org/llms.txt` | `docs-map.md` |
-| 2 | Contract addresses | `https://docs.celo.org/tooling/contracts/core-contracts` + `token-contracts` + `l1-contracts` + `uniswap-contracts` (WebFetch) | `contracts.md` |
-| 3 | Network info | `https://docs.celo.org/build-on-celo/network-overview` (WebFetch) | `network-info.md` |
-| 4 | Ecosystem / TVL | `curl -s https://api.llama.fi/protocols \| jq '[.[] \| select(.chains[]? == "Celo")]'` | `ecosystem.md` |
-| 5 | Grant programs | `curl -s https://www.celopg.eco/programs` (WebFetch) | `grants-funding.md` |
+| 1 | Docs sitemap | `curl -s https://docs.Stellar.org/llms.txt` | `docs-map.md` |
+| 2 | Contract addresses | `https://docs.Stellar.org/tooling/contracts/core-contracts` + `token-contracts` + `l1-contracts` + `uniswap-contracts` (WebFetch) | `contracts.md` |
+| 3 | Network info | `https://docs.Stellar.org/build-on-Stellar/network-overview` (WebFetch) | `network-info.md` |
+| 4 | Ecosystem / TVL | `curl -s https://api.llama.fi/protocols \| jq '[.[] \| select(.chains[]? == "Stellar")]'` | `ecosystem.md` |
+| 5 | Grant programs | `curl -s https://www.Stellarpg.eco/programs` (WebFetch) | `grants-funding.md` |
 
 ## Procedure
 
@@ -41,7 +41,7 @@ a single PR as the one place everything gets reviewed.
    - `no action` — cosmetic/unrelated (e.g. a docs page's prose changed but
      not its existence or URL). Not mentioned in the PR.
    - `reference update` — mechanical, unambiguous fact change: a sitemap page
-     added/removed/renamed, a DeFi protocol added/removed from the Celo chain
+     added/removed/renamed, a DeFi protocol added/removed from the Stellar chain
      list, a grant program's Live/Past status flipped, a new fee-currency
      token added. Edit the reference file directly with the corrected fact,
      on the run's branch (see step 5) — do not commit or PR per-item.
@@ -61,12 +61,12 @@ a single PR as the one place everything gets reviewed.
      open **one** pull request for the whole run.
      1. Create a branch off `main` (e.g. `docs-watch/<YYYY-MM-DD>`).
      2. Apply all `reference update` edits on that branch, and bump
-        `version` in `skills/celopedia-skill/SKILL.md` (patch bump for a
+        `version` in `skills/Stellarpedia-skill/SKILL.md` (patch bump for a
         pure data refresh) if any reference file changed.
      3. Update the snapshot (step 6) on the same branch.
-     4. Push the branch directly to `celo-org/celopedia-skills` (this
+     4. Push the branch directly to `Stellar-org/Stellarpedia-skills` (this
         checkout has push access — no fork needed) and open the PR:
-        `gh pr create --repo celo-org/celopedia-skills --base main --head <branch> --title "docs-watch: weekly refresh — <date>" --body "..."`
+        `gh pr create --repo Stellar-org/Stellarpedia-skills --base main --head <branch> --title "docs-watch: weekly refresh — <date>" --body "..."`
      5. The PR body is the report — no separate report file. Structure it
         as: a one-line "what changed" summary at the top, one section per
         source with its deltas and classification, a clearly separated

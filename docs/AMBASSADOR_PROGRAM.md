@@ -22,7 +22,7 @@ Ambassadors must claim a highly recognizable crew code. Good examples:
 ### Step 2: Pitching Ajora
 When pitching to students:
 - Emphasize the "No-loss" aspect: "Save small small, keep your money, chop jara."
-- Walk them through connecting a wallet via MiniPay.
+- Walk them through connecting a wallet via Freighter.
 - Make them click your Crew Link so they are attributed to your group.
 
 ### Step 3: Weekly Summary Format
@@ -32,9 +32,9 @@ Every Friday, the Growth team pulls a summary from the Indexer using the Crew me
 ```
 🌟 Weekly Campus Leaderboard 🌟
 
-1. 🥇 Univ of Lagos (ajora-lagos-unilag): 145 members | 500 USDm TVL
-2. 🥈 Univ of Nairobi (ajora-nairobi-uon): 98 members | 350 USDm TVL
-3. 🥉 Ashesi Univ (ajora-accra-ashesi): 45 members | 120 USDm TVL
+1. 🥇 Univ of Lagos (ajora-lagos-unilag): 145 members | 500 USDC TVL
+2. 🥈 Univ of Nairobi (ajora-nairobi-uon): 98 members | 350 USDC TVL
+3. 🥉 Ashesi Univ (ajora-accra-ashesi): 45 members | 120 USDC TVL
 
 🔥 Top Converter: [Ambassador Name] with 85% of crew members actively saving!
 ```

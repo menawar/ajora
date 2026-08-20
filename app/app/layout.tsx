@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://ajora-4ewr.vercel.app"),
   title: "Ajora — Save small, win extra bonus",
   description:
-    "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
+    "No-loss prize-linked savings game on Stellar. Save small, keep every cent, win the daily draw.",
   manifest: "/manifest.json",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
   appleWebApp: {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Ajora — Save small, win extra bonus",
-    description: "No-loss prize-linked savings game on Celo. Save small, keep every cent, win the daily draw.",
+    description: "No-loss prize-linked savings game on Stellar. Save small, keep every cent, win the daily draw.",
     url: "https://ajora-4ewr.vercel.app",
     siteName: "Ajora",
     type: "website",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ajora — Save small, win extra bonus",
-    description: "No-loss prize-linked savings game on Celo.",
+    description: "No-loss prize-linked savings game on Stellar.",
   },
   // Talent Protocol (Proof of Ship) project-ownership verification tag.
   other: {

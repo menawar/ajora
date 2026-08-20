@@ -95,13 +95,13 @@ export default function HistoryPage() {
       {!loading && entries.length > 0 && (
         <motion.div variants={itemVariants} className="grid grid-cols-3 gap-2">
           {[
-            { label: "Recent (14d)", value: cusd(total) + " USDm" },
-            { label: "All Time (30d)", value: cusd(totalAllTime) + " USDm" },
-            { label: "Avg / Day", value: entries.length > 0 ? cusd(total / BigInt(entries.length)) + " USDm" : "—" },
+            { label: "Recent (14d)", value: cusd(total) + " USDC" },
+            { label: "All Time (30d)", value: cusd(totalAllTime) + " USDC" },
+            { label: "Avg / Day", value: entries.length > 0 ? cusd(total / BigInt(entries.length)) + " USDC" : "—" },
           ].map(({ label, value }) => (
             <div key={label} className="glass-panel rounded-2xl p-3 text-center">
               <div className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">{label}</div>
-              <div className="text-sm font-black text-celo-green">{value}</div>
+              <div className="text-sm font-black text-Stellar-green">{value}</div>
             </div>
           ))}
         </motion.div>
@@ -123,7 +123,7 @@ export default function HistoryPage() {
             onClick={() => { setFilter(tab.id); setPage(0); }}
             className={`flex-1 rounded-xl py-2 text-sm font-bold transition-all ${
               filter === tab.id
-                ? "bg-celo-green text-white shadow-[0_2px_8px_rgba(53,208,127,0.3)]"
+                ? "bg-Stellar-green text-white shadow-[0_2px_8px_rgba(53,208,127,0.3)]"
                 : "text-text-secondary hover:text-text-primary"
             }`}
           >
@@ -165,20 +165,20 @@ export default function HistoryPage() {
               className="flex items-center justify-between glass-panel rounded-2xl px-4 py-4 border border-gray-100 dark:border-gray-800"
             >
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-xl ${e.isToday ? "bg-amber-100" : "bg-celo-green/10"}`}>
+                <div className={`p-2 rounded-xl ${e.isToday ? "bg-amber-100" : "bg-Stellar-green/10"}`}>
                   {e.isToday ? (
                     <Clock className="w-4 h-4 text-amber-600" />
                   ) : (
-                    <ArrowDownToLine className="w-4 h-4 text-celo-green" />
+                    <ArrowDownToLine className="w-4 h-4 text-Stellar-green" />
                   )}
                 </div>
                 <div>
                   <div className="font-bold text-sm text-text-primary">{fullDayLabel(e.periodId, e.isToday)}</div>
-                  <div className="text-xs font-semibold text-celo-green mt-0.5">{cusd(e.principal)} USDm</div>
+                  <div className="text-xs font-semibold text-Stellar-green mt-0.5">{cusd(e.principal)} USDC</div>
                 </div>
               </div>
               {e.isToday ? (
-                <span className="rounded-xl bg-celo-gold/15 px-3 py-1.5 text-xs font-bold text-amber-700 border border-celo-gold/20">
+                <span className="rounded-xl bg-Stellar-gold/15 px-3 py-1.5 text-xs font-bold text-amber-700 border border-Stellar-gold/20">
                   In draw 🎯
                 </span>
               ) : (
@@ -186,7 +186,7 @@ export default function HistoryPage() {
                   type="button"
                   onClick={() => void claimPrincipal(e.periodId)}
                   disabled={claiming !== undefined}
-                  className="flex items-center gap-1.5 rounded-xl border-2 border-celo-green px-3 py-2 text-xs font-bold text-celo-green hover:bg-celo-green hover:text-white transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                  className="flex items-center gap-1.5 rounded-xl border-2 border-Stellar-green px-3 py-2 text-xs font-bold text-Stellar-green hover:bg-Stellar-green hover:text-white transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                 >
                   {claiming === e.periodId ? (
                     <><Loader2 className="w-3 h-3 animate-spin" />Withdrawing…</>
@@ -210,7 +210,7 @@ export default function HistoryPage() {
               type="button"
               disabled={page === 0}
               onClick={() => setPage(p => p - 1)}
-              className="rounded-xl border-2 border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-celo-green hover:text-celo-green transition-colors"
+              className="rounded-xl border-2 border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-Stellar-green hover:text-Stellar-green transition-colors"
             >
               ← Prev
             </button>
@@ -219,7 +219,7 @@ export default function HistoryPage() {
               type="button"
               disabled={page >= totalPages - 1}
               onClick={() => setPage(p => p + 1)}
-              className="rounded-xl border-2 border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-celo-green hover:text-celo-green transition-colors"
+              className="rounded-xl border-2 border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-30 hover:border-Stellar-green hover:text-Stellar-green transition-colors"
             >
               Next →
             </button>

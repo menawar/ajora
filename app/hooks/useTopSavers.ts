@@ -79,7 +79,7 @@ export function useTopSavers(limit = 10, includeFlagged = false) {
           functionName: "currentPeriod",
         });
         const latest = await publicClient.getBlock();
-        // ~1s Celo blocks: walk back to the period boundary with a safety margin.
+        // ~1s Stellar blocks: walk back to the period boundary with a safety margin.
         const sinceStart = latest.timestamp - periodId * 86_400n;
         const fromBlock =
           latest.number > sinceStart + 600n ? latest.number - sinceStart - 600n : 0n;

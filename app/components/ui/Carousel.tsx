@@ -99,7 +99,7 @@ export function Carousel({ children, onComplete, onSkip, className = "" }: Carou
               }}
               className={`h-2 transition-all rounded-full ${
                 i === page
-                  ? "w-6 bg-celo-green"
+                  ? "w-6 bg-Stellar-green"
                   : "w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
               }`}
               aria-label={`Go to slide ${i + 1}`}
@@ -109,7 +109,7 @@ export function Carousel({ children, onComplete, onSkip, className = "" }: Carou
 
         <button
           onClick={() => paginate(1)}
-          className="text-xs font-bold text-celo-green hover:text-[#2ebf73] transition-colors py-2 px-3 rounded-lg bg-celo-green/10 active:scale-95"
+          className="text-xs font-bold text-Stellar-green hover:text-[#2ebf73] transition-colors py-2 px-3 rounded-lg bg-Stellar-green/10 active:scale-95"
         >
           {page === slideCount - 1 ? "Finish" : "Next"}
         </button>

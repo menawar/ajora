@@ -11,13 +11,13 @@ import { useSFX } from "../../hooks/useSFX";
 const SLIDES = [
   {
     id: "welcome",
-    icon: <PartyPopper className="w-16 h-16 text-celo-green" />,
+    icon: <PartyPopper className="w-16 h-16 text-Stellar-green" />,
     titleKey: "onboarding.step1.title",
     descKey: "onboarding.step1.desc",
   },
   {
     id: "grow",
-    icon: <TrendingUp className="w-16 h-16 text-celo-gold" />,
+    icon: <TrendingUp className="w-16 h-16 text-Stellar-gold" />,
     titleKey: "onboarding.step2.title",
     descKey: "onboarding.step2.desc",
   },
@@ -124,7 +124,7 @@ export function OnboardingModal() {
               <Ripple className="w-full rounded-2xl">
                 <button
                   onClick={nextSlide}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-celo-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] active:scale-95"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73] active:scale-95"
                 >
                   {currentIndex === SLIDES.length - 1 ? (
                     t("onboarding.finish")

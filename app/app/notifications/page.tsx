@@ -92,8 +92,8 @@ export default function NotificationsPage() {
 
   const getIcon = (type: NotificationType) => {
     switch (type) {
-      case "draw": return <Gift className="w-5 h-5 text-celo-gold" />;
-      case "crew": return <UserPlus className="w-5 h-5 text-celo-green" />;
+      case "draw": return <Gift className="w-5 h-5 text-Stellar-gold" />;
+      case "crew": return <UserPlus className="w-5 h-5 text-Stellar-green" />;
       case "achievement": return <Trophy className="w-5 h-5 text-amber-500" />;
       case "system": return <BellRing className="w-5 h-5 text-blue-500" />;
     }
@@ -130,7 +130,7 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button 
             onClick={markAllRead}
-            className="text-sm font-bold text-celo-green bg-celo-green/10 px-3 py-1.5 rounded-full hover:bg-celo-green/20 transition-colors"
+            className="text-sm font-bold text-Stellar-green bg-Stellar-green/10 px-3 py-1.5 rounded-full hover:bg-Stellar-green/20 transition-colors"
           >
             <CheckCircle2 className="w-4 h-4 inline mr-1" />
             Mark all read
@@ -140,7 +140,7 @@ export default function NotificationsPage() {
 
       <motion.section variants={itemVariants} className="flex flex-col gap-3 mt-2">
         {loading ? (
-          <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-celo-green border-t-transparent rounded-full animate-spin" /></div>
+          <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-Stellar-green border-t-transparent rounded-full animate-spin" /></div>
         ) : notifications.length === 0 ? (
           <div className="glass-panel rounded-3xl py-12 text-center">
             <BellRing className="w-12 h-12 text-gray-300 mx-auto mb-3" />
@@ -153,7 +153,7 @@ export default function NotificationsPage() {
                 className={`flex gap-4 p-4 rounded-2xl border transition-colors cursor-pointer ${
                   notif.read 
                     ? "bg-transparent border-transparent hover:bg-bg-secondary" 
-                    : "glass-panel border-celo-green/20 shadow-sm"
+                    : "glass-panel border-Stellar-green/20 shadow-sm"
                 }`}
                 onClick={() => {
                   if (!notif.read) markSingleRead(notif.id);

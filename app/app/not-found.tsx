@@ -15,8 +15,8 @@ export default function NotFound() {
         className="flex max-w-sm flex-col items-center gap-4 glass-panel rounded-3xl p-8"
       >
         <div className="rounded-full bg-bg-secondary p-5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-celo-green/10 rounded-full animate-ping opacity-50" />
-          <Search className="h-8 w-8 text-celo-green relative z-10" />
+          <div className="absolute inset-0 bg-Stellar-green/10 rounded-full animate-ping opacity-50" />
+          <Search className="h-8 w-8 text-Stellar-green relative z-10" />
         </div>
         
         <div className="flex flex-col gap-1">
@@ -30,7 +30,7 @@ export default function NotFound() {
           <Ripple className="w-full rounded-2xl">
             <Link
               href="/"
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-celo-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-6 py-4 font-bold text-white shadow-[0_4px_14px_0_rgba(53,208,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(53,208,127,0.23)] hover:bg-[#2ebf73]"
             >
               Return to Pot
             </Link>

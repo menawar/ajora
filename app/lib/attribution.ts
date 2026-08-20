@@ -1,4 +1,4 @@
-import { toDataSuffix, codeFromHostname } from "@celo/attribution-tags";
+import { toDataSuffix, codeFromHostname } from "@Stellar/attribution-tags";
 import type { Hex } from "viem";
 
 let cached: Hex | null = null;

@@ -15,7 +15,7 @@ import { triggerSmallConfetti } from "../lib/confetti";
 const SEEN_KEY = "ajora.onboarded";
 
 export function Onboarding() {
-  const { address, miniPay } = useWallet();
+  const { address, Freighter } = useWallet();
   const { welcomed, verified, loading, claim, claiming, error } = useWelcome();
   const [open, setOpen] = useState(false);
   const [claimedNow, setClaimedNow] = useState(false);
@@ -66,7 +66,7 @@ export function Onboarding() {
               />
               <OnboardingStep
                 title="Win every night"
-                subtitle="If your number hits, you win a share of the jara pot! Real Celo Dollars paid daily."
+                subtitle="If your number hits, you win a share of the jara pot! Real Stellar Dollars paid daily."
                 icon={<Trophy className="w-16 h-16" strokeWidth={1.5} />}
                 highlightColor="gold"
               />
@@ -74,7 +74,7 @@ export function Onboarding() {
 
             <div className="px-6 pb-6 pt-2">
               {ref && (
-                <div className="text-center text-xs font-semibold text-celo-green mb-3 bg-celo-green/10 py-1.5 rounded-full inline-block px-3 w-full">
+                <div className="text-center text-xs font-semibold text-Stellar-green mb-3 bg-Stellar-green/10 py-1.5 rounded-full inline-block px-3 w-full">
                   Invited by {ref.slice(0, 8)}...
                 </div>
               )}
@@ -82,13 +82,13 @@ export function Onboarding() {
               <div className="flex flex-col gap-2">
                 {claimedNow || welcomed ? (
                   <>
-                    <p className="text-center text-xs font-bold text-celo-green mb-1">
+                    <p className="text-center text-xs font-bold text-Stellar-green mb-1">
                       Your free ticket is in tonight&apos;s draw 🎟️
                     </p>
                     <Link
                       href="/pick"
                       onClick={dismiss}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 w-full"
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 w-full"
                     >
                       Pick your lucky number <ArrowRight className="w-4 h-4" />
                     </Link>
@@ -102,7 +102,7 @@ export function Onboarding() {
                         setClaimedNow(true);
                       })
                     }
-                    className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none w-full"
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none w-full"
                   >
                     {claiming ? "Claiming…" : "Claim your FREE ticket 🎟️"}
                   </button>
@@ -114,7 +114,7 @@ export function Onboarding() {
                     <Link
                       href="/save"
                       onClick={dismiss}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-celo-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 w-full"
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-Stellar-green px-4 py-3.5 font-bold text-white shadow-[0_4px_14px_rgba(53,208,127,0.3)] hover:bg-[#2ebf73] transition-all active:scale-95 w-full"
                     >
                       Save to start <ArrowRight className="w-4 h-4" />
                     </Link>
@@ -122,7 +122,7 @@ export function Onboarding() {
                 ) : (
                   <div className="flex flex-col items-center gap-2">
                     <p className="text-center text-xs font-semibold text-text-muted">
-                      {miniPay || address ? "Loading account…" : "Open Ajora in MiniPay for a free ticket."}
+                      {Freighter || address ? "Loading account…" : "Open Ajora in Freighter for a free ticket."}
                     </p>
                     <button
                       onClick={dismiss}
